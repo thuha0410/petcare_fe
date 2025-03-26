@@ -11,6 +11,16 @@ const routes = [
         component: ()=>import('../components/Admin/QLLichHen/index.vue'),
         meta: {layout:'admin'},
     },
+    {
+        path : '/admin/ql-thanh-toan',
+        component: ()=>import('../components/Admin/QLThanhToan/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/ql-bao-cao',
+        component: ()=>import('../components/Admin/QLBaoCao/index.vue'),
+        meta: {layout:'admin'},
+    },
 ]
 
 const router = createRouter({
