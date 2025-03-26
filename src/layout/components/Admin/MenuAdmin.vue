@@ -30,6 +30,26 @@
 						</a>
 					</router-link>
 				</li>
+				<li class="nav-item">
+					<router-link to="/admin/ql-bac-si">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-user-doctor" style="color: #FFD43B;"></i>
+							</div>
+							<div class="menu-title">QL Bác Sĩ</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
+					<router-link to="/admin/ql-khach-hang">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-users" style="color: #FFD43B;"></i>
+							</div>
+							<div class="menu-title">QL Khách Hàng</div>
+						</a>
+					</router-link>
+				</li>
+
+				
 			</ul>
 		</nav>
 	</div>

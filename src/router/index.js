@@ -11,6 +11,16 @@ const routes = [
         component: ()=>import('../components/Admin/QLLichHen/index.vue'),
         meta: {layout:'admin'},
     },
+    {
+        path : '/admin/ql-bac-si',
+        component: ()=>import('../components/Admin/QLBacSi/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/ql-khach-hang',
+        component: ()=>import('../components/Admin/QLKhachHang/index.vue'),
+        meta: {layout:'admin'},
+    },
 ]
 
 const router = createRouter({
