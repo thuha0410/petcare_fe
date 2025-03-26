@@ -11,6 +11,11 @@ const routes = [
         component: ()=>import('../components/Admin/QLLichHen/index.vue'),
         meta: {layout:'admin'},
     },
+    {
+        path : '/',
+        component: ()=>import('../components/Client/home-page/index.vue'),
+        meta: {layout:'client'},
+    },
     // {
     //     path : '/client/xem-sp',
     //     component: ()=>import('../components/Client/XemSP/index.vue'),
