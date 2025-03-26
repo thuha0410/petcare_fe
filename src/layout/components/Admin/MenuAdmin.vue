@@ -21,12 +21,33 @@
 						</a>
 					</router-link>
 				</li>
+
 				<li class="nav-item">
 					<router-link to="/khach-hang/bai-viet">
 						<a class="nav-link" href="/">
 							<div class="parent-icon"><i class="fa-solid fa-book"></i>
 							</div>
 							<div class="menu-title">QL Dịch Vụ</div>
+						</a>
+					</router-link>
+				</li>
+
+				<li class="nav-item">
+					<router-link to="/admin/ql-luong">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-book"></i>
+							</div>
+							<div class="menu-title">QL Lương</div>
+						</a>
+					</router-link>
+				</li>
+
+				<li class="nav-item">
+					<router-link to="/admin/ql-danh-gia">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-book"></i>
+							</div>
+							<div class="menu-title">QL Đánh giá</div>
 						</a>
 					</router-link>
 				</li>
