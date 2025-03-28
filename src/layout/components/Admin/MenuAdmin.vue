@@ -4,7 +4,7 @@
 		<nav class="navbar navbar-expand-xl w-100">
 			<ul class="navbar-nav justify-content-start flex-grow-1 gap-1">
 				<li class="nav-item">
-					<router-link to="/">
+					<router-link to="/admin/ql-lich-hen">
 						<a class="nav-link" href="/">
 							<div class="parent-icon"><i class="fa-solid fa-calendar-days"></i>
 							</div>
@@ -13,9 +13,9 @@
 					</router-link>
 				</li>
 				<li class="nav-item">
-					<router-link to="/">
+					<router-link to="/admin/ql-dich-vu">
 						<a class="nav-link" href="/">
-							<div class="parent-icon"><i class="fa-solid fa-book"></i>
+							<div class="parent-icon"><i class="fa-solid fa-ticket"></i>
 							</div>
 							<div class="menu-title">QL Dịch Vụ</div>
 						</a>
