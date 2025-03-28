@@ -13,7 +13,7 @@
                     <label for="">Tiền lương</label>
                     <input class="form-control" type="text">
                     <label for="">Ngày thanh toán</label>
-                    <input class="form-control" type="text">
+                    <input class="form-control" type="date">
                     <label for="">Tiền thưởng</label>
                     <input class="form-control" type="text">
                 </div>
@@ -26,6 +26,32 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4>LƯƠNG</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="text-center align-middle">#</th>
+                                    <th class="text-center align-middle">Mã lương</th>
+                                    <th class="text-center align-middle">Mã bác sĩ</th>
+                                    <th class="text-center align-middle">Tiền lương</th>
+                                    <th class="text-center align-middle">Ngày thanh toán</th>
+                                    <th class="text-center align-middle">Tiền thưởng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center align-middle">1</td>
+                                    <td class="text-center align-middle">L01</td>
+                                    <td class="text-center align-middle">BS01</td>
+                                    <td class="text-center align-middle">7.000.000</td>
+                                    <td class="text-center align-middle">01/02/2025</td>
+                                    <td class="text-center align-middle">500.000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
