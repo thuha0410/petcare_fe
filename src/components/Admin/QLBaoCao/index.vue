@@ -1,8 +1,10 @@
-<template>
+<template >
     <div class="row">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3>Quản lý báo cáo</h3>
+                <div>
+                    <h3>QUẢN LÝ BÁO CÁO</h3>
+                </div>
                 <div class="form-floating">
                     <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                         <option value="0">Toàn bộ</option>
@@ -32,6 +34,7 @@
                         <tr class="text-center">
                             <th>#</th>
                             <th>ID Hóa đơn</th>
+                            <th>Ngày xuất</th>
                             <th>Tổng tiền</th>
                             <th>Action</th>
                         </tr>
@@ -40,10 +43,9 @@
                         <tr class="text-center align-middle">
                             <th>1</th>
                             <td>HD01</td>
-                            <td>1.200.000VNĐ</td>
+                            <td>26/03/2025</td>
+                            <td>1.200.000vnđ</td>
                             <td class="text-center align-middle">
-                                <button data-bs-toggle="modal" data-bs-target="#sua"
-                                    class="btn btn-primary">Sửa</button>
                                 <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#xoa">Xóa</button>
                             </td>
                         </tr>
@@ -68,46 +70,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal fade" id="sua" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Them thong tin nhan vien</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <label class="mt-2" for="">ID hóa đơn</label>
-                                <input class="form-control" type="text">
-                                <label class="mt-2" for="">ID khách hàng</label>
-                                <input class="form-control" type="text">
-                                <label class="mt-2" for="">ID Lịch</label>
-                                <input class="form-control" type="text">
-                                <label class="mt-2" for="">ID thú cưng</label>
-                                <input class="form-control" type="text">
-                                <label class="mt-2" for="">Phương thức</label>
-                                <select class="form-control" name="" id="">
-                                    <option value="0">Cash</option>
-                                    <option value="1">Online banking</option>
-                                </select>
-                                <label class="mt-2" for="">Tổng tiền</label>
-                                <input class="form-control" type="text">
-                                <label class="mt-2" for="">Tình trạng</label>
-                                <select class="form-control" name="" id="">
-                                    <option value="0">Inactive</option>
-                                    <option value="1">Active</option>
-                                </select>
-
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button v-on:click="sua()" type="button" data-bs-dismiss="modal"
-                                    class="btn btn-primary">Update</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -116,4 +78,12 @@
 export default {
 }
 </script>
-<style></style>
+<style>
+    .custom-color {
+        color: #fff5e1;
+    }
+    .custom-bg {
+        background-color: #ff8a65; 
+        color: white;
+    }
+</style>

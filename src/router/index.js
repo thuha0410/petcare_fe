@@ -26,6 +26,16 @@ const routes = [
         component: ()=>import('../components/Client/home-page/index.vue'),
         meta: {layout:'client'},
     },
+    {
+        path : '/ttcn',
+        component: ()=>import('../components/Client/ThongTinCaNhan/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
+        path : '/danh-gia',
+        component: ()=>import('../components/Client/DanhGia/index.vue'),
+        meta: {layout:'client'},
+    },
 ]
 
 const router = createRouter({

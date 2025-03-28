@@ -11,9 +11,6 @@
                     <div class="text-center align middle">
                         <img style="height: 200px;" src="https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg" alt="">
                         
-                    </div>
-                    <div class="text-center align middle">
-                        <button class="btn btn-secondary">Change image</button> 
                     </div>  
                     <div class="row">
                         <div class="col-lg-6">
