@@ -54,8 +54,30 @@
             alt="user avatar"
           />
           <div class="user-info ps-3">
-            <p class="user-name mb-0">PET CARE</p>
-            <p class="designattion mb-0">Admin</p>
+            <p
+              class="user-name mb-0"
+              style="
+                font-size: 17px;
+                font-weight: bold;
+                font-family: 'Fredoka', sans-serif;
+                color: #F8F9FA;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+              "
+            >
+              PET CARE
+            </p>
+            <p
+              class="designattion mb-0"
+              style="
+                font-size: 13px;
+                font-weight: bold;
+                font-family: 'Fredoka', sans-serif;
+                color: #F8F9FA;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+              "
+            >
+              Admin
+            </p>
           </div>
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
