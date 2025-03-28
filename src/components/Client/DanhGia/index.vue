@@ -1,8 +1,6 @@
 <template>
     <div class="row">
-        <h3>
-            <div class="text-center align-middle">ĐÁNH GIÁ NGƯỜI DÙNG</div>
-        </h3>
+        <img src="C:\xampp\htdocs\petcare_fe\src\assets\image\background\bg1.png" alt="">
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-header">
@@ -88,7 +86,10 @@ export default {
 }
 
 .custom-bg {
-    background-color: #ff8a65;
+    background-color: #ffedd4;
     color: white;
+}
+body{
+    background-color: #ffedd4;
 }
 </style>
