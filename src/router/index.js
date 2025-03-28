@@ -21,6 +21,11 @@ const routes = [
         component: ()=>import('../components/Admin/QLKhachHang/index.vue'),
         meta: {layout:'admin'},
     },
+        {
+        path : '/',
+        component: ()=>import('../components/Client/home-page/index.vue'),
+        meta: {layout:'client'},
+    },
 ]
 
 const router = createRouter({
