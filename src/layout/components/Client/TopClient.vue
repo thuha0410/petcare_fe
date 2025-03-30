@@ -1,6 +1,6 @@
 <template>
     <nav class="navbar navbar-expand-lg fixed-top">
-        <div class="container">
+        <div class="container-fluid">
             <!-- Logo -->
             <img src="https://res.cloudinary.com/dd1p908gm/image/upload/v1743147212/website_one_box_can_0ae275e6-23ab-4bd5-9f22-d88841d55204_ex3zcl.svg"
                 style="transition: box-shadow 0.3s ease-in-out; width: 100px; height: auto;" alt="">
@@ -10,10 +10,19 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <ul class="navbar-nav me-3">
-                    <li class="nav-item"><a class="nav-link" href="#">HOME</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">INTRODUCE</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">PRODUCTS</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">SERVICES</a></li>
+                    <li class="nav-item me-2 text-nowrap">
+                        <router-link to="/">
+                            <a class="nav-link" href="#">Trang chủ</a>
+                        </router-link>
+                    </li>
+                    <li class="nav-item me-2 text-nowrap"><a class="nav-link" href="#">Giới thiệu</a></li>
+                    <li class="nav-item me-2 text-nowrap"><a class="nav-link" href="#">Sản phẩm</a></li>
+                    <li class="nav-item me-2 text-nowrap">
+                        <router-link to="/client/xem-dich-vu">
+                            <a class="nav-link" href="#">Dịch vụ</a>
+                        </router-link>
+                    </li>
+                    <li class="nav-item me-2 text-nowrap"><a class="nav-link" href="#">Đặt lịch</a></li>
 
 
                 </ul>
@@ -33,7 +42,7 @@
                 <a class="btn btn-custom ms-3 text-nowrap d-flex" href="#">SIGN UP</a>
 
             </div>
-
+    
         </div>
     </nav>
 </template>
