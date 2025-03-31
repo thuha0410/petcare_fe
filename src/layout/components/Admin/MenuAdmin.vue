@@ -45,7 +45,7 @@
 				<li class="nav-item">
 					<router-link to="/admin/ql-luong">
 						<a class="nav-link" href="/">
-							<div class="parent-icon"><i class="fa-solid fa-book"></i>
+							<div class="parent-icon"><i class="fa-solid fa-money-check-dollar" style="color: #FFD43B;"></i>
 							</div>
 							<div class="menu-title">QL Lương</div>
 						</a>
@@ -55,7 +55,7 @@
 				<li class="nav-item">
 					<router-link to="/admin/ql-danh-gia">
 						<a class="nav-link" href="/">
-							<div class="parent-icon"><i class="fa-solid fa-book"></i>
+							<div class="parent-icon"><i class="fa-regular fa-face-smile-beam" style="color: #FFD43B;"></i>
 							</div>
 							<div class="menu-title">QL Đánh giá</div>
 						</a>
