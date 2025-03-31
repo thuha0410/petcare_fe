@@ -37,6 +37,11 @@ const routes = [
         meta: {layout:'client'},
     },
     {
+        path : '/client/xem-dich-vu',
+        component: ()=>import('../components/Client/DichVu/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
         path : '/admin/ql-luong',
         component: ()=>import('../components/Admin/QLLuong/index.vue'),
         meta: {layout:'admin'},
