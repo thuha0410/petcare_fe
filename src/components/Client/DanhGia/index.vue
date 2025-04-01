@@ -1,6 +1,6 @@
 <template>
     <div class="row">
-        <img src="C:\xampp\htdocs\petcare_fe\src\assets\image\background\bg1.png" alt="">
+        <img src="" alt="">
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-header">
@@ -88,8 +88,5 @@ export default {
 .custom-bg {
     background-color: #ffedd4;
     color: white;
-}
-body{
-    background-color: #ffedd4;
 }
 </style>
