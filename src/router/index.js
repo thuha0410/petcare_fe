@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router"; // cài vue-router: npm install vue-router@next --save
+import { createRouter, createWebHistory } from "vue-router"; 
 
 const routes = [
     {
@@ -12,28 +12,8 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
-        path : '/admin/ql-thanh-toan',
-        component: ()=>import('../components/Admin/QLThanhToan/index.vue'),
-        meta: {layout:'admin'},
-    },
-    {
-        path : '/admin/ql-bao-cao',
-        component: ()=>import('../components/Admin/QLBaoCao/index.vue'),
-        meta: {layout:'admin'},
-    },
-    {
         path : '/',
         component: ()=>import('../components/Client/home-page/index.vue'),
-        meta: {layout:'client'},
-    },
-    {
-        path : '/ttcn',
-        component: ()=>import('../components/Client/ThongTinCaNhan/index.vue'),
-        meta: {layout:'client'},
-    },
-    {
-        path : '/danh-gia',
-        component: ()=>import('../components/Client/DanhGia/index.vue'),
         meta: {layout:'client'},
     },
 ]
