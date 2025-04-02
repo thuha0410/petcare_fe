@@ -12,9 +12,38 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
+        path : '/client/tiem-chung',
+        component: ()=>import('../components/Client/TiemChung/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
+        path : '/client/danh-gia',
+        component: ()=>import('../components/Client/DanhGia/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
+        path : '/client/thong-tin-ca-nhan',
+        component: ()=>import('../components/Client/ThongTinCaNhan/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
         path : '/',
         component: ()=>import('../components/Client/home-page/index.vue'),
         meta: {layout:'client'},
+    },
+    {
+        path : '/tttt',
+        component: ()=>import('../components/index.vue'),
+    },
+    {
+        path : '/tttr',
+        component: ()=>import('../components/index1.vue'),
+        meta: {layout:'client'}
+    },
+    {
+        path : '/ttty',
+        component: ()=>import('../components/index2.vue'),
+        meta: {layout:'client'}
     },
 ]
 
