@@ -37,9 +37,9 @@ const routes = [
         meta: {layout:'client'},
     },
     {
-        path : '/client/dang-nhap',
+        path : '/client/dang-nhap-dang-ky',
         component: ()=>import('../components/Client/DangNhap/index.vue'),
-        meta: {layout:'client'},
+        meta: {layout:'dangNhap'},
     },
     {
         path : '/client/xem-dich-vu',

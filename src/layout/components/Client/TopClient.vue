@@ -38,7 +38,9 @@
                 <!-- Nút CTA -->
                 <a class="nav-link ms-5" href="#"><i class="fa-solid fa-cart-plus  fa-2x"
                         style="color: #1171bb;"></i></a>
+                <router-link to="/client/dang-nhap-dang-ky">
                 <a class="btn btn-custom ms-3 text-nowrap d-flex" href="#">LOGIN</a>
+                </router-link>
                 <a class="btn btn-custom ms-3 text-nowrap d-flex" href="#">SIGN UP</a>
 
             </div>
