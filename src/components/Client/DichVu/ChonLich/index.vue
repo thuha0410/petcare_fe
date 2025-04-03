@@ -1,6 +1,6 @@
 <template>
     <div>
-        asdfghj
+        
     </div>
 </template>
 <script>
