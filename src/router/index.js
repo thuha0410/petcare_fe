@@ -12,8 +12,8 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
-        path : '/client/tiem-chung',
-        component: ()=>import('../components/Client/TiemChung/index.vue'),
+        path : '/client/cham-soc',
+        component: ()=>import('../components/Client/ChamSoc/index.vue'),
         meta: {layout:'client'},
     },
     {

@@ -8,23 +8,13 @@
                         src="https://res.cloudinary.com/dd1p908gm/image/upload/v1743239937/step3-dogimg_oqzgd5.avif"
                         alt="">
                     <h1 style="color: #1F365E; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;"
-                        class="ms-5 fw-bold">ĐẶT LỊCH KHÁM THEO
-                        BÁC SĨ</h1>
+                        class="ms-5 fw-bold">ĐẶT LỊCH CHĂM SÓC</h1>
                     <div style="font-size: medium; font-family: Poppins; color: black;" class="mt-4">
-
-                        <p><i class="fa-regular fa-circle-check" style="color: #35c051;"></i> Đặt khám theo giờ, không
-                            cần chờ lấy
-                            số thứ tự, chờ thanh toán </p>
-                        <p><i class="fa-regular fa-circle-check" style="color: #35c051;"></i> Chọn bác sĩ & thời gian
-                            linh hoạt</p>
-                        <p><i class="fa-regular fa-circle-check" style="color: #35c051;"></i> Tư vấn & khám bệnh chuyên
-                            sâu</p>
-                        <p><i class="fa-regular fa-circle-check" style="color: #35c051;"></i> Được hưởng chính sách khi
-                            đặt lịch </p>
-                        <p><i class="fa-regular fa-circle-check" style="color: #35c051;"></i> Chủ động chọn bác sĩ tin
-                            tưởng, đặt
-                            càng sớm, càng có cơ hội có số thứ tự thấp nhất, tránh
-                            hết số</p>
+                        <p><i class="fa-regular fa-circle-check" style="color: #35c051;"></i> Người dùng có thể đặt lịch hẹn chăm sóc thú cưng theo ngày và giờ mong muốn thông qua hệ thống trực tuyến.</p>
+                        <p><i class="fa-regular fa-circle-check" style="color: #35c051;"></i> Hệ thống cung cấp danh sách các dịch vụ như tắm, cắt tỉa lông, kiểm tra sức khỏe, và tiêm phòng để người dùng lựa chọn.</p>
+                        <p><i class="fa-regular fa-circle-check" style="color: #35c051;"></i> Sau khi đặt lịch, người dùng nhận được xác nhận qua email hoặc tin nhắn, kèm theo thông tin về nhân viên chăm sóc.</p>
+                        <p><i class="fa-regular fa-circle-check" style="color: #35c051;"></i> Hệ thống nhắc lịch tự động giúp chủ nuôi không bỏ lỡ buổi hẹn chăm sóc thú cưng.</p>
+                        <p><i class="fa-regular fa-circle-check" style="color: #35c051;"></i> Người dùng có thể linh hoạt thay đổi hoặc hủy lịch hẹn trực tiếp trên ứng dụng nếu có sự thay đổi kế hoạch.</p>
                         <hr>
                         <h3 class="text-center">Liên hệ để tư vấn thêm <i class="fa-solid fa-phone-volume"
                                 style="color: #22779b;"></i>
@@ -37,22 +27,25 @@
                     </div>
                 </span>
             </div>
-            <div class="col-lg-6">
-                <video src="https://cdn.shopify.com/videos/c/o/v/ea33e6f157184b949772f6aba2b75c6b.mp4"
-                    style=" border-radius: 10%; width:100%;height:100%;object-fit:var(--rof, inherit);object-position:var(--rop, inherit)"
+            <div class="col-lg-6 d-flex justify-content-center">
+                <video src="https://res.cloudinary.com/dcv3oj0fu/video/upload/v1743665207/uoqwhf6yyxj2v9oie0xn.mp4"
+                    style=" border-radius: 10%; width:50%;height:100%;object-fit:var(--rof, inherit);object-position:var(--rop, inherit)"
                     preload="metadata" autoplay="" muted="true" loop=""
-                    poster="https://cdn.shopify.com/s/files/1/0559/3713/8775/files/eg-d1a-hero-thumbnail_1.jpg?v=1740068403"
                     playsinline="" webkit-playsinline="" x5-playsinline=""></video>
             </div>
-</div>
+        </div>
         <br>
         <hr>
         <div class="row ">
             <div class="col-lg-2"></div>
             <div class="col-lg-8">
-                <h2 class="text-center fw-bold" style="color: darkblue;">Chọn dịch vụ tiêm chủng</h2>
-              <br>
-                <div class="card">
+                <h2 class="text-center fw-bold" style="color: darkblue;">Chọn dịch vụ chăm sóc</h2>
+                <br>
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Tìm kiếm..." aria-label="Search">
+                    <button class="btn btn-primary" type="submit">Tìm</button>
+                </form>
+                <div class="card mt-3">
                     <div class="row">
                         <div class="col-md-3 text-center">
                             <img style="width: 50%;" class="img-fluid"
@@ -61,7 +54,7 @@
                         </div>
                         <div class="col-md-9">
                             <div>
-                                <h5 class="card-title mt-3">Tiêm chủng Não mô cầu BC</h5>
+                                <h5 class="card-title mt-3">Tên loại dịch vụ chăm sóc</h5>
                                 <h6> Giá: <span>700.000</span>đ</h6>
                             </div>
                             <p class="card-text"><i style="color: #35c051;" class="fa-solid fa-shield-cat"></i> PetCare
