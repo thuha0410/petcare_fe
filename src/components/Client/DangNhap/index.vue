@@ -225,8 +225,9 @@ body {
   position: relative;
   z-index: 1;
   background: rgba(255, 255, 255, 0.6);
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 50px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  width: 450px;
 }
 </style>
