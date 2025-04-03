@@ -26,16 +26,7 @@ const routes = [
         component: ()=>import('../components/Client/home-page/index.vue'),
         meta: {layout:'client'},
     },
-    {
-        path : '/client/xem-sp',
-        component: ()=>import('../components/Client/XemSP/index1.vue'),
-        meta: {layout:'client'},
-    },
-    {
-        path : '/client/xem-chi-tiet-sp',
-        component: ()=>import('../components/Client/XemSP/index2.vue'),
-        meta: {layout:'client'},
-    },
+    
     {
         path : '/client/dang-nhap-dang-ky',
         component: ()=>import('../components/Client/DangNhap/index.vue'),
@@ -51,6 +42,12 @@ const routes = [
         component: ()=>import('../components/Client/DatLich/index.vue'),
         meta: {layout:'client'},
     },
+    {
+        path : '/client/bang-gia',
+        component: ()=>import('../components/Client/BangGia/index.vue'),
+        meta: {layout:'client'},
+    },
+    
     {
         path : '/client/chon-dich-vu',
         component: ()=>import('../components/Client/DichVu/ChonDichVu/index.vue'),

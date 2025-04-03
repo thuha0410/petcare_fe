@@ -147,4 +147,9 @@ export default {
 
 }
 </script>
-<style></style>
+<style>
+body {
+    background-color: #f5f7fa;
+    background:url( https://cityvet.vn/storage/general-1/br-1.png ) no-repeat;background-size: cover;
+}
+</style>
