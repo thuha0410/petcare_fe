@@ -57,6 +57,12 @@ const routes = [
         meta: {layout:'client'},
     },
     {
+        path : '/client/bang-gia',
+        component: ()=>import('../components/Client/BangGia/index.vue'),
+        meta: {layout:'client'},
+    },
+    
+    {
         path : '/client/chon-dich-vu',
         component: ()=>import('../components/Client/DichVu/ChonDichVu/index.vue'),
         meta: {layout:'client'},
