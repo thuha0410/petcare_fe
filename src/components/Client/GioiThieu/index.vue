@@ -11,7 +11,7 @@
                     alt="">
                 <router-link to="/client/xem-dich-vu">
                     <button type="button" class="btn btn-lg btn-outline-primary px-5 rounded-pill ms-5"><i
-                        class="fa-solid fa-paw" style="color: #3770d2;"></i> Khám phá ngay</button>
+                            class="fa-solid fa-paw" style="color: #3770d2;"></i> Khám phá ngay</button>
                 </router-link>
             </div>
             <div>
@@ -50,45 +50,54 @@
             </div>
         </div>
         <div class="hero">
-        <div class="hero-text">
-            <h1>Lịch Sử Phát Triển <i class="fa-solid fa-paw " style="color: #153874;"></i></h1>
-            <br>
-            <h4>Hành trình đồng hành cùng thú cưng của bạn</h4> <br>
-            <p>
-                Chúng tôi, Đức, Hà, Thảo, Ái và Đoàn, cùng nhau xây dựng trang web này với mong muốn tạo ra một không
-                gian trực tuyến đáng tin cậy, nơi những người yêu thú cưng có thể tìm thấy mọi thông tin và dịch vụ cần
-                thiết để chăm sóc tốt nhất cho những người bạn bốn chân của mình. Chúng tôi hiểu rằng thú cưng không chỉ
-                là động vật, mà còn là thành viên trong gia đình, và chúng xứng đáng nhận được sự quan tâm và chăm sóc
-                tận tình nhất.
+            <div class="hero-text">
+                <h1>Lịch Sử Phát Triển <i class="fa-solid fa-paw " style="color: #153874;"></i></h1>
                 <br>
+                <h4>Hành trình đồng hành cùng thú cưng của bạn</h4> <br>
+                <p>
+                    Chúng tôi, Đức, Hà, Thảo, Ái và Đoàn, cùng nhau xây dựng trang web này với mong muốn tạo ra một
+                    không
+                    gian trực tuyến đáng tin cậy, nơi những người yêu thú cưng có thể tìm thấy mọi thông tin và dịch vụ
+                    cần
+                    thiết để chăm sóc tốt nhất cho những người bạn bốn chân của mình. Chúng tôi hiểu rằng thú cưng không
+                    chỉ
+                    là động vật, mà còn là thành viên trong gia đình, và chúng xứng đáng nhận được sự quan tâm và chăm
+                    sóc
+                    tận tình nhất.
+                    <br>
+                    <br>
+                    Với sự đam mê và tâm huyết, chúng tôi cam kết mang đến những dịch vụ chất lượng cao, bao gồm:
+                    <br>
+                    <br>
+                    <strong class="text-primary">Chăm sóc thú cưng:</strong> Chúng tôi cung cấp các dịch vụ chăm sóc
+                    toàn diện, từ tắm rửa, cắt tỉa lông đến tư
+                    vấn dinh dưỡng, giúp thú cưng của bạn luôn khỏe mạnh và xinh đẹp. <br>
+                    <strong class="text-primary">Khám bệnh thú cưng:</strong> Đội ngũ bác sĩ thú y giàu kinh nghiệm của
+                    chúng tôi sẵn sàng thăm khám và điều trị
+                    mọi vấn đề sức khỏe của thú cưng, đảm bảo chúng luôn được bảo vệ tốt nhất. <br> <br>
+                    Chúng tôi tin rằng, với sự tận tâm và chuyên nghiệp của mình, chúng tôi có thể trở thành người bạn
+                    đồng
+                    hành đáng tin cậy của bạn trên hành trình chăm sóc thú cưng.
+                    <br>
+                    <br> Hãy để chúng tôi giúp bạn mang đến cho
+                    những người bạn bốn chân của mình một cuộc sống hạnh phúc và khỏe mạnh.
+                </p>
+                <img style="width: 30%;"
+                    src="https://cdn.shopify.com/s/files/1/0559/3713/8775/files/chewsolutions-dogimg-desktop.webp?v=1741973018"
+                    alt="">
+
+            </div>
+            <div>
+                <img src="https://cdn.shopify.com/s/files/1/0559/3713/8775/files/step2-dogimg.webp?v=1739995642&width=1800"
+                    alt="">
                 <br>
-                Với sự đam mê và tâm huyết, chúng tôi cam kết mang đến những dịch vụ chất lượng cao, bao gồm:
-                <br>
-                <br>
-                <strong class="text-primary">Chăm sóc thú cưng:</strong> Chúng tôi cung cấp các dịch vụ chăm sóc toàn diện, từ tắm rửa, cắt tỉa lông đến tư
-                vấn dinh dưỡng, giúp thú cưng của bạn luôn khỏe mạnh và xinh đẹp. <br> 
-                <strong class="text-primary" >Khám bệnh thú cưng:</strong> Đội ngũ bác sĩ thú y giàu kinh nghiệm của chúng tôi sẵn sàng thăm khám và điều trị
-                mọi vấn đề sức khỏe của thú cưng, đảm bảo chúng luôn được bảo vệ tốt nhất. <br> <br>
-                Chúng tôi tin rằng, với sự tận tâm và chuyên nghiệp của mình, chúng tôi có thể trở thành người bạn đồng
-                hành đáng tin cậy của bạn trên hành trình chăm sóc thú cưng.
-                <br>
-                <br> Hãy để chúng tôi giúp bạn mang đến cho
-                những người bạn bốn chân của mình một cuộc sống hạnh phúc và khỏe mạnh.
-            </p>
-            <img style="width: 30%;"
-                src="https://cdn.shopify.com/s/files/1/0559/3713/8775/files/chewsolutions-dogimg-desktop.webp?v=1741973018"
-                alt="">
-                
-        </div>
-        <div>
-            <img  src="https://cdn.shopify.com/s/files/1/0559/3713/8775/files/step2-dogimg.webp?v=1739995642&width=1800" alt="">
-            <br>
-            <img  src="https://cdn.shopify.com/s/files/1/0559/3713/8775/files/step1-dogimg.webp?v=1739995642&width=1800" alt="">
-           
+                <img src="https://cdn.shopify.com/s/files/1/0559/3713/8775/files/step1-dogimg.webp?v=1739995642&width=1800"
+                    alt="">
+
+            </div>
         </div>
     </div>
-    </div> 
-    
+
 </template>
 <script>
 export default {

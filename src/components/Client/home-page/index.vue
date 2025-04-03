@@ -41,8 +41,10 @@
                 </div>
             </router-link>
         </div>
+        
         <div class="col">
-            <div class="card card-hv radius-30" style="background-color: #e4edfb;">
+            <router-link to="/client/dat-lich-tiem-chung">
+                <div class="card card-hv radius-30" style="background-color: #e4edfb;">
                 <div class="card-body ">
                     <div class="text-center">
                         <div class="widgets-icons rounded-circle mx-auto bg-light-danger text-danger mb-3">
@@ -52,6 +54,7 @@
                     </div>
                 </div>
             </div>
+            </router-link>
         </div>
         <div class="col">
             <div class="card card-hv radius-30" style="background-color: #e4edfb;">
@@ -77,7 +80,8 @@
     <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-4">
         <!-- template bac si -->
         <div class="col">
-            <div class="card card-hv radius-15">
+            <router-link to="/client/xem-bs">
+                <div class="card card-hv radius-15">
                 <div class="card-body text-center">
                     <div class="p-4 border radius-15">
                         <img src="https://png.pngtree.com/png-clipart/20200224/original/pngtree-cute-dog-avatar-with-a-yellow-background-png-image_5205692.jpg"
@@ -94,6 +98,7 @@
                     </div>
                 </div>
             </div>
+            </router-link>
         </div>
         <div class="col">
             <div class="card card-hv radius-15">
