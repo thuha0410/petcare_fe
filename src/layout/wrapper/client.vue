@@ -2,7 +2,6 @@
     <div class="wrapper">
         <div class="header-wrapper">
             <TopClient></TopClient>
-            <MenuClient></MenuClient>
         </div>
         <div class="page-wrapper">
             <div class="page-content" style="display: flex;
@@ -25,11 +24,10 @@ import "../../assets/js/app.js";
 import "../../assets/js/pace.min.js";
 import TopClient from "../components/Client/TopClient.vue";
 import BotClient from "../components/Client/BotClient.vue";
-import MenuClient from "../components/Client/MenuClient.vue";
 export default {
     name: "app",
     components: {
-        TopClient, MenuClient, BotClient
+        TopClient, BotClient
     }
 }
 </script>
@@ -47,4 +45,5 @@ export default {
 @import "../../assets/css/semi-dark.css";
 @import "../../assets/css/header-colors.css";
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap');
 </style>
