@@ -28,16 +28,18 @@
         <div class="col">
         </div>
         <div class="col">
-            <div class="card card-hv radius-30" style="background-color: #e4edfb;">
-                <div class="card-body ">
-                    <div class="text-center">
-                        <div class="widgets-icons rounded-circle mx-auto bg-light-danger text-danger mb-3">
-                            <i class="fa-solid fa-user-doctor" style="color: #3066c5;"></i>
+            <router-link to="/client/dat-lich-theo-bac-si">
+                <div class="card card-hv radius-30" style="background-color: #e4edfb;">
+                    <div class="card-body ">
+                        <div class="text-center">
+                            <div class="widgets-icons rounded-circle mx-auto bg-light-danger text-danger mb-3">
+                                <i class="fa-solid fa-user-doctor" style="color: #3066c5;"></i>
+                            </div>
+                            <h5 class="">Đặt khám <br> theo bác sĩ</h5>
                         </div>
-                        <h5 class="">Đặt khám <br> theo bác sĩ</h5>
                     </div>
                 </div>
-            </div>
+            </router-link>
         </div>
         
         <div class="col">
@@ -341,27 +343,35 @@
                 <br>
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-4">
                     <div class="col">
-                        <img src="https://res.cloudinary.com/dd1p908gm/image/upload/v1743344121/grooming-yorkshire_mszpdr.webp" class="card-img-top" alt="...">
+                        <img src="https://res.cloudinary.com/dd1p908gm/image/upload/v1743344121/grooming-yorkshire_mszpdr.webp"
+                            class="card-img-top" alt="...">
                         <br><br><br>
-                        <p class="text-white text-center" style="font-size: 20px;">Thú cưng có trọng lượng dưới <span class="fw-bold">2kg</span></p>
+                        <p class="text-white text-center" style="font-size: 20px;">Thú cưng có trọng lượng dưới <span
+                                class="fw-bold">2kg</span></p>
                         <p class="fw-bold text-center text-white" style="font-size: 45px;">250K</p>
                     </div>
                     <div class="col">
-                        <img src="https://res.cloudinary.com/dd1p908gm/image/upload/v1743344121/grooming-pom_l1hwhn.jpg" class="card-img-top" alt="...">
+                        <img src="https://res.cloudinary.com/dd1p908gm/image/upload/v1743344121/grooming-pom_l1hwhn.jpg"
+                            class="card-img-top" alt="...">
                         <br><br><br>
-                        <p class="text-white text-center" style="font-size: 20px;">Thú cưng có trọng lượng dưới <span class="fw-bold">5kg</span></p>
+                        <p class="text-white text-center" style="font-size: 20px;">Thú cưng có trọng lượng dưới <span
+                                class="fw-bold">5kg</span></p>
                         <p class="fw-bold text-center text-white" style="font-size: 45px;">350K</p>
                     </div>
                     <div class="col">
-                        <img src="https://res.cloudinary.com/dd1p908gm/image/upload/v1743344120/grooming-poodle_ufiqo3.jpg" class="card-img-top" alt="...">
+                        <img src="https://res.cloudinary.com/dd1p908gm/image/upload/v1743344120/grooming-poodle_ufiqo3.jpg"
+                            class="card-img-top" alt="...">
                         <br><br><br>
-                        <p class="text-white text-center" style="font-size: 20px;">Thú cưng có trọng lượng dưới <span class="fw-bold">10kg</span></p>
+                        <p class="text-white text-center" style="font-size: 20px;">Thú cưng có trọng lượng dưới <span
+                                class="fw-bold">10kg</span></p>
                         <p class="fw-bold text-center text-white" style="font-size: 45px;">500K</p>
                     </div>
                     <div class="col">
-                        <img src="https://res.cloudinary.com/dd1p908gm/image/upload/v1743344120/grooming-husky_l9o0iy.jpg" class="card-img-top" alt="...">
+                        <img src="https://res.cloudinary.com/dd1p908gm/image/upload/v1743344120/grooming-husky_l9o0iy.jpg"
+                            class="card-img-top" alt="...">
                         <br><br><br>
-                        <p class="text-white text-center" style="font-size: 20px;">Thú cưng có trọng lượng dưới <span class="fw-bold">20kg</span></p>
+                        <p class="text-white text-center" style="font-size: 20px;">Thú cưng có trọng lượng dưới <span
+                                class="fw-bold">20kg</span></p>
                         <p class="fw-bold text-center text-white" style="font-size: 45px;">650K</p>
                     </div>
                 </div>
