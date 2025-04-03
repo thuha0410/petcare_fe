@@ -84,7 +84,6 @@
             <img  src="https://cdn.shopify.com/s/files/1/0559/3713/8775/files/step2-dogimg.webp?v=1739995642&width=1800" alt="">
             <br>
             <img  src="https://cdn.shopify.com/s/files/1/0559/3713/8775/files/step1-dogimg.webp?v=1739995642&width=1800" alt="">
-           
         </div>
     </div>
     </div> 
