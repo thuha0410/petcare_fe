@@ -43,7 +43,17 @@ const routes = [
     },
     {
         path : '/client/xem-dich-vu',
-        component: ()=>import('../components/Client/DichVu/index.vue'),
+        component: ()=>import('../components/Client/DichVu/Home/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
+        path : '/client/dat-lich',
+        component: ()=>import('../components/Client/DatLich/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
+        path : '/client/chon-dich-vu',
+        component: ()=>import('../components/Client/DichVu/ChonDichVu/index.vue'),
         meta: {layout:'client'},
     },
     {

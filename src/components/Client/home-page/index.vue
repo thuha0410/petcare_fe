@@ -363,7 +363,11 @@
             </div>
         </div>
     </div>
-    <a class="text-center" style="font-size: 25px;" href="">Xem thêm dịch vụ <i class="fa-solid fa-arrow-right"></i></a>
+    <router-link to="/client/xem-dich-vu">
+        <div class="text-center">
+            <a class="" style="font-size: 25px;" href="">Xem thêm dịch vụ <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </router-link>
 </template>
 <script>
 export default {
