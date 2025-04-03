@@ -1,5 +1,5 @@
 <template>
-    <div class="container mt-5">
+    <div class="container mt-5" >
         <div class="hero">
             <div class="hero-text">
                 <h1>Niềm Vui Cho Thú Cưng<br>Mỗi Ngày <i class="fa-solid fa-paw fa-bounce" style="color: #153874;"></i>
@@ -49,7 +49,7 @@
                 </div>
             </div>
         </div>
-        <div class="hero">
+        <div class="hero"  >
             <div class="hero-text">
                 <h1>Lịch Sử Phát Triển <i class="fa-solid fa-paw " style="color: #153874;"></i></h1>
                 <br>
@@ -82,17 +82,13 @@
                     <br> Hãy để chúng tôi giúp bạn mang đến cho
                     những người bạn bốn chân của mình một cuộc sống hạnh phúc và khỏe mạnh.
                 </p>
-                <img style="width: 30%;"
-                    src="https://cdn.shopify.com/s/files/1/0559/3713/8775/files/chewsolutions-dogimg-desktop.webp?v=1741973018"
-                    alt="">
+
 
             </div>
             <div>
-                <img src="https://cdn.shopify.com/s/files/1/0559/3713/8775/files/step2-dogimg.webp?v=1739995642&width=1800"
-                    alt="">
-                <br>
-                <img src="https://cdn.shopify.com/s/files/1/0559/3713/8775/files/step1-dogimg.webp?v=1739995642&width=1800"
-                    alt="">
+                <img class="w-100" src="https://cityvet.vn/storage/general-1/intro.png">
+
+
 
             </div>
         </div>
@@ -107,6 +103,8 @@ export default {
 <style>
 body {
     background-color: #f5f7fa;
+    background: url(https://cityvet.vn/storage/general-1/br-1.png ) no-repeat;
+    background-size: cover;
 }
 
 .hero {
