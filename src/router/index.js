@@ -12,16 +12,21 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
-        path : '/admin/ql-bac-si',
-        component: ()=>import('../components/Admin/QLBacSi/index.vue'),
-        meta: {layout:'admin'},
+        path : '/client/cham-soc',
+        component: ()=>import('../components/Client/ChamSoc/index.vue'),
+        meta: {layout:'client'},
     },
     {
-        path : '/admin/ql-khach-hang',
-        component: ()=>import('../components/Admin/QLKhachHang/index.vue'),
-        meta: {layout:'admin'},
+        path : '/client/danh-gia',
+        component: ()=>import('../components/Client/DanhGia/index.vue'),
+        meta: {layout:'client'},
     },
-        {
+    {
+        path : '/client/thong-tin-ca-nhan',
+        component: ()=>import('../components/Client/ThongTinCaNhan/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
         path : '/',
         component: ()=>import('../components/Client/home-page/index.vue'),
         meta: {layout:'client'},
@@ -32,14 +37,13 @@ const routes = [
         meta: {layout:'client'},
     },
     {
-        path : '/client/xem-sp',
-        component: ()=>import('../components/Client/XemSP/index1.vue'),
-        meta: {layout:'client'},
+        path : '/tttt',
+        component: ()=>import('../components/index.vue'),
     },
     {
-        path : '/client/xem-chi-tiet-sp',
-        component: ()=>import('../components/Client/XemSP/index2.vue'),
-        meta: {layout:'client'},
+        path : '/tttr',
+        component: ()=>import('../components/index1.vue'),
+        meta: {layout:'client'}
     },
     {
         path : '/client/dang-nhap-dang-ky',
@@ -47,6 +51,9 @@ const routes = [
         meta: {layout:'dangNhap'},
     },
     {
+        path : '/ttty',
+        component: ()=>import('../components/index2.vue'),
+        meta: {layout:'client'}
         path : '/client/xem-dich-vu',
         component: ()=>import('../components/Client/DichVu/Home/index.vue'),
         meta: {layout:'client'},
@@ -97,7 +104,6 @@ const routes = [
         component: ()=>import('../components/Admin/QLDanhGia/index.vue'),
         meta: {layout:'admin'},
     },
-
 ]
 
 const router = createRouter({
