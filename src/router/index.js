@@ -41,9 +41,24 @@ const routes = [
         meta: {layout:'client'}
     },
     {
-        path : '/ttty',
-        component: ()=>import('../components/index2.vue'),
-        meta: {layout:'client'}
+        path : '/client/dang-nhap-dang-ky',
+        component: ()=>import('../components/Client/DangNhap/index.vue'),
+        meta: {layout:'dangNhap'},
+    },
+    {
+        path : '/client/xem-dich-vu',
+        component: ()=>import('../components/Client/DichVu/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
+        path : '/admin/ql-luong',
+        component: ()=>import('../components/Admin/QLLuong/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/ql-danh-gia',
+        component: ()=>import('../components/Admin/QLDanhGia/index.vue'),
+        meta: {layout:'admin'},
     },
 ]
 
