@@ -4,7 +4,9 @@
             <!-- Logo -->
             <img src="https://res.cloudinary.com/dd1p908gm/image/upload/v1743147212/website_one_box_can_0ae275e6-23ab-4bd5-9f22-d88841d55204_ex3zcl.svg"
                 style="transition: box-shadow 0.3s ease-in-out; width: 100px; height: auto;" alt="">
-            <a class="navbar-brand me-5" href="#">PETCARE</a>
+            <router-link to="/">
+                <a class="navbar-brand me-5" href="#">PETCARE</a>
+            </router-link>
             <!-- Nút mở menu khi thu gọn -->
             <button class="navbar-toggler" type="button" @click="toggleNavbar">
                 <span class="navbar-toggler-icon"></span>
@@ -42,7 +44,9 @@
                 <!-- Nút CTA -->
                 <a class="nav-link ms-5" href="#"><i class="fa-solid fa-cart-plus  fa-2x"
                         style="color: #1171bb;"></i></a>
+                <router-link to="/client/dang-nhap-dang-ky">
                 <a class="btn btn-custom ms-3 text-nowrap d-flex" href="#">LOGIN</a>
+                </router-link>
                 <a class="btn btn-custom ms-3 text-nowrap d-flex" href="#">SIGN UP</a>
 
             </div>
