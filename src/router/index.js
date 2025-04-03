@@ -52,6 +52,11 @@ const routes = [
         meta: {layout:'client'},
     },
     {
+        path : '/client/dat-lich',
+        component: ()=>import('../components/Client'),
+        meta: {layout:'client'},
+    },
+    {
         path : '/admin/ql-luong',
         component: ()=>import('../components/Admin/QLLuong/index.vue'),
         meta: {layout:'admin'},

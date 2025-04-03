@@ -23,7 +23,11 @@
                             <a class="nav-link" href="#">Dịch vụ</a>
                         </router-link>
                     </li>
-                    <li class="nav-item me-2 text-nowrap"><a class="nav-link" href="#">Đặt lịch</a></li>
+                    <li class="nav-item me-2 text-nowrap">
+                        <router-link to="/client/dat-lich">
+                            <a class="nav-link" href="#">Đặt lịch</a>
+                        </router-link>
+                    </li>
 
 
                 </ul>
