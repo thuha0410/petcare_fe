@@ -17,7 +17,12 @@
                             <a class="nav-link" href="#">Trang chủ</a>
                         </router-link>
                     </li>
-                    <li class="nav-item me-2 text-nowrap"><a class="nav-link" href="#">Giới thiệu</a></li>
+                    <li class="nav-item me-2 text-nowrap">
+                        <router-link to="/client/gioi-thieu">
+                            <a class="nav-link" href="#">Giới thiệu</a>
+                        </router-link>  
+                    </li>
+                    <li class="nav-item me-2 text-nowrap"><a class="nav-link" href="#">Sản phẩm</a></li>
                     <li class="nav-item me-2 text-nowrap">
                         <router-link to="/client/xem-dich-vu">
                             <a class="nav-link" href="#">Dịch vụ</a>

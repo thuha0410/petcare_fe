@@ -1,5 +1,5 @@
 <template >
-    <div class="container-fluid bd-footer py-4 py-md-5 mt-5 bg-body-tertiary" style="background-color: gray;">
+    <div class="container-fluid bd-footer py-4 py-md-5 mt-5 bg-body-tertiary" style="background-color: #1F365E;">
         
         <div class="container">
             <span style="height: 3px; background: #fff; width: 100%;"></span>
