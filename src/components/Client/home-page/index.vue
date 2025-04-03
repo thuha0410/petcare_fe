@@ -16,59 +16,16 @@
             <p class="text-white">
                 Chăm sóc sức khỏe toàn diện cho thú cưng với đội ngũ bác sĩ giàu kinh nghiệm.
                 <br> Đặt lịch nhanh chóng, linh hoạt, không cần chờ đợi ✨
-            </p>
-            <button class="btn btn-primary btn-lg custom-btn">ĐẶT LỊCH NGAY</button>
+            </p> <router-link to="/client/dat-lich">
+                <button class="btn btn-primary btn-lg custom-btn">ĐẶT LỊCH NGAY</button>
+            </router-link>
+            
             <p class="text-white mt-2">Hãy bảo vệ sức khỏe thú cưng ngay hôm nay!</p>
         </div>
     </div>
     <!-- list bac si -->
     <br>
-    <!-- dat lich -->
-    <div class="row ">
-        <div class="col">
-        </div>
-        <div class="col">
-            <router-link to="/client/dat-lich-theo-bac-si">
-                <div class="card card-hv radius-30" style="background-color: #e4edfb;">
-                    <div class="card-body ">
-                        <div class="text-center">
-                            <div class="widgets-icons rounded-circle mx-auto bg-light-danger text-danger mb-3">
-                                <i class="fa-solid fa-user-doctor" style="color: #3066c5;"></i>
-                            </div>
-                            <h5 class="">Đặt khám <br> theo bác sĩ</h5>
-                        </div>
-                    </div>
-                </div>
-            </router-link>
-        </div>
-        <div class="col">
-            <div class="card card-hv radius-30" style="background-color: #e4edfb;">
-                <div class="card-body ">
-                    <div class="text-center">
-                        <div class="widgets-icons rounded-circle mx-auto bg-light-danger text-danger mb-3">
-                            <i class="fa-solid fa-syringe" style="color: #2d59a4;"></i>
-                        </div>
-                        <h5 class="">Đặt lịch <br> tiêm chủng</h5>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card card-hv radius-30" style="background-color: #e4edfb;">
-                <div class="card-body ">
-                    <div class="text-center">
-                        <div class="widgets-icons rounded-circle mx-auto bg-light-danger text-danger mb-3">
-                            <i class="fa-solid fa-paw" style="color: #648bce;"></i>
-                        </div>
-                        <h5 class="">Đặt lịch <br> chăm sóc </h5>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-
-        </div>
-    </div>
+   
     <br>
     <br><br>
     <!-- ds bac si -->
@@ -77,7 +34,8 @@
     <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-4">
         <!-- template bac si -->
         <div class="col">
-            <div class="card card-hv radius-15">
+            <router-link to="/client/xem-bs">
+                <div class="card card-hv radius-15">
                 <div class="card-body text-center">
                     <div class="p-4 border radius-15">
                         <img src="https://png.pngtree.com/png-clipart/20200224/original/pngtree-cute-dog-avatar-with-a-yellow-background-png-image_5205692.jpg"
@@ -94,6 +52,7 @@
                     </div>
                 </div>
             </div>
+            </router-link>
         </div>
         <div class="col">
             <div class="card card-hv radius-15">
