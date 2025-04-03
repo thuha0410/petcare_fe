@@ -71,6 +71,10 @@ export default {
 }
 </script>
 <style>
+body {
+    background-color: #f5f7fa;
+    background:url( https://cityvet.vn/storage/general-1/br-1.png ) no-repeat;background-size: cover;
+}
 .btn-hover:hover {
     background-color: #dc3545 !important;
     /* Đổi thành màu đỏ */

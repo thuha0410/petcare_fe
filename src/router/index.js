@@ -27,6 +27,11 @@ const routes = [
         meta: {layout:'client'},
     },
     {
+        path : '/client/xem-bs',
+        component: ()=>import('../components/Client/XemBS/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
         path : '/client/xem-sp',
         component: ()=>import('../components/Client/XemSP/index1.vue'),
         meta: {layout:'client'},
@@ -52,13 +57,34 @@ const routes = [
         meta: {layout:'client'},
     },
     {
+        path : '/client/bang-gia',
+        component: ()=>import('../components/Client/BangGia/index.vue'),
+        meta: {layout:'client'},
+    },
+    
+    {
         path : '/client/chon-dich-vu',
         component: ()=>import('../components/Client/DichVu/ChonDichVu/index.vue'),
         meta: {layout:'client'},
     },
     {
-        path : '/client/dat-lich',
-        component: ()=>import('../components/Client'),
+        path : '/client/dat-lich-theo-bac-si',
+        component: ()=>import('../components/Client/DatLichTheoBacSi/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
+        path : '/client/gioi-thieu',
+        component: ()=>import('../components/Client/GioiThieu/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
+        path : '/client/dat-lich-tiem-chung',
+        component: ()=>import('../components/Client/DatLichTiemChung/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
+        path : '/client/thanh-toan',
+        component: ()=>import('../components/Client/ThanhToan/index.vue'),
         meta: {layout:'client'},
     },
     {
