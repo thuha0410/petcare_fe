@@ -27,6 +27,11 @@ const routes = [
         meta: {layout:'client'},
     },
     {
+        path : '/client/xem-bs',
+        component: ()=>import('../components/Client/XemBS/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
         path : '/client/xem-sp',
         component: ()=>import('../components/Client/XemSP/index1.vue'),
         meta: {layout:'client'},
@@ -39,6 +44,11 @@ const routes = [
     {
         path : '/client/xem-dich-vu',
         component: ()=>import('../components/Client/DichVu/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
+        path : '/client/dat-lich-tiem-chung',
+        component: ()=>import('../components/Client/DatLichTiemChung/index.vue'),
         meta: {layout:'client'},
     },
     {
