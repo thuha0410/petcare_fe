@@ -96,6 +96,7 @@
                         </div>
                     </div>
                 </div>
+                
                 <div class="card p-3">
                     <div class="row align-items-center">
                         <!-- Cột hình ảnh -->

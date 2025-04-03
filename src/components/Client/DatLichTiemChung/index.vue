@@ -14,7 +14,8 @@
                     <p><i class="fa-regular fa-circle-check" style="color: #35c051;"></i> Được hưởng chính sách hoàn
                         tiền khi đặt lịch trên PetCare (đối với các csyt tư có áp dụng)</p>
                     <hr>
-                    <h3 class="text-center">Liên hệ để tư vấn thêm <i class="fa-solid fa-phone-volume" style="color: #22779b;"></i>
+                    <h3 class="text-center">Liên hệ để tư vấn thêm <i class="fa-solid fa-phone-volume"
+                            style="color: #22779b;"></i>
                         0905676869 hoặc <button class="btn btn-warning">Chat ngay</button> </h3>
                 </div>
             </span>
@@ -27,33 +28,55 @@
                 playsinline="" webkit-playsinline="" x5-playsinline=""></video>
         </div>
     </div>
-<br>
-    <div class="row">
+    <br>
+
+    <div class="row ">
         <div class="col-lg-2"></div>
         <div class="col-lg-8">
-            <h2 class="text-center fw-bold" style="color: darkblue;">Chọn dịch vụ tiêm chủng</h2>
-            <hr>
-            <div class="card">
-                <div class="row">
-                    <div class="col-md-3 text-center">
-                        <img style="width: 50%;" class="img-fluid"
-                            src="https://th.bing.com/th/id/OIP.DhYKv8K9HqzcSSiB-NIXBQHaHa?rs=1&pid=ImgDetMain" alt="">
+            <h2 class="text-center fw-bold" style="color: darkblue;">CHỌN DỊCH VỤ TIÊM CHỦNG</h2>
+            <br>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Tìm kiếm...." aria-label="Recipient's username"
+                    aria-describedby="button-addon2">
+                <button class="btn btn-outline-primary" type="button" id="button-addon2">Tìm kiếm</button>
+            </div>
+            <br>
+            <div class="card p-3">
+                <div class="row align-items-center">
+                    <!-- Cột hình ảnh -->
+                    <div class="col-lg-4 d-flex justify-content-center">
+                        <img src="https://th.bing.com/th/id/OIP.DhYKv8K9HqzcSSiB-NIXBQHaHa?rs=1&pid=ImgDetMain"
+                            class="img-fluid rounded" style="width: 70%; max-width: 150px;">
                     </div>
-                    <div class="col-md-9">
-                        <div>
-                            <h5 class="card-title mt-3">Tiêm chủng Não mô cầu BC</h5>
-                            <h6> Giá: <span>700.000</span>đ</h6>
+
+                    <!-- Cột nội dung -->
+                    <div class="col-lg-8">
+                        <h5 class="card-title text-primary mt-3">Tiêm chủng Não mô cầu BC</h5>
+                        <div class="row mt-2">
+                            <div class="col-md-3 fw-bold">Mô tả:</div>
+                            <div class="col-md-9">Vắc xin viêm màng não mô cầu BC là giải pháp phòng ngừa hiệu quả cho
+                                cả trẻ em và người lớn trước vi khuẩn gây bệnh não mô cầu tuýp B và C. Để bảo vệ sức
+                                khỏe gia đình một cách toàn diện, bạn nên tìm hiểu kỹ về lợi ích, lịch tiêm chủng cũng
+                                như các lưu ý quan trọng khi tiêm vắc xin này.</div>
                         </div>
-                        <p class="card-text"><i style="color: #35c051;" class="fa-solid fa-shield-cat"></i> PetCare</p>
-                        <div class="text-end me-3 mb-3"><button class="btn btn-info">Đặt ngay</button></div>
+                        <div class="row mt-2">
+                            <div class="col-md-3 fw-bold">Giá khám:</div>
+                            <div class="col-md-9 text-primary"><strong>150.000 đ</strong></div>
+                        </div>
+
+                        <!-- Icon + Button -->
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <p class="text-success m-0">
+                                <i class="fa-solid fa-shield-cat"></i> PetCare
+                            </p>
+                            <button class="btn btn-info text-white ">Đặt ngay</button>
+                        </div>
                     </div>
                 </div>
             </div>
-            
         </div>
         <div class="col-lg-2"></div>
     </div>
-
 </template>
 <script>
 export default {
