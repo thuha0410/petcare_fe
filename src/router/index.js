@@ -2,8 +2,43 @@ import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
     {
+        path : '/doctor',
+        component: ()=>import('../components/Doctor/XemLich/index.vue'),
+        meta: {layout:'doctor'},
+    },
+    {
         path : '/admin/ql-dich-vu',
         component: ()=>import('../components/Admin/QLDichVu/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/phan-quyen',
+        component: ()=>import('../components/Admin/PhanQuyen/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/ql-bac-si',
+        component: ()=>import('../components/Admin/QLBacSi/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/doanh-thu',
+        component: ()=>import('../components/Admin/QLBaoCao/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/hoa-don',
+        component: ()=>import('../components/Admin/QLThanhToan/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/ql-pet',
+        component: ()=>import('../components/Admin/QLPet/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/ql-khach-hang',
+        component: ()=>import('../components/Admin/QLKhachHang/index.vue'),
         meta: {layout:'admin'},
     },
     {
@@ -54,6 +89,8 @@ const routes = [
         path : '/ttty',
         component: ()=>import('../components/index2.vue'),
         meta: {layout:'client'}
+    },
+    {
         path : '/client/xem-dich-vu',
         component: ()=>import('../components/Client/DichVu/Home/index.vue'),
         meta: {layout:'client'},

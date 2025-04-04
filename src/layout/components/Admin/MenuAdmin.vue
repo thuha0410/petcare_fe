@@ -39,13 +39,19 @@
 						</a>
 					</router-link>
 				</li>
-
-				
-
+				<li class="nav-item">
+					<router-link to="/admin/ql-pet">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-paw"></i>
+							</div>
+							<div class="menu-title">QL Pet</div>
+						</a>
+					</router-link>
+				</li>
 				<li class="nav-item">
 					<router-link to="/admin/ql-luong">
 						<a class="nav-link" href="/">
-							<div class="parent-icon"><i class="fa-solid fa-money-check-dollar" style="color: #FFD43B;"></i>
+							<div class="parent-icon"><i class="fa-solid fa-money-check-dollar" ></i>
 							</div>
 							<div class="menu-title">QL Lương</div>
 						</a>
@@ -55,27 +61,54 @@
 				<li class="nav-item">
 					<router-link to="/admin/ql-danh-gia">
 						<a class="nav-link" href="/">
-							<div class="parent-icon"><i class="fa-regular fa-face-smile-beam" style="color: #FFD43B;"></i>
+							<div class="parent-icon"><i class="fa-regular fa-face-smile-beam" ></i>
 							</div>
 							<div class="menu-title">QL Đánh giá</div>
 						</a>
 					</router-link>
 				</li>
 				<li class="nav-item">
-					<router-link to="/admin/ql-thanh-toan">
+					<router-link to="/admin/ql-kho">
 						<a class="nav-link" href="/">
-							<div class="parent-icon"><i class="fa-solid fa-money-bill"></i>
+							<div class="parent-icon"><i class="fa-solid fa-house-medical"></i>
 							</div>
-							<div class="menu-title">Quản lý thanh toán</div>
+							<div class="menu-title">QL Kho</div>
 						</a>
 					</router-link>
 				</li>
 				<li class="nav-item">
-					<router-link to="/admin/ql-bao-cao">
+					<router-link to="/admin/ql-ncc">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-house-medical"></i>
+							</div>
+							<div class="menu-title">QL Nhà Cung Cấp</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
+					<router-link to="/admin/hoa-don">
 						<a class="nav-link" href="/">
 							<div class="parent-icon"><i class="fa-solid fa-flag-checkered"></i>
 							</div>
-							<div class="menu-title">Quản lý báo cáo</div>
+							<div class="menu-title">QL Hoá Đơn</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
+					<router-link to="/admin/doanh-thu">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-flag-checkered"></i>
+							</div>
+							<div class="menu-title">Doanh thu</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
+					<router-link to="/admin/phan-quyen">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-users" ></i>
+							</div>
+							<div class="menu-title">Phân Quyền</div>
 						</a>
 					</router-link>
 				</li>
