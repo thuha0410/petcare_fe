@@ -14,8 +14,8 @@
                         <tr class="text-center">
                             <th>#</th>
                             <th>ID Hóa đơn</th>
-                            <th>ID khách hàng</th>
-                            <th>ID lịch</th>
+                            <th>Tên khách hàng</th>
+                            <th>Ngày tháng</th>
                             <th>ID pet</th>
                             <th>Phương thức</th>
                             <th>Tổng tiền</th>
@@ -27,10 +27,10 @@
                         <tr class="text-center align-middle">
                                 <th>1</th>
                                 <td>HD01</td>
-                                <td>KH01</td>
-                                <td>CAL01</td>
+                                <td>Lê Văn Đạt</td>
+                                <td>2025-04-05</td>
                                 <td>PET01</td>
-                                <td>Cash</td>
+                                <td>Cash</td>   
                                 <td>1.200.000VNĐ</td>
                                 <td>
                                     <button class="btn btn-success">Inactive</button>
@@ -75,9 +75,9 @@
                             <div class="modal-body">
                                 <label class="mt-2" for="">ID hóa đơn</label>
                                 <input class="form-control" type="text">
-                                <label class="mt-2" for="">ID khách hàng</label>
+                                <label class="mt-2" for="">Tên khách hàng</label>
                                 <input class="form-control" type="text">
-                                <label class="mt-2" for="">ID Lịch</label>
+                                <label class="mt-2" for="">Ngày tháng</label>
                                 <input class="form-control" type="text">
                                 <label class="mt-2" for="">ID thú cưng</label>
                                 <input class="form-control" type="text">

@@ -49,6 +49,18 @@
 					</router-link>
 				</li>
 				<li class="nav-item">
+					<router-link to="/admin/ql-nha-cung-cap">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-truck"></i>
+							</div>
+							<div class="menu-title">QL Nhà Cung Cấp</div>
+						</a>
+					</router-link>
+				</li>
+
+				
+
+				<li class="nav-item">
 					<router-link to="/admin/ql-luong">
 						<a class="nav-link" href="/">
 							<div class="parent-icon"><i class="fa-solid fa-money-check-dollar" ></i>
@@ -91,6 +103,7 @@
 							<div class="parent-icon"><i class="fa-solid fa-flag-checkered"></i>
 							</div>
 							<div class="menu-title">QL Hoá Đơn</div>
+							<div class="menu-title">Quản lý hóa đơn</div>
 						</a>
 					</router-link>
 				</li>
