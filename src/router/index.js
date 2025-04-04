@@ -2,8 +2,43 @@ import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
     {
+        path : '/doctor',
+        component: ()=>import('../components/Doctor/XemLich/index.vue'),
+        meta: {layout:'doctor'},
+    },
+    {
         path : '/admin/ql-dich-vu',
         component: ()=>import('../components/Admin/QLDichVu/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/phan-quyen',
+        component: ()=>import('../components/Admin/PhanQuyen/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/ql-bac-si',
+        component: ()=>import('../components/Admin/QLBacSi/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/doanh-thu',
+        component: ()=>import('../components/Admin/QLBaoCao/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/hoa-don',
+        component: ()=>import('../components/Admin/QLThanhToan/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/ql-pet',
+        component: ()=>import('../components/Admin/QLPet/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/ql-khach-hang',
+        component: ()=>import('../components/Admin/QLKhachHang/index.vue'),
         meta: {layout:'admin'},
     },
     {
@@ -42,10 +77,17 @@ const routes = [
         meta: {layout:'client'},
     },
     {
+        path : '/client/xem-bs',
+        component: ()=>import('../components/Client/XemBS/index.vue'),
+        meta: {layout:'client'},
+    },
+    
+    {
         path : '/client/dang-nhap-dang-ky',
         component: ()=>import('../components/Client/DangNhap/index.vue'),
         meta: {layout:'dangNhap'},
     },
+    
     {
         path : '/admin/ql-luong',
         component: ()=>import('../components/Admin/QLLuong/index.vue'),
@@ -57,24 +99,20 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
-        path : '/admin/doanh-thu',
-        component: ()=>import('../components/Admin/QLBaoCao/index.vue'),
-        meta: {layout:'admin'},
+        path : '/client/bang-gia',
+        component: ()=>import('../components/Client/BangGia/index.vue'),
+        meta: {layout:'client'},
+    },
+    
+    {
+        path : '/client/chon-dich-vu',
+        component: ()=>import('../components/Client/DichVu/ChonDichVu/index.vue'),
+        meta: {layout:'client'},
     },
     {
-        path : '/admin/ql-danh-gia',
-        component: ()=>import('../components/Admin/QLDanhGia/index.vue'),
-        meta: {layout:'admin'},
-    },
-    {
-        path : '/doctor/xem-lich',
-        component: ()=>import('../components/Doctor/XemLich/index.vue'),
-        meta: {layout:'admin'},
-    },
-    {
-        path : '/doctor/xem-ho-so',
-        component: ()=>import('../components/Doctor/XemHoSo/index.vue'),
-        meta: {layout:'admin'},
+        path : '/ttty',
+        component: ()=>import('../components/index2.vue'),
+        meta: {layout:'client'}
     },
 ]
 

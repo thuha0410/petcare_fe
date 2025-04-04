@@ -10,6 +10,7 @@
                    <thead>
                        <tr class="text-center align-middle">
                            <th>#</th>
+                           <th>Mã khách hàng</th>
                            <th>Họ và tên</th>
                            <th>Số điện thoại</th>
                            <th>Email</th>
@@ -22,6 +23,7 @@
                        
                            <tr class="text-center align-middle">
                            <th>1</th>
+                           <td>KH 01</td>
                            <td>Lương Văn Aí</td>
                            <td>0934750153</td>
                            <td>tthello123@gmail.com</td>
@@ -63,6 +65,8 @@
                     <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">CẬP NHẬT THÔNG TIN</h1>
                 </div>
                 <div class="modal-body">
+                    <label for="">Mã khách hàng</label>
+                    <input class="form-control mb-2" type="text">
                     <label for="">Họ và tên</label>
                     <input class="form-control mb-2" type="text">
                     <label for="">Số điện thoại</label>
@@ -92,5 +96,7 @@ export default {
 }
 </script>
 <style >
-   
+   /* body{
+      background-color: #ffedd4
+   } */
 </style>

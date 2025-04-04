@@ -4,7 +4,7 @@
     rel="stylesheet"
   />
   <div class="topbar d-flex align-items-center">
-    <nav class="navbar navbar-expand" style="background-color: #ffd700">
+    <nav class="navbar navbar-expand" style="background-color: darkblue">
       <div class="topbar-logo-header">
         <div class="">
           <img

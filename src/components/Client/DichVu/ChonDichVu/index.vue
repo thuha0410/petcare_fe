@@ -142,6 +142,7 @@ export default {
 </script>
 
 <style>
+
 .btn-hover:hover {
     background-color: #dc3545 !important;
     border-color: #dc3545 !important;

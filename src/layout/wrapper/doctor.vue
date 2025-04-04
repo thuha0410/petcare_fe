@@ -1,19 +1,20 @@
 <template>
     <div class="wrapper">
-        <div class="header-wrapper">
-            <TopClient></TopClient>
-        </div>
-        <div class="page-wrapper">
-            <div class="page-content" style="display: flex;
-    flex-direction: column;
-    min-height: 100vh;">
-                <router-view> </router-view>
+		<div class="header-wrapper">
+            <TopAdmin></TopAdmin>
+            <MenuDocTor></MenuDocTor>
+		</div>
+		<div class="page-wrapper">
+			<div class="page-content">
+                <router-view></router-view>
             </div>
-        </div>
-        <BotClient></BotClient>
-    </div>
+		</div>
+        <BotAdmin></BotAdmin>
+	</div>
 </template>
 <script>
+import TopAdmin from "../components/Admin/TopAdmin.vue";
+import BotAdmin from "../components/Admin/BotAdmin.vue";
 import "../../assets/js/bootstrap.bundle.min.js";
 import "../../assets/js/jquery.min.js";
 import "../../assets/plugins/simplebar/js/simplebar.min.js";
@@ -22,12 +23,11 @@ import "../../assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js";
 import "../../assets/js/index.js";
 import "../../assets/js/app.js";
 import "../../assets/js/pace.min.js";
-import TopClient from "../components/Client/TopClient.vue";
-import BotClient from "../components/Client/BotClient.vue";
+import MenuDocTor from "../components/DocTor/MenuDocTor.vue";
 export default {
-    name: "app",
-    components: {
-        TopClient, BotClient
+    name        :   "app",
+    components  :   {
+        TopAdmin, MenuDocTor, BotAdmin
     }
 }
 </script>
@@ -45,5 +45,4 @@ export default {
 @import "../../assets/css/semi-dark.css";
 @import "../../assets/css/header-colors.css";
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap');
 </style>

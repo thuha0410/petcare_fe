@@ -2,7 +2,7 @@
     <div class="row">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3>Quản lý thanh toán</h3>
+                <h3>Quản lý hóa đơn</h3>
             </div>
             <div class="card-body">
                 <div class="input-group"><span class="input-group-text bg-transparent"><i
