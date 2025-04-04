@@ -12,26 +12,36 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <ul class="navbar-nav me-3">
-                    <li class="nav-item me-2 text-nowrap">
-                        <router-link to="/">
-                            <a class="nav-link" href="#">Trang chủ</a>
-                        </router-link>
-                    </li>
-                    <li class="nav-item me-2 text-nowrap">
-                        <router-link to="/client/gioi-thieu">
-                            <a class="nav-link" href="#">Giới thiệu</a>
-                        </router-link>  
-                    </li>
-                    <li class="nav-item me-2 text-nowrap"><a class="nav-link" href="#">Sản phẩm</a></li>
-                    <li class="nav-item me-2 text-nowrap">
-                        <router-link to="/client/xem-dich-vu">
-                            <a class="nav-link" href="#">Dịch vụ</a>
-                        </router-link>
-                    </li>
-                    <li class="nav-item me-2 text-nowrap"><a class="nav-link" href="#">Đặt lịch</a></li>
+                <li class="nav-item me-2 text-nowrap">
+                    <router-link to="/">
+                        <a class="nav-link" href="#">Trang chủ</a>
+                    </router-link>
+                </li>
+                <li class="nav-item me-2 text-nowrap">
+                    <router-link to="/client/gioi-thieu">
+                        <a class="nav-link" href="#">Giới thiệu</a>
+                    </router-link>
+                </li>
+                <li class="nav-item me-2 text-nowrap">
+                    <router-link to="/client/bang-gia">
+                        <a class="nav-link" href="#">Bảng giá</a>
+                    </router-link>
+                </li>
+                
+                <li class="nav-item me-2 text-nowrap">
+                    <router-link to="/client/xem-dich-vu">
+                        <a class="nav-link" href="#">Dịch vụ</a>
+                    </router-link>
+                </li>
+                <li class="nav-item me-2 text-nowrap">
+                    <router-link to="/client/dat-lich">
+                        <a class="nav-link" href="#">Đặt lịch</a>
+                    </router-link>
+                </li>
+               
 
 
-                </ul>
+            </ul>
             <!-- Menu chính -->
             <div class="collapse navbar-collapse" :class="{ 'show': isOpen }" id="navbarNav">
                 <!-- Thanh tìm kiếm ở giữa -->
@@ -40,18 +50,19 @@
                     <button class="btn btn-search btn-outline-primary bg-white" type="">🔍</button>
                 </form>
 
-                
+
                 <!-- Nút CTA -->
-                <a class="nav-link ms-5" href="#"><i class="fa-solid fa-cart-plus  fa-2x"
-                        style="color: #1171bb;"></i></a>
+                
                 <router-link to="/client/dang-nhap-dang-ky">
-                <a class="btn btn-custom ms-3 text-nowrap d-flex" href="#">LOGIN</a>
+                    <a class="btn btn-custom ms-3 text-nowrap d-flex" href="#">ĐĂNG NHẬP</a>
                 </router-link>
 
                 <a class="btn btn-custom ms-3 text-nowrap d-flex" href="#">SIGN UP</a>
+                </router-link>
                 
+
             </div>
-    
+
         </div>
     </nav>
 </template>

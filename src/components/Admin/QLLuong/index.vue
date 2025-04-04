@@ -2,13 +2,13 @@
     <div class="row">
         <div class="col-lg-4">
             <div class="card">
-                <div class="card-header bg-warning">
-                    <h4>NHẬP THÔNG TIN</h4>
+                <div class="card-header" style="background-color: darkblue;">
+                    <h4 class="text-white">NHẬP THÔNG TIN</h4>
                 </div>
                 <div class="card-body">
                     <label for="">Mã lương</label>
                     <input class="form-control" type="text">
-                    <label for="">Mã bác sĩ</label>
+                    <label for="">Tên bác sĩ</label>
                     <input class="form-control" type="text">
                     <label for="">Tiền lương</label>
                     <input class="form-control" type="text">
@@ -18,14 +18,14 @@
                     <input class="form-control" type="text">
                 </div>
                 <div class="card-footer text-end">
-                    <button class="btn btn-outline-warning">Hoàn tất</button>
+                    <button class="btn btn-outline-primary">Hoàn tất</button>
                 </div>
             </div>
         </div>
         <div class="col-lg-8">
             <div class="card">
-                <div class="card-header bg-warning">
-                    <h4>LƯƠNG</h4>
+                <div class="card-header" style="background-color: darkblue;">
+                    <h4 class="text-white">LƯƠNG</h4>
                 </div>
                 <div class="card-body">
                     <div class="table table-responsive">
@@ -34,7 +34,7 @@
                                 <tr>
                                     <th class="text-center align-middle">#</th>
                                     <th class="text-center align-middle">Mã lương</th>
-                                    <th class="text-center align-middle">Mã bác sĩ</th>
+                                    <th class="text-center align-middle">Tên bác sĩ</th>
                                     <th class="text-center align-middle">Tiền lương</th>
                                     <th class="text-center align-middle">Ngày thanh toán</th>
                                     <th class="text-center align-middle">Tiền thưởng</th>

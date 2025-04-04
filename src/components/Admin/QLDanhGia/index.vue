@@ -1,7 +1,8 @@
 <template>
     <div class="card">
-        <div class="card-header bg-warning d-flex justify-content-between">
-            <h4>ĐÁNH GIÁ</h4>
+        <div class="card-header d-flex justify-content-between" style="background-color: darkblue;">
+            
+            <h4 class="text-white mt-3">ĐÁNH GIÁ</h4>
             <div>
                 <div class="form-floating">
                     <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
