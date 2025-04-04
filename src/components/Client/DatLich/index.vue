@@ -42,7 +42,8 @@
             </router-link>
         </div>
         <div class="col">
-            <div class="card card-hv radius-30" style="background-color: #e4edfb;">
+            <router-link to="/client/dat-lich-tiem-chung">
+                <div class="card card-hv radius-30" style="background-color: #e4edfb;">
                 <div class="card-body ">
                     <div class="text-center">
                         <div class="widgets-icons rounded-circle mx-auto bg-light-danger text-danger mb-3">
@@ -52,9 +53,11 @@
                     </div>
                 </div>
             </div>
+            </router-link>
         </div>
         <div class="col">
-            <div class="card card-hv radius-30" style="  background-color: #e4edfb;">
+            <router-link to="">
+                <div class="card card-hv radius-30" style="  background-color: #e4edfb;">
                 <div class="card-body ">
                     <div class="text-center">
                         <div class="widgets-icons rounded-circle mx-auto bg-light-danger text-danger mb-3">
@@ -64,6 +67,7 @@
                     </div>
                 </div>
             </div>
+            </router-link>
         </div>
         <div class="col">
 

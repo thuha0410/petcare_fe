@@ -97,6 +97,11 @@ const routes = [
         component: ()=>import('../components/Admin/QLDanhGia/index.vue'),
         meta: {layout:'admin'},
     },
+    {
+        path : '/admin/ql-kho',
+        component: ()=>import('../components/Admin/QLKho/index.vue'),
+        meta: {layout:'admin'},
+    },
 
 ]
 
