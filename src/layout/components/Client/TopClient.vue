@@ -56,13 +56,7 @@
                 <router-link to="/client/dang-nhap-dang-ky">
                     <a class="btn btn-custom ms-3 text-nowrap d-flex" href="#">ĐĂNG NHẬP</a>
                 </router-link>
-                <router-link to="/client/dang-nhap-dang-ky">
-                <a class="btn btn-custom ms-3 text-nowrap d-flex" href="#">SIGN UP</a>
-                </router-link>
-                
-
             </div>
-
         </div>
     </nav>
 </template>
