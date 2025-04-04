@@ -62,16 +62,16 @@
 					</router-link>
 				</li>
 				<li class="nav-item">
-					<router-link to="/admin/ql-thanh-toan">
+					<router-link to="/admin/hoa-don">
 						<a class="nav-link" href="/">
 							<div class="parent-icon"><i class="fa-solid fa-money-bill"></i>
 							</div>
-							<div class="menu-title">Quản lý thanh toán</div>
+							<div class="menu-title">Quản lý hóa đơn</div>
 						</a>
 					</router-link>
 				</li>
 				<li class="nav-item">
-					<router-link to="/admin/ql-bao-cao">
+					<router-link to="/admin/doanh-thu">
 						<a class="nav-link" href="/">
 							<div class="parent-icon"><i class="fa-solid fa-flag-checkered"></i>
 							</div>

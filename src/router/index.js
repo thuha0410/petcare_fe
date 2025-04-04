@@ -52,6 +52,16 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
+        path : '/admin/hoa-don',
+        component: ()=>import('../components/Admin/QLThanhToan/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/doanh-thu',
+        component: ()=>import('../components/Admin/QLBaoCao/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
         path : '/admin/ql-danh-gia',
         component: ()=>import('../components/Admin/QLDanhGia/index.vue'),
         meta: {layout:'admin'},
