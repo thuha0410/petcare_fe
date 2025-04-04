@@ -32,7 +32,7 @@
           <input
             type="email"
             class="form-control"
-            placeholder="email của bạn"
+            placeholder="Email của bạn"
             aria-label="Username"
             aria-describedby="addon-wrapping"
           />
@@ -73,7 +73,7 @@
           <input
             type="email"
             class="form-control"
-            placeholder="email của bạn"
+            placeholder="Email của bạn"
             aria-label="Username"
             aria-describedby="addon-wrapping"
           />
