@@ -1,7 +1,7 @@
 <template >
  <div class="card">
        <div class="card-header">
-           <h3 class="text-black " style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif;">DANH SÁCH LỊCH HẸN</h3>
+           <h3 class="text-black " style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif;">DANH SÁCH DỊCH VỤ</h3>
        </div>
        <div class="card-body">
            <div class="table table-resposive">
