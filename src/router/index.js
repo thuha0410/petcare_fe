@@ -47,6 +47,21 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
+        path : '/admin/ql-khach-hang',
+        component: ()=>import('../components/Admin/QLKhachHang/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/ql-nha-cung-cap',
+        component: ()=>import('../components/Admin/QLNhaCungCap/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/ql-bac-si',
+        component: ()=>import('../components/Admin/QLBacSi/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
         path : '/client/cham-soc',
         component: ()=>import('../components/Client/ChamSoc/index.vue'),
         meta: {layout:'client'},
