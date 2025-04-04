@@ -42,20 +42,6 @@ const routes = [
         meta: {layout:'client'},
     },
     {
-        path : '/tttt',
-        component: ()=>import('../components/index.vue'),
-    },
-    {
-        path : '/tttr',
-        component: ()=>import('../components/index1.vue'),
-        meta: {layout:'client'}
-    },
-    {
-        path : '/ttty',
-        component: ()=>import('../components/index2.vue'),
-        meta: {layout:'client'}
-    },
-    {
         path : '/client/dang-nhap-dang-ky',
         component: ()=>import('../components/Client/DangNhap/index.vue'),
         meta: {layout:'dangNhap'},
@@ -68,6 +54,16 @@ const routes = [
     {
         path : '/admin/ql-danh-gia',
         component: ()=>import('../components/Admin/QLDanhGia/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/doctor/xem-lich',
+        component: ()=>import('../components/Doctor/XemLich/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/doctor/xem-ho-so',
+        component: ()=>import('../components/Doctor/XemHoSo/index.vue'),
         meta: {layout:'admin'},
     },
 ]

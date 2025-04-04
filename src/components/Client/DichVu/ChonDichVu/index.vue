@@ -20,7 +20,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Card Nội dung -->
         <div class="col-lg-7">
             <!-- Hiển thị lịch nếu showCalendar = true -->
