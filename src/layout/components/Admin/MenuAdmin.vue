@@ -39,6 +39,15 @@
 						</a>
 					</router-link>
 				</li>
+				<li class="nav-item">
+					<router-link to="/admin/ql-nha-cung-cap">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-truck"></i>
+							</div>
+							<div class="menu-title">QL Nhà Cung Cấp</div>
+						</a>
+					</router-link>
+				</li>
 
 				
 
@@ -58,6 +67,24 @@
 							<div class="parent-icon"><i class="fa-regular fa-face-smile-beam" style="color: #FFD43B;"></i>
 							</div>
 							<div class="menu-title">QL Đánh giá</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
+					<router-link to="/admin/ql-thanh-toan">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-money-bill"></i>
+							</div>
+							<div class="menu-title">Quản lý thanh toán</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
+					<router-link to="/admin/ql-bao-cao">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-flag-checkered"></i>
+							</div>
+							<div class="menu-title">Quản lý báo cáo</div>
 						</a>
 					</router-link>
 				</li>
