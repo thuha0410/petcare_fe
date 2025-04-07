@@ -57,6 +57,16 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
+        path : '/admin/ql-kho',
+        component: ()=>import('../components/Admin/QLKho/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/ql-danh-gia',
+        component: ()=>import('../components/Admin/QLDanhGia/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
         path : '/admin/ql-bac-si',
         component: ()=>import('../components/Admin/QLBacSi/index.vue'),
         meta: {layout:'admin'},
@@ -126,7 +136,7 @@ const routes = [
     },
     {
         path : '/ttty',
-        component: ()=>import('../components/index2.vue'),
+        component: ()=>import('../components/Client/XemSP/index2.vue'),
         meta: {layout:'client'}
     },
 ]
