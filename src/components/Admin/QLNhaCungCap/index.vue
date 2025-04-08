@@ -3,15 +3,16 @@
         <div class="card-header d-flex justify-content-between text-nowrap ">
             <h3 class="text-dark" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif;">QUẢN LÝ
                 NHÀ CUNG CẤP</h3>
-            
+
             <button data-bs-toggle="modal" data-bs-target="#them" type="button"
                 class="btn btn-outline-dark px-5 radius-30"><i class="bx bx-cloud-upload mr-1"></i>Thêm mới</button>
         </div>
         <div class="card-body ">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Tìm kiếm"
+                <input v-model="tim_kiem.noi_dung" type="text" class="form-control" placeholder="Tìm kiếm"
                     aria-label="Recipient's username" aria-describedby="button-addon2">
-                <button class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
+                <button v-on:click="timkiem()" class="btn btn-outline-secondary text-dark" type="button"
+                    id="button-addon2"><i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
             </div>
             <div class="table table-responsive">
                 <table class="table table-bordered">
@@ -27,24 +28,26 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <template v-for="(value,index) in list_nha_cung_cap" :key="index">
+                        <template v-for="(value, index) in list_nha_cung_cap" :key="index">
                             <tr class="text-center align-middle text-nowrap">
-                            <th>{{ index+1 }}</th>
-                            <td>{{ value.ten_ncc }}</td>
-                            <td>{{ value.email }}</td>
-                            <td>{{ value.sdt }}</td>
-                            <td>{{ value.dia_chi }}</td>
-                            <td>
-                                <button v-on:click="doiTT(value)" v-if="value.tinh_trang == 0" class="btn btn-warning">Ngưng hoạt động</button>
-                                <button v-on:click="doiTT(value)" v-else class="btn btn-success">Hoạt động</button>
-                            </td>
-                            <td>
-                                <button  v-on:click="Object.assign(update_nha_cung_cap, value)" data-bs-toggle="modal" data-bs-target="#capnhat" style="width:100px ;"
-                                    class="btn btn-primary me-2">Cập nhật</button>
-                                <button v-on:click="Object.assign(del_nha_cung_cap, value)" data-bs-toggle="modal" data-bs-target="#xoa" style="width:100px ;"
-                                    class="btn btn-danger">Xóa</button>
-                            </td>
-                        </tr>
+                                <th>{{ index + 1 }}</th>
+                                <td>{{ value.ten_ncc }}</td>
+                                <td>{{ value.email }}</td>
+                                <td>{{ value.sdt }}</td>
+                                <td>{{ value.dia_chi }}</td>
+                                <td>
+                                    <button v-on:click="doiTT(value)" v-if="value.tinh_trang == 0"
+                                        class="btn btn-warning">Ngưng hoạt động</button>
+                                    <button v-on:click="doiTT(value)" v-else class="btn btn-success">Hoạt động</button>
+                                </td>
+                                <td>
+                                    <button v-on:click="Object.assign(update_nha_cung_cap, value)"
+                                        data-bs-toggle="modal" data-bs-target="#capnhat" style="width:100px ;"
+                                        class="btn btn-primary me-2">Cập nhật</button>
+                                    <button v-on:click="Object.assign(del_nha_cung_cap, value)" data-bs-toggle="modal"
+                                        data-bs-target="#xoa" style="width:100px ;" class="btn btn-danger">Xóa</button>
+                                </td>
+                            </tr>
                         </template>
                     </tbody>
                 </table>
@@ -67,13 +70,14 @@
                     <label for="">Địa chỉ</label>
                     <input v-model="nha_cung_cap.dia_chi" class="form-control mb-2" type="text">
                     <label for="">Tình trạng</label>
-                    <select v-model="nha_cung_cap.tinh_trang"  class="form-control mb-2" name="" id="">
+                    <select v-model="nha_cung_cap.tinh_trang" class="form-control mb-2" name="" id="">
                         <option value="0">Ngưng hoạt động</option>
                         <option value="1">Hoạt động</option>
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button v-on:click="them()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Thêm</button>
+                    <button v-on:click="them()" type="button" class="btn btn-primary"
+                        data-bs-dismiss="modal">Thêm</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
@@ -111,13 +115,14 @@
                     <label for="">Địa chỉ</label>
                     <input v-model="update_nha_cung_cap.dia_chi" class="form-control mb-2" type="text">
                     <label for="">Tình trạng</label>
-                    <select v-model="update_nha_cung_cap.tinh_trang"  class="form-control mb-2" name="" id="">
+                    <select v-model="update_nha_cung_cap.tinh_trang" class="form-control mb-2" name="" id="">
                         <option value="0">Ngưng hoạt động</option>
                         <option value="1">Hoạt động</option>
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button v-on:click="update()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cập nhật</button>
+                    <button v-on:click="update()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cập
+                        nhật</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
@@ -145,12 +150,19 @@ export default {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
                         this.load()
+                        this.nha_cung_cap = {
+                            'ten_ncc': '',
+                            'email': '',
+                            'sdt': '',
+                            'dia_chi': '',
+                            'tinh_trang': '',
+                        }
                     } else {
                         toaster.error('Thêm mới thất bại')
                     }
                 })
-                .catch((res)=>{
-                    
+                .catch((res) => {
+
                     toaster.error(res.response.data.message);
                 })
         },
@@ -180,19 +192,26 @@ export default {
                 })
 
         },
-        doiTT(x){
+        doiTT(x) {
             axios
-            .post('http://127.0.0.1:8000/api/nha-cung-cap/doi-TT',x)
-            .then((res)=>{
-                if (res.data.status == true) {
-                    toaster.success(res.data.message)
+                .post('http://127.0.0.1:8000/api/nha-cung-cap/doi-TT', x)
+                .then((res) => {
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message)
                         this.load()
                     } else {
-                   toaster.error('Đổi trạng thái thất bại')
+                        toaster.error('Đổi trạng thái thất bại')
                     }
-                
-            })
-        }
+
+                })
+        },
+        timkiem() {
+            axios
+                .post('http://127.0.0.1:8000/api/nha-cung-cap/tim-kiem', this.tim_kiem)
+                .then((res) => {
+                    this.list_nha_cung_cap = res.data.data
+                })
+        },
     },
     mounted() {
         this.load()
@@ -200,15 +219,18 @@ export default {
     data() {
         return {
             nha_cung_cap: {
-            'ten_ncc':'',
-            'email':'',
-            'sdt':'',
-            'dia_chi':'',
-            'tinh_trang':'',
+                'ten_ncc': '',
+                'email': '',
+                'sdt': '',
+                'dia_chi': '',
+                'tinh_trang': '',
             },
             list_nha_cung_cap: [],
             del_nha_cung_cap: {},
-            update_nha_cung_cap: {}
+            update_nha_cung_cap: {},
+            tim_kiem: {
+                noi_dung: ''
+            }
         }
     },
 }
