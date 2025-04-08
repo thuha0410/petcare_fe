@@ -34,7 +34,8 @@
                                 <td class="text-center align-middle ">
                                     <img style="width: 100px;" :src="value.hinh_anh" alt="">
                                 </td>
-                                <td class="text-center align-middle">{{ value.phan_loai_kg === 1 ? 'Có' : 'Không' }}</td>
+                                <td class="text-center align-middle">{{ value.phan_loai_kg === 1 ? 'Có' : 'Không' }}
+                                </td>
                                 <td class="text-center align-middle">{{ value.can_nang_min }}</td>
                                 <td class="text-center align-middle">{{ value.can_nang_max }}</td>
                                 <td class="text-center align-middle">
@@ -44,14 +45,17 @@
                                 </td>
                                 <td class="text-center align-middle">{{ value.gia }}</td>
                                 <td class="text-center align-middle">
-                                    <button v-if="value.tinh_trang == 1" v-on:click="doi_trang_thai(value)"  class="btn btn-success me-2">Hoạt động</button>
-                                    <button v-else class="btn btn-warning " v-on:click="doi_trang_thai(value)" >Tạm dừng</button>
+                                    <button v-if="value.tinh_trang == 1" v-on:click="doi_trang_thai(value)"
+                                        class="btn btn-success me-2">Hoạt động</button>
+                                    <button v-else class="btn btn-warning " v-on:click="doi_trang_thai(value)">Tạm
+                                        dừng</button>
                                 </td>
                                 <td class="text-center align-middle">
-                                    <button v-on:click="Object.assign(update_dich_vu, value)" data-bs-toggle="modal" data-bs-target="#capnhat" style="width:100px;"
-                                        class="btn btn-primary me-2">Cập nhật</button>
-                                    <button v-on:click="Object.assign(del_dich_vu, value)" data-bs-toggle="modal" data-bs-target="#xoa" style="width:100px;"
-                                        class="btn btn-danger ">Xóa</button>
+                                    <button v-on:click="Object.assign(update_dich_vu, value)" data-bs-toggle="modal"
+                                        data-bs-target="#capnhat" style="width:100px;" class="btn btn-primary me-2">Cập
+                                        nhật</button>
+                                    <button v-on:click="Object.assign(del_dich_vu, value)" data-bs-toggle="modal"
+                                        data-bs-target="#xoa" style="width:100px;" class="btn btn-danger ">Xóa</button>
                                 </td>
                             </tr>
                         </template>
@@ -103,13 +107,16 @@
                     <input v-model="dich_vu.ten_dv" class="form-control mb-2" type="text">
                     <label for="">Hình ảnh</label>
                     <input v-model="dich_vu.hinh_anh" class="form-control mb-2" type="text">
-                    <label class="form-label">Có phân loại cân nặng?</label>
-                    <select class="form-select" v-model="dich_vu.phan_loai_kg"
-                        @change="hienCanNang = parseInt(phan_loai_kg) === 1">
-                        <option :value="1">Có</option>
-                        <option :value="0">Không</option>
-                    </select>
-                    <div class="row mb-3" v-if="hienCanNang">
+                    <div class="mb-3">
+                        <label class="form-label">Có phân loại cân nặng?</label>
+                        <select class="form-select" v-model.number="dich_vu.phan_loai_kg">
+                            <option :value="1">Có</option>
+                            <option :value="0">Không</option>
+                        </select>
+                    </div>
+
+                    <!-- Nếu chọn CÓ -->
+                    <div class="row mb-3" v-if="dich_vu.phan_loai_kg === 1">
                         <div class="col">
                             <label class="form-label">Cân nặng từ (kg)</label>
                             <input v-model="dich_vu.can_nang_min" type="number" class="form-control" step="0.1">
@@ -119,8 +126,9 @@
                             <input v-model="dich_vu.can_nang_max" type="number" class="form-control" step="0.1">
                         </div>
                     </div>
+
                     <!-- Nếu chọn KHÔNG -->
-                    <div v-else class="mb-3 text-muted fst-italic">
+                    <div class="mb-3 text-muted fst-italic" v-else>
                         Dịch vụ không phân loại theo cân nặng.
                     </div>
                     <label for="">Mô tả</label>
@@ -159,12 +167,14 @@
                     <label for="">Hình ảnh</label>
                     <input v-model="update_dich_vu.hinh_anh" class="form-control mb-2" type="text">
                     <label class="form-label">Có phân loại cân nặng?</label>
-                    <select class="form-select" v-model="update_dich_vu.phan_loai_kg"
-                        @change="hienCanNang = parseInt(phan_loai_kg) === 1">
+                    <select class="form-select" v-model.number="update_dich_vu.phan_loai_kg" @change="onPhanLoaiChange">
                         <option :value="1">Có</option>
                         <option :value="0">Không</option>
                     </select>
-                    <div class="row mb-3" v-if="hienCanNang">
+
+
+                    <!-- Nếu Có -->
+                    <div class="row mb-3" v-if="update_dich_vu.phan_loai_kg === 1">
                         <div class="col">
                             <label class="form-label">Cân nặng từ (kg)</label>
                             <input v-model="update_dich_vu.can_nang_min" type="number" class="form-control" step="0.1">
@@ -174,8 +184,9 @@
                             <input v-model="update_dich_vu.can_nang_max" type="number" class="form-control" step="0.1">
                         </div>
                     </div>
-                    <!-- Nếu chọn KHÔNG -->
-                    <div v-else class="mb-3 text-muted fst-italic">
+
+                    <!-- Nếu Không -->
+                    <div class="mb-3 text-muted fst-italic" v-else>
                         Dịch vụ không phân loại theo cân nặng.
                     </div>
                     <label for="">Mô tả</label>
@@ -195,7 +206,7 @@
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button v-on:click="capnhat()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cập
+                    <button v-on:click="update()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cập
                         nhật</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
@@ -213,6 +224,8 @@ export default {
         return {
             phan_loai_kg: 1,
             hienCanNang: true,
+            can_nang_min: '',
+            can_nang_max: '',
             dich_vu: {
                 "ten_dv": '',
                 'id_loaidv': '',
@@ -221,14 +234,24 @@ export default {
                 'hinh_anh': '',
                 'can_nang_min': '',
                 'can_nang_max': '',
-                'phan_loai_kg': '',
+                'phan_loai_kg': 1,
                 'tinh_trang': ''
             },
             list_dich_vu: [],
-            update_dich_vu: {},
+            update_dich_vu: {
+                ten_dv: '',
+                id_loaidv: '',
+                mo_ta: '',
+                gia: '',
+                hinh_anh: '',
+                can_nang_min: '',
+                can_nang_max: '',
+                phan_loai_kg: 1, // Mặc định là "Có"
+                tinh_trang: ''
+            },
             del_dich_vu: {},
             list_loai_dv: [],
-            chi_tiet_dv:{}
+            chi_tiet_dv: {}
         }
     },
     mounted() {
@@ -236,6 +259,12 @@ export default {
             this.loaddataLoaiDV()
     },
     methods: {
+        onPhanLoaiChange() {
+            if (this.update_dich_vu.phan_loai_kg === 0) {
+                this.update_dich_vu.can_nang_min = '';
+                this.update_dich_vu.can_nang_max = '';
+            }
+        },
         them() {
             axios
                 .post('http://127.0.0.1:8000/api/dich-vu/them', this.dich_vu)
@@ -243,37 +272,48 @@ export default {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
                         this.loaddata()
+                        this.dich_vu = {
+                            "ten_dv": '',
+                            'id_loaidv': '',
+                            'mo_ta': '',
+                            'gia': '',
+                            'hinh_anh': '',
+                            'can_nang_min': '',
+                            'can_nang_max': '',
+                            'phan_loai_kg': '',
+                            'tinh_trang': ''
+                        }
                     } else {
                         toaster.error('Thêm mới dịch vụ thất bại')
                     }
                 })
-                .catch((res)=>{
+                .catch((res) => {
                     toaster.error(res.response.data.message);
                 })
 
         },
         xoa() {
             axios
-                .post("http://127.0.0.1:8000/api/dich-vu/xoa", this.del_dich_vu)
+                .post("http://127.0.0.1:8000/api/dich-vu/del", this.del_dich_vu)
                 .then((res) => {
-                    if(res.data.status==true){
+                    if (res.data.status == true) {
                         toaster.success(res.data.message);
                         this.loaddata();
-                    } else{
+                    } else {
                         toaster.error("Xóa dịch vụ thất bại!")
                     }
-                    
+
                 });
         },
-        
+
         update() {
             axios
                 .post("http://127.0.0.1:8000/api/dich-vu/update", this.update_dich_vu)
                 .then((res) => {
-                    if(res.data.status==true){
+                    if (res.data.status == true) {
                         toaster.success(res.data.message);
                         this.loaddata();
-                    } else{
+                    } else {
                         toaster.error("Cập nhật dịch vụ thất bại!")
                     }
                 });
@@ -282,10 +322,10 @@ export default {
             axios
                 .post("http://127.0.0.1:8000/api/dich-vu/doi", x)
                 .then((res) => {
-                    if(res.data.status==true){
+                    if (res.data.status == true) {
                         toaster.success(res.data.message);
                         this.loaddata();
-                    } else{
+                    } else {
                         toaster.error("Đổi trạng thái dịch vụ thất bại!")
                     }
                 });
