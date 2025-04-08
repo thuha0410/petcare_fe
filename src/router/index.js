@@ -106,7 +106,6 @@ const routes = [
         component: ()=>import('../components/Client/XemBS/index.vue'),
         meta: {layout:'client'},
     },
-    
     {
         path : '/client/dang-nhap-dang-ky',
         component: ()=>import('../components/Client/DangNhap/index.vue'),
@@ -128,7 +127,6 @@ const routes = [
         component: ()=>import('../components/Client/BangGia/index.vue'),
         meta: {layout:'client'},
     },
-    
     {
         path : '/client/chon-dich-vu',
         component: ()=>import('../components/Client/DichVu/ChonDichVu/index.vue'),
