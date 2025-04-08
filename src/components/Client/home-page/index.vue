@@ -112,7 +112,7 @@
             </div>
         </div>
     </div>
-    <a class="text-center hover:text-dark" style="font-size: 25px;" href="">Xem thêm >></a>
+    <a class="text-center hover:text-dark" style="font-size: 25px;" href="/client/dat-lich-theo-bac-si">Xem thêm >></a>
     <br>
     <br>
     <!-- banner -->

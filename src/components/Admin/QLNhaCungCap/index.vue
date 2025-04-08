@@ -1,7 +1,9 @@
 <template>
     <div class="card">
-        <div class="card-header d-flex justify-content-between ">
-            <h3 class="text-dark" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif;" >QUẢN LÝ NHÀ CUNG CẤP</h3>
+        <div class="card-header d-flex justify-content-between text-nowrap ">
+            <h3 class="text-dark" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif;">QUẢN LÝ
+                NHÀ CUNG CẤP</h3>
+            
             <button data-bs-toggle="modal" data-bs-target="#them" type="button"
                 class="btn btn-outline-dark px-5 radius-30"><i class="bx bx-cloud-upload mr-1"></i>Thêm mới</button>
         </div>
