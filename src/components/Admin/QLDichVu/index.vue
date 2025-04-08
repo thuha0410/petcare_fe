@@ -240,27 +240,29 @@ export default {
             axios
                 .post('http://127.0.0.1:8000/api/dich-vu/them', this.dich_vu)
                 .then((res) => {
-                    toaster.success(res.data.message);
-                    this.loaddata();
-                    this.dich_vu = {
-                        "ten_dv": '',
-                        'id_loaidv': '',
-                        'mo_ta': '',
-                        'gia': '',
-                        'hinh_anh': '',
-                        'can_nang_min': '',
-                        'can_nang_max': '',
-                        'phan_loai_kg': '',
-                        'tinh_trang': ''
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message)
+                        this.loaddata()
+                    } else {
+                        toaster.error('Thêm mới dịch vụ thất bại')
                     }
-                });
+                })
+                .catch((res)=>{
+                    toaster.error(res.response.data.message);
+                })
+
         },
         xoa() {
             axios
                 .post("http://127.0.0.1:8000/api/dich-vu/xoa", this.del_dich_vu)
                 .then((res) => {
-                    toaster.error(res.data.message);
-                    this.loaddata();
+                    if(res.data.status==true){
+                        toaster.success(res.data.message);
+                        this.loaddata();
+                    } else{
+                        toaster.error("Xóa dịch vụ thất bại!")
+                    }
+                    
                 });
         },
         
@@ -268,16 +270,24 @@ export default {
             axios
                 .post("http://127.0.0.1:8000/api/dich-vu/update", this.update_dich_vu)
                 .then((res) => {
-                    toaster.success(res.data.message);
-                    this.loaddata();
+                    if(res.data.status==true){
+                        toaster.success(res.data.message);
+                        this.loaddata();
+                    } else{
+                        toaster.error("Cập nhật dịch vụ thất bại!")
+                    }
                 });
         },
         doi_trang_thai(x) {
             axios
                 .post("http://127.0.0.1:8000/api/dich-vu/doi", x)
                 .then((res) => {
-                    toaster.error(res.data.message);
-                    this.loaddata();
+                    if(res.data.status==true){
+                        toaster.success(res.data.message);
+                        this.loaddata();
+                    } else{
+                        toaster.error("Đổi trạng thái dịch vụ thất bại!")
+                    }
                 });
         },
         loaddata() {
