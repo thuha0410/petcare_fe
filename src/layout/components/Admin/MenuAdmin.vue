@@ -89,21 +89,11 @@
 					</router-link>
 				</li>
 				<li class="nav-item">
-					<router-link to="/admin/ql-ncc">
-						<a class="nav-link" href="/">
-							<div class="parent-icon"><i class="fa-solid fa-house-medical"></i>
-							</div>
-							<div class="menu-title">QL Nhà Cung Cấp</div>
-						</a>
-					</router-link>
-				</li>
-				<li class="nav-item">
 					<router-link to="/admin/hoa-don">
 						<a class="nav-link" href="/">
 							<div class="parent-icon"><i class="fa-solid fa-flag-checkered"></i>
 							</div>
 							<div class="menu-title">QL Hoá Đơn</div>
-							<div class="menu-title">Quản lý hóa đơn</div>
 						</a>
 					</router-link>
 				</li>

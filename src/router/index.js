@@ -12,6 +12,11 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
+        path : '/admin/ql-danh-gia',
+        component: ()=>import('../components/Admin/QLDanhGia/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
         path : '/admin/phan-quyen',
         component: ()=>import('../components/Admin/PhanQuyen/index.vue'),
         meta: {layout:'admin'},
@@ -19,6 +24,11 @@ const routes = [
     {
         path : '/admin/ql-bac-si',
         component: ()=>import('../components/Admin/QLBacSi/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/ql-kho',
+        component: ()=>import('../components/Admin/QLKho/index.vue'),
         meta: {layout:'admin'},
     },
     {
@@ -125,9 +135,14 @@ const routes = [
         meta: {layout:'client'},
     },
     {
-        path : '/ttty',
-        component: ()=>import('../components/Client/XemSP/index2.vue'),
-        meta: {layout:'client'}
+        path : '/doctor/xem-ho-so-benh-an',
+        component: ()=>import('../components/Doctor/XemHoSo/index.vue'),
+        meta: {layout:'doctor'}
+    },
+    {
+        path : '/doctor/xem-lich',
+        component: ()=>import('../components/Doctor/XemLich/index.vue'),
+        meta: {layout:'doctor'}
     },
 ]
 

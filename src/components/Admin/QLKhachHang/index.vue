@@ -5,6 +5,11 @@
            <h3 class="text-black " style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif;">DANH SÁCH KHÁCH HÀNG</h3>
        </div>
        <div class="card-body">
+        <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Tìm kiếm"
+                    aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
+            </div>
            <div class="table table-resposive">
                <table class="table table-bordered">
                    <thead>
