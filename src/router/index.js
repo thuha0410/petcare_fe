@@ -12,6 +12,11 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
+        path : '/admin/ql-loai-dich-vu',
+        component: ()=>import('../components/Admin/LoaiDichVu/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
         path : '/admin/phan-quyen',
         component: ()=>import('../components/Admin/PhanQuyen/index.vue'),
         meta: {layout:'admin'},
