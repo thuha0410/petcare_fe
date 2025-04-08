@@ -1,11 +1,18 @@
 <template>
     <div class="card">
-        <div class="card-header d-flex justify-content-between ">
-            <h3 class="text-dark" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif;" >QUẢN LÝ NHÀ CUNG CẤP</h3>
+        <div class="card-header d-flex justify-content-between text-nowrap ">
+            <h3 class="text-dark" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif;">QUẢN LÝ
+                NHÀ CUNG CẤP</h3>
+            
             <button data-bs-toggle="modal" data-bs-target="#them" type="button"
                 class="btn btn-outline-dark px-5 radius-30"><i class="bx bx-cloud-upload mr-1"></i>Thêm mới</button>
         </div>
         <div class="card-body ">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Tìm kiếm"
+                    aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i> Tìm</button>
+            </div>
             <div class="table table-responsive">
                 <table class="table table-bordered">
                     <thead>

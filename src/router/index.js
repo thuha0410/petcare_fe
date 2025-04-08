@@ -67,6 +67,31 @@ const routes = [
         meta: {layout:'client'},
     },
     {
+        path : '/client/dat-lich',
+        component: ()=>import('../components/Client/DatLich/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
+        path : '/client/dat-lich-theo-bac-si',
+        component: ()=>import('../components/Client/DatLichTheoBacSi/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
+        path : '/client/dat-lich-tiem-chung',
+        component: ()=>import('../components/Client/DatLichTiemChung/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
+        path : '/client/dat-lich-cham-soc',
+        component: ()=>import('../components/Client/ChamSoc/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
+        path : '/client/gioi-thieu',
+        component: ()=>import('../components/Client/GioiThieu/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
         path : '/client/danh-gia',
         component: ()=>import('../components/Client/DanhGia/index.vue'),
         meta: {layout:'client'},
