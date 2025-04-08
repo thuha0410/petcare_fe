@@ -21,21 +21,23 @@
                     <tbody>
                         <template v-for="(value, index) in list_loai_dv" :key="index">
                             <tr>
-                            <th class="text-center align-middle">{{ index+1 }}</th>
-                            <td class="text-center align-middle">{{value.ten_loaidv}}</td>
-                            <td class="text-center align-middle">
-                                <span data-bs-toggle="modal" data-bs-target="#mota"><i
-                                        class="fa-solid fa-2x fa-circle-exclamation" v-on:click="Object.assign(chi_tiet_loai_dv, value)"></i></span>
-                            </td>
-                            <td class="text-center align-middle">
-                                <button v-on:click="Object.assign(update_loai_dv, value)" data-bs-toggle="modal" data-bs-target="#capnhat" style="width:100px;"
-                                    class="btn btn-primary me-2">Cập nhật</button>
-                                <button v-on:click="Object.assign(del_loai_dv, value)" data-bs-toggle="modal" data-bs-target="#xoa" style="width:100px;"
-                                    class="btn btn-danger ">Xóa</button>
-                            </td>
-                        </tr>
+                                <th class="text-center align-middle">{{ index + 1 }}</th>
+                                <td class="text-center align-middle">{{ value.ten_loaidv }}</td>
+                                <td class="text-center align-middle">
+                                    <span data-bs-toggle="modal" data-bs-target="#mota"><i
+                                            class="fa-solid fa-2x fa-circle-exclamation"
+                                            v-on:click="Object.assign(chi_tiet_loai_dv, value)"></i></span>
+                                </td>
+                                <td class="text-center align-middle">
+                                    <button v-on:click="Object.assign(update_loai_dv, value)" data-bs-toggle="modal"
+                                        data-bs-target="#capnhat" style="width:100px;" class="btn btn-primary me-2">Cập
+                                        nhật</button>
+                                    <button v-on:click="Object.assign(del_loai_dv, value)" data-bs-toggle="modal"
+                                        data-bs-target="#xoa" style="width:100px;" class="btn btn-danger ">Xóa</button>
+                                </td>
+                            </tr>
                         </template>
-                        
+
                     </tbody>
                 </table>
             </div>
@@ -69,8 +71,8 @@
                     <label for="">Tên loại dịch vụ</label>
                     <input v-model="loai_dv.ten_loaidv" class="form-control mb-2" type="text">
                     <label for="">Mô tả</label>
-                    <textarea v-model="loai_dv.mo_ta" class="form-control" placeholder="Nhập mô tả dịch vụ..." name="" id=""
-                        rows="3"></textarea>
+                    <textarea v-model="loai_dv.mo_ta" class="form-control" placeholder="Nhập mô tả dịch vụ..." name=""
+                        id="" rows="3"></textarea>
                 </div>
                 <div class="modal-footer">
                     <button v-on:click="them()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Thêm
@@ -107,8 +109,8 @@
                     <label for="">Tên dịch vụ</label>
                     <input v-model="update_loai_dv.ten_loaidv" class="form-control mb-2" type="text">
                     <label for="">Mô tả</label>
-                    <textarea v-model="update_loai_dv.mo_ta" class="form-control" placeholder="Nhập mô tả dịch vụ..." name="" id=""
-                        rows="3"></textarea>
+                    <textarea v-model="update_loai_dv.mo_ta" class="form-control" placeholder="Nhập mô tả dịch vụ..."
+                        name="" id="" rows="3"></textarea>
                 </div>
                 <div class="modal-footer">
                     <button v-on:click="update()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cập
@@ -133,7 +135,7 @@ export default {
             },
             update_loai_dv: {},
             del_loai_dv: {},
-            chi_tiet_loai_dv:{}
+            chi_tiet_loai_dv: {}
         }
     },
     mounted() {
@@ -144,28 +146,43 @@ export default {
             axios
                 .post('http://127.0.0.1:8000/api/loai-dich-vu/them', this.loai_dv)
                 .then((res) => {
-                    toaster.success(res.data.message);
-                    this.loaddata();
-                    this.loai_dv = {
-                        'ten_loaidv': '',
-                        'mo_ta': '',
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message)
+                        this.loaddata()
+                        this.loai_dv = {
+                            'ten_loaidv': '',
+                            'mo_ta': '',
+                        }
+                    } else {
+                        toaster.error('Thêm mới loại dịch vụ thất bại')
                     }
+                })
+                .catch((res) => {
+                    toaster.error(res.response.data.message);
                 });
         },
         xoa() {
             axios
                 .post("http://127.0.0.1:8000/api/loai-dich-vu/xoa", this.del_loai_dv)
                 .then((res) => {
-                    toaster.error(res.data.message);
-                    this.loaddata();
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message);
+                        this.loaddata();
+                    } else {
+                        toaster.error("Xóa loại dịch vụ thất bại!")
+                    }
                 });
         },
         update() {
             axios
                 .post("http://127.0.0.1:8000/api/loai-dich-vu/update", this.update_loai_dv)
                 .then((res) => {
-                    toaster.success(res.data.message);
-                    this.loaddata();
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message);
+                        this.loaddata();
+                    } else {
+                        toaster.error("Cập nhật loại dịch vụ thất bại!")
+                    }
                 });
         },
         loaddata() {
