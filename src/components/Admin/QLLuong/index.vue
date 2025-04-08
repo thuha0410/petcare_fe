@@ -6,6 +6,11 @@
                     <h4 class="text-white">NHẬP THÔNG TIN</h4>
                 </div>
                 <div class="card-body">
+                    <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Tìm kiếm"
+                    aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
+            </div>
                     <label for="">Mã lương</label>
                     <input class="form-control" type="text">
                     <label for="">Tên bác sĩ</label>
