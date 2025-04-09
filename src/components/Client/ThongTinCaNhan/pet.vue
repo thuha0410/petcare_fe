@@ -65,7 +65,7 @@
           petName: "Hanni",
           type: "Chó",
           gender: "Cái",
-          age: 3,
+          age: 20,
           weight: 5.2,
           image: "https://placedog.net/400/400?id=1"
         },
