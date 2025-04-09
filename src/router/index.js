@@ -181,6 +181,8 @@ const routes = [
         path : '/doctor/xem-lich',
         component: ()=>import('../components/Doctor/XemLich/index.vue'),
         meta: {layout:'doctor'}
+    },
+    {
         path : '/client/pet',
         component: ()=>import('../components/Client/ThongTinCaNhan/pet.vue'),
         meta: {layout:'client'},
