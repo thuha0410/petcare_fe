@@ -124,6 +124,11 @@ const routes = [
         component: ()=>import('../components/Client/DichVu/ChonDichVu/index.vue'),
         meta: {layout:'client'},
     },
+    {
+        path : '/client/pet',
+        component: ()=>import('../components/Client/ThongTinCaNhan/pet.vue'),
+        meta: {layout:'client'},
+    },
 ]
 
 const router = createRouter({

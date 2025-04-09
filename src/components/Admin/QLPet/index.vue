@@ -1,7 +1,8 @@
 <template>
     <div class="card">
         <div class="card-header d-flex justify-content-between ">
-            <h3 class="text-dark" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif;" >DANH SÁCH PET</h3>
+            <h3 class="text-dark" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif;">DANH SÁCH
+                PET</h3>
             <button data-bs-toggle="modal" data-bs-target="#them" type="button"
                 class="btn btn-outline-dark px-5 radius-30"><i class="bx bx-cloud-upload mr-1"></i>Thêm mới</button>
         </div>
@@ -11,55 +12,46 @@
                     <thead>
                         <tr class="text-center align-middle text-nowrap">
                             <th>#</th>
-                            <th>Mã pet</th>
+                            <th>ID khách hàng</th>
                             <th>Tên pet</th>
-                            <th>Tên khách hàng</th>
                             <th>Chủng loại</th>
                             <th>Giới tính</th>
                             <th>Tuổi</th>
+                            <th>Hình ảnh</th>
                             <th>Cân nặng</th>
                             <th>Tình trạng</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="text-center align-middle text-nowrap">
-                            <th>1</th>
-                            <td>P01</td>
-                            <td>ádfghj</td>
-                            <td>ádfghj</td>
-                            <td>Mèo</td>
-                            <td>Đực</td>
-                            <td>15</td>
-                            <td>20kg</td>
-                            <td>
-                                <button class="btn btn-success">Hoạt động</button>
-                                <button class="btn btn-secondary">Nghỉ</button>
-                            </td> 
-                            <td>
-                                <button data-bs-toggle="modal" data-bs-target="#capnhat" style="width:100px ;"
-                                    class="btn btn-primary me-2">Cập nhật</button>
-                                <button data-bs-toggle="modal" data-bs-target="#xoa" style="width:100px ;"
-                                    class="btn btn-danger">Xóa</button>
-                            </td>
-                        </tr>
+                        <template v-for="(value, index) in ds_pet" :key="index">
+                            <tr class="text-center align-middle text-nowrap">
+                                <th>{{ index + 1 }}</th>
+                                <td>{{ value.id_kh }}</td>
+                                <td>{{ value.ten_pet }}</td>
+                                <td>{{ value.chung_loai }}</td>
+                                <td>{{ value.gioi_tinh }}</td>
+                                <td>{{ value.tuoi }}</td>
+                                <td>
+                                    <img class="img-fluid" style="height: 100px;" :src="value.hinh_anh" alt="">
+                                </td>
+                                <td>{{ value.can_nang }}</td>
+                                <td>
+                                    <button v-on:click="doitt(value)" v-if="value.tinh_trang == 0"
+                                        class="btn btn-success">Đã khám</button>
+                                    <button v-on:click="doitt(value)" v-if="value.tinh_trang == 1"
+                                        class="btn btn-warning">Chưa khám</button>
+                                </td>
+                                <td>
+                                    <button v-on:click="Object.assign(sua_pet, value)" data-bs-toggle="modal"
+                                        data-bs-target="#sua" class="btn btn-primary">Sửa</button>
+                                    <button v-on:click="Object.assign(xoa_pet, value)" data-bs-toggle="modal"
+                                        data-bs-target="#xoa" class="btn btn-danger">Xoá</button>
+                                </td>
+                            </tr>
+                        </template>
                     </tbody>
                 </table>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="mota" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">MÔ TẢ</h1>
-                </div>
-                <div class="modal-body">
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Thoát</button>
-                </div>
             </div>
         </div>
     </div>
@@ -70,31 +62,31 @@
                     <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">NHẬP THÔNG TIN</h1>
                 </div>
                 <div class="modal-body">
-                    <label for="">Mã pet</label>
-                    <input class="form-control mb-2" type="text">
+                    <label for="">ID khách hàng</label>
+                    <input v-model="pet.id_kh" class="form-control mb-2" type="text">
                     <label for="">Tên pet</label>
-                    <input class="form-control mb-2" type="text">
-                    <label for="">Tên khách hàng</label>
-                    <input class="form-control mb-2" type="text">
+                    <input v-model="pet.ten_pet" class="form-control mb-2" type="text">
                     <label for="">Chủng loại</label>
-                    <input class="form-control mb-2" type="text">
+                    <input v-model="pet.chung_loai" class="form-control mb-2" type="text">
                     <label for="">Giới tính</label>
-                    <select class="form-control mb-2" name="" id="">
+                    <select v-model="pet.gioi_tinh" class="form-control mb-2" name="" id="">
                         <option value="0">Đực</option>
                         <option value="1">Cái</option>
                     </select>
                     <label for="">Tuổi</label>
-                    <input class="form-control mb-2" type="text">
+                    <input v-model="pet.tuoi" class="form-control mb-2" type="text">
+                    <label for="">Hình ảnh</label>
+                    <input v-model="pet.hinh_anh" class="form-control mb-2" type="text">
                     <label for="">Cân nặng</label>
-                    <input class="form-control mb-2" type="password">
+                    <input v-model="pet.can_nang" class="form-control mb-2" type="text">
                     <label for="">Tình trạng</label>
-                    <select class="form-control mb-2" name="" id="">
-                        <option value="0">Nghỉ</option>
-                        <option value="1">Hoạt động</option>
+                    <select v-model="pet.tinh_trang" class="form-control mb-2" name="" id="">
+                        <option value="0">Đã khám</option>
+                        <option value="1">Chưa khám</option>
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Thêm</button>
+                    <button type="button" v-on:click="them()" class="btn btn-primary" data-bs-dismiss="modal">Thêm</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
@@ -110,48 +102,45 @@
                     <h5>Bạn có muốn xóa không?</h5>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Xóa</button>
+                    <button type="button" class="btn btn-danger" v-on:click="xoa()" data-bs-dismiss="modal">Xóa</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal fade" id="capnhat" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="sua" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">CẬP NHẬT THÔNG TIN</h1>
                 </div>
                 <div class="modal-body">
-                    <label for="">Mã bác sĩ</label>
-                    <input class="form-control mb-2" type="text">
-                    <label for="">Họ và tên</label>
-                    <input class="form-control mb-2" type="text">
+                    <label for="">ID khách hàng</label>
+                    <input v-model="sua_pet.id_kh" class="form-control mb-2" type="text">
+                    <label for="">Tên pet</label>
+                    <input v-model="sua_pet.ten_pet" class="form-control mb-2" type="text">
+                    <label for="">Chủng loại</label>
+                    <input v-model="sua_pet.chung_loai" class="form-control mb-2" type="text">
                     <label for="">Giới tính</label>
-                    <select class="form-control mb-2" name="" id="">
-                        <option value="0">Nam</option>
-                        <option value="1">Nữ</option>
+                    <select v-model="sua_pet.gioi_tinh" class="form-control mb-2" name="" id="">
+                        <option value="0">Đực</option>
+                        <option value="1">Cái</option>
                     </select>
+                    <label for="">Tuổi</label>
+                    <input v-model="sua_pet.tuoi" class="form-control mb-2" type="text">
                     <label for="">Hình ảnh</label>
-                    <input class="form-control mb-2" type="text">
-                    <label for="">Email</label>
-                    <input class="form-control mb-2" type="text">
-                    <label for="">Password</label>
-                    <input class="form-control mb-2" type="password">
-                    <label for="">Tiền khám</label>
-                    <input class="form-control mb-2" type="text">
-                    <label for="">Mô tả</label>
-                    <textarea class="form-control mb-2" name="" id="" cols="10" rows="10"></textarea>
+                    <!-- <img class="form-control" :src="pet.hinh_anh" alt=""> -->
+                     <input v-model="sua_pet.hinh_anh" type="text">
+                    <label for="">Cân nặng</label>
+                    <input v-model="sua_pet.can_nang" class="form-control mb-2" type="text">
                     <label for="">Tình trạng</label>
                     <select class="form-control mb-2" name="" id="">
-                        <option value="0">Nghỉ</option>
-                        <option value="1">Hoạt động</option>
+                        <option value="0">Đã khám</option>
+                        <option value="1">Chưa khám</option>
                     </select>
-                    <label for="">Mã chức vụ</label>
-                    <input class="form-control mb-2" type="text">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cập nhật</button>
+                    <button type="button" class="btn btn-primary" v-on:click="sua()" data-bs-dismiss="modal">Cập nhật</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
@@ -159,8 +148,117 @@
     </div>
 </template>
 <script>
+import { createToaster } from "@meforma/vue-toaster";
+import axios from "axios";
+const toaster = createToaster({ position: "top-right" });
 export default {
+    data() {
+        return {
+            ds_pet: [
 
+            ],
+            pet: {
+                "id_kh": "",
+                'ten_pet': "",
+                'chung_loai': "",
+                'gioi_tinh': "",
+                'tuoi': "",
+                'hinh_anh': "",
+                'can_nang': "",
+                'tinh_trang': "",
+            },
+            xoa_pet: {},
+            sua_pet: {},
+        }
+    },
+    mounted() {
+        this.loadData();
+    },
+    methods: {
+        them() {
+            axios
+                .post('http://127.0.0.1:8000/api/them-pet', this.pet,
+                    //  {
+                    //     headers: {
+                    //         Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    //     }
+                    // }
+                )
+                .then(
+                    (res) => {
+                        if (res.data.status == 1)
+                            toaster.success(res.data.message)
+                        this.loadData();
+                    }
+                )
+        },
+        xoa() {
+            axios
+                .post('http://127.0.0.1:8000/api/xoa-pet', this.xoa_pet,
+                    // {
+                    //     headers: {
+                    //         Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    //     }
+                    // }
+                )
+                .then(
+                    (res) => {
+                        if (res.data.status == 1)
+                            toaster.success(res.data.message)
+                        this.loadData();
+                    }
+                )
+        },
+        sua() {
+            axios
+                .post('http://127.0.0.1:8000/api/sua-pet', this.sua_pet,
+                    // {
+                    //     headers: {
+                    //         Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    //     }
+                    // }
+                )
+                .then(
+                    (res) => {
+                        if (res.data.status == 1)
+                            toaster.success(res.data.message)
+                        this.loadData();
+                    }
+                )
+        },
+        loadData() {
+            axios
+                .get('http://127.0.0.1:8000/api/load-pet',
+                    // {
+                    //     headers: {
+                    //         Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    //     }
+                    // }
+                )
+                .then(
+                    (res) => {
+                        this.ds_pet = res.data.data;
+                    }
+                )
+        },
+        doitt(x) {
+            axios
+                .post('http://127.0.0.1:8000/api/thay-doi-tt-pet', x,
+                    // {
+                    //     headers: {
+                    //         Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    //     }
+                    // }
+                )
+                .then(
+                    (res) => {
+                        if (res.data.status == 1)
+                            toaster.success(res.data.message)
+                        this.loadData();
+                    }
+                )
+        },
+    },
 }
 </script>
 <style></style>
