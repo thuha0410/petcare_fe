@@ -1,9 +1,9 @@
 <template>
     <div class="card">
         <div class="card-header d-flex justify-content-between" style="background-color: darkblue;">
-            
             <h4 class="text-white mt-3">ĐÁNH GIÁ</h4>
             <div>
+                
                 <div class="form-floating">
                     <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                         <option value="0">Toàn bộ</option>
@@ -15,9 +15,20 @@
                     </select>
                     <label for="floatingSelect">Chọn sao</label>
                 </div>
+                <!-- <div class="input-group mt-2 ">
+                    <input type="text" class="form-control" placeholder="search" aria-label="Recipient's username"
+                        aria-describedby="button-addon2">
+                    <button class="btn btn-secondary" type="button" id="button-addon2"><i
+                            class="fa-solid fa-magnifying-glass"></i>Tìm</button>
+                </div> -->
             </div>
         </div>
         <div class="card-body">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Tìm kiếm"
+                    aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
+            </div>
             <div class="table table-responsive">
                 <table class="table table-bordered">
                     <thead>
@@ -40,14 +51,14 @@
                             <td class="text-center align-middle">Dịch vụ tốt</td>
                             <td class="text-center align-middle">
                                 <div>
-                                <div class="cursor-pointer">
-									<i class="bx bxs-star text-warning"></i>
-									<i class="bx bxs-star text-warning"></i>
-									<i class="bx bxs-star text-warning"></i>
-									<i class="bx bxs-star text-warning"></i>
-									<i class="bx bxs-star text-secondary"></i>
-								  </div>
-                            </div>
+                                    <div class="cursor-pointer">
+                                        <i class="bx bxs-star text-warning"></i>
+                                        <i class="bx bxs-star text-warning"></i>
+                                        <i class="bx bxs-star text-warning"></i>
+                                        <i class="bx bxs-star text-warning"></i>
+                                        <i class="bx bxs-star text-secondary"></i>
+                                    </div>
+                                </div>
                             </td>
                             <td class="text-center align-middle">11/11/2025</td>
                             <td class="text-center align-middle">

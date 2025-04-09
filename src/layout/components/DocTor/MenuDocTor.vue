@@ -3,7 +3,7 @@
 		<nav class="navbar navbar-expand-xl w-100">
 			<ul class="navbar-nav justify-content-start flex-grow-1 gap-1">
 				<li class="nav-item">
-					<router-link to="">
+					<router-link to="/doctor/xem-ho-so-benh-an">
 						<a class="nav-link" href="/">
 							<div class="parent-icon"><i class="fa-solid fa-calendar-days"></i>
 							</div>
@@ -22,7 +22,7 @@
 					</router-link>
 				</li>
 				<li class="nav-item">
-					<router-link to="">
+					<router-link to="/doctor/xem-lich">
 						<a class="nav-link" href="/">
 							<div class="parent-icon"><i class="fa-solid fa-user-doctor" ></i>
 							</div>

@@ -57,7 +57,6 @@
                     <a class="btn btn-custom ms-3 text-nowrap d-flex" href="#">ĐĂNG NHẬP</a>
                 </router-link>
             </div>
-
         </div>
     </nav>
 </template>

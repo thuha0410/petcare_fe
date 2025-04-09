@@ -112,7 +112,7 @@
             </div>
         </div>
     </div>
-    <a class="text-center hover:text-dark" style="font-size: 25px;" href="">Xem thêm >></a>
+    <a class="text-center hover:text-dark" style="font-size: 25px;" href="/client/dat-lich-theo-bac-si">Xem thêm >></a>
     <br>
     <br>
     <!-- banner -->
@@ -337,10 +337,97 @@
             <a class="" style="font-size: 25px;" href="">Xem thêm dịch vụ <i class="fa-solid fa-arrow-right"></i></a>
         </div>
     </router-link>
+    <div class="card p-4 my-4 shadow">
+    <h4 class="mb-3">Đánh giá & Bình luận</h4>
+
+     <!-- Hiển thị tên người dùng -->
+     <div class="mb-2">
+      <input style="width: 10%;"
+        class="form-control"
+        v-model="username"
+        placeholder="Tên người dùng"
+        :disabled="true"
+      />
+    </div>
+    <!-- Chọn số sao -->
+    <div class="mb-3">
+      <span
+        v-for="star in 5"
+        :key="star"
+        class="me-1"
+        @click="setRating(star)"
+        style="cursor: pointer; font-size: 1.5rem;"
+      >
+        <i :class="star <= rating ? 'text-warning fas fa-star' : 'text-muted far fa-star'"></i>
+      </span>
+    </div>
+
+    <!-- Nhập bình luận -->
+    <div class="mb-3">
+      <textarea
+        class="form-control"
+        rows="3"
+        v-model="comment"
+        placeholder="Nhập bình luận của bạn..."
+      ></textarea>
+    </div>
+
+   
+
+    <!-- Nút gửi -->
+    <button class="btn btn-primary" @click="submitReview">Gửi đánh giá</button>
+
+    <!-- Danh sách đánh giá đã gửi -->
+    <div v-if="reviews.length" class="mt-4">
+      <h5>Đánh giá gần đây:</h5>
+      <div
+        v-for="(rev, index) in reviews"
+        :key="index"
+        class="border-top pt-2 mt-2"
+      >
+        <strong>{{ rev.username }}</strong>
+        <div>
+          <span v-for="star in 5" :key="star">
+            <i
+              :class="star <= rev.rating ? 'text-warning fas fa-star' : 'text-muted far fa-star'"
+            ></i>
+          </span>
+        </div>
+        <p class="mb-0">{{ rev.comment }}</p>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 export default {
+    data() {
+    return {
+      rating: 0,
+      comment: '',
+      username: 'Nguyễn Văn A', // Giả định tên người dùng sau khi đăng nhập
+      reviews: []
+    };
+  },
+  methods: {
+    setRating(star) {
+      this.rating = star;
+    },
+    submitReview() {
+      if (!this.rating || !this.comment.trim()) {
+        alert('Vui lòng chọn số sao và nhập bình luận.');
+        return;
+      }
 
+      this.reviews.push({
+        username: this.username,
+        rating: this.rating,
+        comment: this.comment.trim()
+      });
+
+      this.rating = 0;
+      this.comment = '';
+    }
+  }
 }
 </script>
 <style>
