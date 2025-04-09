@@ -5,10 +5,11 @@
                 <h3>Quản lý hóa đơn</h3>
             </div>
             <div class="card-body">
-                <div class="input-group"><span class="input-group-text bg-transparent"><i
-                            class="bx bx-search"></i></span><input type="text" class="form-control"
-                        placeholder="Search"><button class="btn btn-secondary">TÌm kiếm</button>
-                </div>
+                <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Tìm kiếm"
+                    aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
+            </div>
                 <table class="table table-bordered">
                     <thead>
                         <tr class="text-center">
