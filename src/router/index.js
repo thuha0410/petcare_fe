@@ -148,7 +148,7 @@ const routes = [
     },
     {
         path : '/client/dang-nhap-dang-ky',
-        component: ()=>import('../components/Client/DangNhap/index.vue'),
+        component: ()=>import('../components/Client/DangNhapDangKy/index.vue'),
         meta: {layout:'dangNhap'},
     },
     

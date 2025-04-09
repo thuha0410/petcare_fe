@@ -33,20 +33,16 @@
             type="email"
             class="form-control"
             placeholder="Email của bạn"
-            aria-label="Username"
-            aria-describedby="addon-wrapping"
           />
         </div>
         <div class="input-group flex-nowrap mt-3">
-          <span class="input-group-text" id="addon-wrapping"
-            ><i class="fa-solid fa-key"></i
-          ></span>
+          <span class="input-group-text" id="addon-wrapping">
+            <i class="fa-solid fa-key"></i>
+          </span>
           <input
-            class="form-control"
-            aria-label="Username"
-            aria-describedby="addon-wrapping"
-            type="password"
+            class="form-control " style=""
             placeholder="Mật khẩu của bạn"
+            :type="showPassword ? 'text' : 'password'"  
           />
         </div>
         <div class="text-end mt-2">
@@ -68,14 +64,28 @@
       <div id="signup-form" style="display: none">
         <div class="input-group flex-nowrap">
           <span class="input-group-text" id="addon-wrapping"
+            ><i class="fa-solid fa-user"></i
+          ></span>
+          <input type="text" class="form-control" placeholder="Tên của bạn" />
+        </div>
+        <div class="input-group flex-nowrap mt-3">
+          <span class="input-group-text" id="addon-wrapping"
             ><i class="fa-solid fa-square-envelope"></i
           ></span>
           <input
             type="email"
             class="form-control"
             placeholder="Email của bạn"
-            aria-label="Username"
-            aria-describedby="addon-wrapping"
+          />
+        </div>
+        <div class="input-group flex-nowrap mt-3">
+          <span class="input-group-text" id="addon-wrapping"
+            ><i class="fa-solid fa-phone"></i
+          ></span>
+          <input
+            class="form-control"
+            type="text"
+            placeholder="Số điện thoại của bạn"
           />
         </div>
         <div class="input-group flex-nowrap mt-3">
@@ -84,10 +94,8 @@
           ></span>
           <input
             class="form-control"
-            aria-label="Username"
-            aria-describedby="addon-wrapping"
-            type="password"
             placeholder="Mật khẩu của bạn"
+            :type="showPassword ? 'text' : 'password'"
           />
         </div>
         <div class="input-group flex-nowrap mt-3">
@@ -96,10 +104,8 @@
           ></span>
           <input
             class="form-control"
-            aria-label="Username"
-            aria-describedby="addon-wrapping"
-            type="password"
             placeholder="Nhập lại mật khẩu"
+            :type="showPassword ? 'text' : 'password'"
           />
         </div>
         <button
@@ -230,4 +236,7 @@ body {
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
   width: 450px;
 }
+.input-group:focus-within .show-password-icon {
+    display: none;
+  }
 </style>
