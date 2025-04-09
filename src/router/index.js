@@ -182,6 +182,11 @@ const routes = [
         component: ()=>import('../components/Doctor/XemLich/index.vue'),
         meta: {layout:'doctor'}
     },
+    {
+        path : '/doctor/ke-don-thuoc',
+        component: ()=>import('../components/Doctor/KeDonThuoc/index.vue'),
+        meta: {layout:'doctor'}
+    },
 ]
 
 const router = createRouter({
