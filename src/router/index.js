@@ -124,11 +124,6 @@ const routes = [
         component: ()=>import('../components/Client/DichVu/ChonDichVu/index.vue'),
         meta: {layout:'client'},
     },
-    {
-        path : '/ttty',
-        component: ()=>import('../components/index2.vue'),
-        meta: {layout:'client'}
-    },
 ]
 
 const router = createRouter({
