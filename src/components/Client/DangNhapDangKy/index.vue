@@ -30,6 +30,7 @@
             ><i class="fa-solid fa-square-envelope"></i
           ></span>
           <input
+            v-model="khach_hang.email"
             type="email"
             class="form-control"
             placeholder="Email của bạn"
@@ -40,14 +41,18 @@
             <i class="fa-solid fa-key"></i>
           </span>
           <input
-            class="form-control " style=""
+            v-model="khach_hang.pass"
+            class="form-control"
+            style=""
             placeholder="Mật khẩu của bạn"
-            :type="showPassword ? 'text' : 'password'"  
+            :type="showPassword ? 'text' : 'password'"
           />
         </div>
+        <router-link to="">
         <div class="text-end mt-2">
           <a href="#" class="link">Quên mật khẩu?</a>
         </div>
+        </router-link>
         <button
           style="
             font-size: 18px;
@@ -56,6 +61,7 @@
             color: white;
           "
           class="button mt-3"
+          v-on:click="dangNhap()"
         >
           ĐĂNG NHẬP
         </button>
@@ -66,13 +72,19 @@
           <span class="input-group-text" id="addon-wrapping"
             ><i class="fa-solid fa-user"></i
           ></span>
-          <input type="text" class="form-control" placeholder="Tên của bạn" />
+          <input
+            v-model="khach_hang.ho_va_ten"
+            type="text"
+            class="form-control"
+            placeholder="Tên của bạn"
+          />
         </div>
         <div class="input-group flex-nowrap mt-3">
           <span class="input-group-text" id="addon-wrapping"
             ><i class="fa-solid fa-square-envelope"></i
           ></span>
           <input
+            v-model="khach_hang.email"
             type="email"
             class="form-control"
             placeholder="Email của bạn"
@@ -83,6 +95,7 @@
             ><i class="fa-solid fa-phone"></i
           ></span>
           <input
+            v-model="khach_hang.so_dien_thoai"
             class="form-control"
             type="text"
             placeholder="Số điện thoại của bạn"
@@ -93,6 +106,7 @@
             ><i class="fa-solid fa-key"></i
           ></span>
           <input
+            v-model="khach_hang.pass"
             class="form-control"
             placeholder="Mật khẩu của bạn"
             :type="showPassword ? 'text' : 'password'"
@@ -116,6 +130,7 @@
             color: white;
           "
           class="button mt-4"
+          v-on:click="dangKy()"
         >
           Xác nhận
         </button>
@@ -133,13 +148,15 @@ export default {
       khach_hang: {
         email: "",
         pass: "",
+        ho_va_ten: "",
+        so_dien_thoai: "",
       },
     };
   },
   methods: {
     dangNhap() {
       axios
-        .post("http://127.0.0.1:8000/api/khachhang/dangNhap", this.khach_hang)
+        .post("http://127.0.0.1:8000/api/khach-hang/dang-nhap", this.khach_hang)
         .then((res) => {
           if (res.data.status == 1) {
             toaster.success(res.data.message);
@@ -148,6 +165,14 @@ export default {
           } else {
             toaster.error(res.data.message);
           }
+        });
+    },
+    dangKy() {
+      axios
+        .post("http://127.0.0.1:8000/api/khach-hang/dang-ky", this.khach_hang)
+        .then((res) => {
+          toaster.error(res.data.message);
+          this.loaddata();
         });
     },
     showLogin() {
@@ -237,6 +262,6 @@ body {
   width: 450px;
 }
 .input-group:focus-within .show-password-icon {
-    display: none;
-  }
+  display: none;
+}
 </style>
