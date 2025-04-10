@@ -8,16 +8,16 @@
         </div>
         <div class="card-body ">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Tìm kiếm"
-                    aria-label="Recipient's username" aria-describedby="button-addon2">
-                <button class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
+                <input type="text" class="form-control" placeholder="Tìm kiếm" aria-label="Recipient's username"
+                    aria-describedby="button-addon2">
+                <button v-on:click="timkiem()" class="btn btn-outline-secondary text-dark" type="button"
+                    id="button-addon2"><i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
             </div>
             <div class="table table-responsive">
                 <table class="table table-bordered">
                     <thead>
                         <tr class="text-center align-middle text-nowrap">
                             <th>#</th>
-                            <th>Mã bác sĩ</th>
                             <th>Họ và tên</th>
                             <th>Giới tính</th>
                             <th>Hình ảnh</th>
@@ -30,53 +30,58 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="text-center align-middle text-nowrap">
-                            <th>1</th>
-                            <td>BS01</td>
-                            <td>Lương Văn Ái</td>
-                            <td>Nam</td>
-                            <td><img style="height: 100px; width: 100px;" class="rounded-circle img-fluid"
-                                    src="https://scontent.fdad3-1.fna.fbcdn.net/v/t39.30808-6/480622812_1706624816958426_3704596543729326136_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=E5N_sIxMOhAQ7kNvgFTpoay&_nc_oc=Adm2sTlxYVT7keslWnslehB7wNrWA85e6KRXtOpiPmL-cUUzLWIAJpz9eN3aecH4A-A&_nc_zt=23&_nc_ht=scontent.fdad3-1.fna&_nc_gid=-4RSaBldRxE0GiOmyidt4g&oh=00_AYF1TupZHTnCZFBpzvZZOARw31PkIbJJewi_7K-JQaxdtQ&oe=67E9D5CA">
-                            </td>
-                            <td>tthello123@gmail.com</td>
-                            <td>50.000đ</td>
-                            <td>
-                                <button data-bs-toggle="modal" data-bs-target="#mota" type="button"
-                                    class="btn btn-outline-primary"><i class="bx bx-user me-0"></i>
-                                </button>
-                            </td>
-                            <td>
-                                <button class="btn btn-success">Hoạt động</button>
-                                <button class="btn btn-secondary">Nghỉ</button>
-                            </td>
-                            <td>BS Chính</td>
-                            <td>
-                                <button data-bs-toggle="modal" data-bs-target="#capnhat" style="width:100px ;"
-                                    class="btn btn-primary me-2">Cập nhật</button>
-                                <button data-bs-toggle="modal" data-bs-target="#xoa" style="width:100px ;"
-                                    class="btn btn-danger">Xóa</button>
-                            </td>
-                        </tr>
+                        <template v-for="(value, index) in list_nhan_vien" :key="index">
+                            <tr class="text-center align-middle text-nowrap">
+                                <th>{{ index + 1 }}</th>
+                                <td>{{ value.ten_nv }}</td>
+                                <td>{{ value.gioi_tinh }}</td>
+                                <td><img style="height: 100px; width: 100px;" class="rounded-circle img-fluid"
+                                        :src="value.hinh_anh">
+                                </td>
+                                <td>{{ value.email }}</td>
+                                <td>{{ value.tien_kham }}</td>
+                                <td class="text-center align-middle">
+                                    <span data-bs-toggle="modal" data-bs-target="#mota"><i
+                                            class="fa-solid fa-2x fa-circle-exclamation"
+                                            v-on:click="Object.assign(chi_tiet_nv, value)"></i></span>
+                                </td>
+                                <td>
+                                    <button v-on:click="doiTT(value)" v-if="value.tinh_trang == 0"
+                                        class="btn btn-secondary">Nghỉ</button>
+                                    <button v-on:click="doiTT(value)" v-else class="btn btn-success">Hoạt động</button>
+                                </td>
+                                <td>{{ value.id_chucvu }}</td>
+                                <td>
+                                    <button v-on:click="Object.assign(update_nhan_vien, value)" data-bs-toggle="modal"
+                                        data-bs-target="#capnhat" style="width:100px ;" class="btn btn-primary me-2">Cập
+                                        nhật</button>
+                                    <button v-on:click="Object.assign(del_nhan_vien, value)" data-bs-toggle="modal"
+                                        data-bs-target="#xoa" style="width:100px ;" class="btn btn-danger">Xóa</button>
+                                </td>
+                            </tr>
+                        </template>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="mota" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog ">
             <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">MÔ TẢ</h1>
+                <div class="modal-header bg-secondary">
+                    <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">MÔ TẢ DỊCH VỤ</h1>
                 </div>
                 <div class="modal-body">
-
+                    {{ chi_tiet_nv.mo_ta }}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Thoát</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="them" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -84,40 +89,40 @@
                     <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">NHẬP THÔNG TIN</h1>
                 </div>
                 <div class="modal-body">
-                    <label for="">Mã bác sĩ</label>
-                    <input class="form-control mb-2" type="text">
                     <label for="">Họ và tên</label>
-                    <input class="form-control mb-2" type="text">
+                    <input v-model="nhan_vien.ten_nv" class="form-control mb-2" type="text">
                     <label for="">Giới tính</label>
-                    <select class="form-control mb-2" name="" id="">
+                    <select v-model="nhan_vien.gioi_tinh" class="form-control mb-2" name="" id="">
                         <option value="0">Nam</option>
                         <option value="1">Nữ</option>
                     </select>
                     <label for="">Hình ảnh</label>
-                    <input class="form-control mb-2" type="text">
+                    <input v-model="nhan_vien.hinh_anh" class="form-control mb-2" type="text">
                     <label for="">Email</label>
-                    <input class="form-control mb-2" type="text">
+                    <input v-model="nhan_vien.email" class="form-control mb-2" type="text">
                     <label for="">Password</label>
-                    <input class="form-control mb-2" type="password">
+                    <input v-model="nhan_vien.password" class="form-control mb-2" type="password">
                     <label for="">Tiền khám</label>
-                    <input class="form-control mb-2" type="text">
+                    <input v-model="nhan_vien.tien_kham" class="form-control mb-2" type="text">
                     <label for="">Mô tả</label>
-                    <textarea class="form-control mb-2" name="" id="" cols="10" rows="10"></textarea>
+                    <input v-model="nhan_vien.mo_ta" class="form-control mb-2" type="text">
                     <label for="">Tình trạng</label>
-                    <select class="form-control mb-2" name="" id="">
+                    <select v-model="nhan_vien.tinh_trang" class="form-control mb-2" name="" id="">
                         <option value="0">Nghỉ</option>
                         <option value="1">Hoạt động</option>
                     </select>
                     <label for="">Mã chức vụ</label>
-                    <input class="form-control mb-2" type="text">
+                    <input v-model="nhan_vien.id_chucvu" class="form-control mb-2" type="text">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Thêm</button>
+                    <button v-on:click="them()" type="button" class="btn btn-primary"
+                        data-bs-dismiss="modal">Thêm</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="xoa" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xlg">
             <div class="modal-content">
@@ -125,15 +130,16 @@
                     <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">THÔNG BÁO!</h1>
                 </div>
                 <div class="modal-body">
-                    <h5>Bạn có muốn xóa không?</h5>
+                    <h5>Bạn có muốn xóa <span class="text-danger">{{ del_nhan_vien.ten_nv }}</span> không?</h5>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Xóa</button>
+                    <button v-on:click="xoa()" type="button" class="btn btn-danger" data-bs-dismiss="modal">Xóa</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="capnhat" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -141,35 +147,35 @@
                     <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">CẬP NHẬT THÔNG TIN</h1>
                 </div>
                 <div class="modal-body">
-                    <label for="">Mã bác sĩ</label>
-                    <input class="form-control mb-2" type="text">
                     <label for="">Họ và tên</label>
-                    <input class="form-control mb-2" type="text">
+                    <input v-model="update_nhan_vien.ten_nv" class="form-control mb-2" type="text">
                     <label for="">Giới tính</label>
-                    <select class="form-control mb-2" name="" id="">
+                    <select v-model="update_nhan_vien.gioi_tinh" class="form-control mb-2" name="" id="">
                         <option value="0">Nam</option>
                         <option value="1">Nữ</option>
                     </select>
                     <label for="">Hình ảnh</label>
-                    <input class="form-control mb-2" type="text">
+                    <input v-model="update_nhan_vien.hinh_anh" class="form-control mb-2" type="text">
                     <label for="">Email</label>
-                    <input class="form-control mb-2" type="text">
+                    <input v-model="update_nhan_vien.email" class="form-control mb-2" type="text">
                     <label for="">Password</label>
-                    <input class="form-control mb-2" type="password">
+                    <input v-model="update_nhan_vien.password" class="form-control mb-2" type="password">
                     <label for="">Tiền khám</label>
-                    <input class="form-control mb-2" type="text">
+                    <input v-model="update_nhan_vien.tien_kham" class="form-control mb-2" type="text">
                     <label for="">Mô tả</label>
-                    <textarea class="form-control mb-2" name="" id="" cols="10" rows="10"></textarea>
+                    <textarea v-model="update_nhan_vien.mo_ta" class="form-control mb-2" name="" id="" cols="10"
+                        rows="10"></textarea>
                     <label for="">Tình trạng</label>
-                    <select class="form-control mb-2" name="" id="">
+                    <select v-model="update_nhan_vien.tinh_trang" class="form-control mb-2" name="" id="">
                         <option value="0">Nghỉ</option>
                         <option value="1">Hoạt động</option>
                     </select>
                     <label for="">Mã chức vụ</label>
-                    <input class="form-control mb-2" type="text">
+                    <input v-model="update_nhan_vien.id_chucvu" class="form-control mb-2" type="text">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cập nhật</button>
+                    <button v-on:click="update()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cập
+                        nhật</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
@@ -177,7 +183,119 @@
     </div>
 </template>
 <script>
+
+import axios from 'axios'
+import { createToaster } from "@meforma/vue-toaster";
+const toaster = createToaster({ position: "top-right" });
+
 export default {
+    data() {
+        return {
+            nhan_vien: {
+                'ten_nv': '',
+                'gioi_tinh': '',
+                'email': '',
+                'tien_kham': '',
+                'password': '',
+                'mo_ta': '',
+                'hinh_anh': '',
+                'tinh_trang': '',
+                'id_chucvu': '',
+            },
+            list_nhan_vien: [],
+            del_nhan_vien: {},
+            update_nhan_vien: {},
+            chi_tiet_nv: {},
+            tim_kiem: {
+                noi_dung: ''
+            }
+        }
+    },
+    mounted() {
+        this.load()
+    },
+    methods: {
+        load() {
+            axios
+                .get('http://127.0.0.1:8000/api/nhan-vien/load')
+                .then((res) => {
+                    this.list_nhan_vien = res.data.data
+                })
+        },
+        them() {
+            axios
+                .post('http://127.0.0.1:8000/api/nhan-vien/them', this.nhan_vien)
+                .then((res) => {
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message)
+                        this.load()
+                        this.nhan_vien = {
+                            'ten_nv': '',
+                            'gioi_tinh': '',
+                            'email': '',
+                            'tien_kham': '',
+                            'password': '',
+                            'mo_ta': '',
+                            'hinh_anh': '',
+                            'tinh_trang': '',
+                            'id_chucvu': '',
+                        }
+                    } else {
+                        toaster.error('Thêm mới thất bại')
+                    }
+                })
+                .catch((res) => {
+
+                    toaster.error(res.response.data.message);
+                })
+        },
+        xoa() {
+            axios
+                .post('http://127.0.0.1:8000/api/nhan-vien/xoa', this.del_nhan_vien)
+                .then((res) => {
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message)
+                        this.load()
+                    } else {
+                        toaster.error('Xóa thất bại')
+                    }
+                })
+        },
+        update() {
+            axios
+                .post('http://127.0.0.1:8000/api/nhan-vien/update', this.update_nhan_vien)
+                .then((res) => {
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message)
+                        this.load()
+                    } else {
+                        toaster.error('Cập nhật không thành công')
+                    }
+
+                })
+
+        },
+        doiTT(x) {
+            axios
+                .post('http://127.0.0.1:8000/api/nhan-vien/doi-TT', x)
+                .then((res) => {
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message)
+                        this.load()
+                    } else {
+                        toaster.error('Đổi trạng thái thất bại')
+                    }
+
+                })
+        },
+        timkiem() {
+            axios
+                .post('http://127.0.0.1:8000/api/nhan-vien/tim-kiem', this.tim_kiem)
+                .then((res) => {
+                    this.list_nhan_vien = res.data.data
+                })
+        },
+    },
 
 }
 </script>
