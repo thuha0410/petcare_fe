@@ -76,6 +76,7 @@ export default {
                     console.log(this.list_khach_hang);
 
                 });
+                
         },
     xoa() {
         axios
