@@ -42,11 +42,6 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
-        path : '/admin/hoa-don',
-        component: ()=>import('../components/Admin/QLThanhToan/index.vue'),
-        meta: {layout:'admin'},
-    },
-    {
         path : '/admin/ql-pet',
         component: ()=>import('../components/Admin/QLPet/index.vue'),
         meta: {layout:'admin'},
@@ -185,6 +180,11 @@ const routes = [
     {
         path : '/client/pet',
         component: ()=>import('../components/Client/ThongTinCaNhan/pet.vue'),
+        meta: {layout:'client'},
+    },
+    {
+        path : '/client/thanh-toan',
+        component: ()=>import('../components/Client/ThanhToan/index.vue'),
         meta: {layout:'client'},
     },
 ]
