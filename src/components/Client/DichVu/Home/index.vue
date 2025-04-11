@@ -23,58 +23,94 @@
     <br>
     <!-- search -->
     <div class="container mt-2 d-flex justify-content-center">
-    <div class="input-group" style="max-width: 600px; height: 50px;">
-        <input type="text" class="form-control rounded-start-pill" placeholder="Tìm kiếm dịch vụ..." aria-label="Search">
-        <button class="btn btn-primary rounded-end-pill" type="button">
-            <i class="fas fa-search"></i> <!-- Biểu tượng kính lúp -->
-        </button>
+        <div class="input-group" style="max-width: 600px; height: 50px;">
+            <input v-model="tim_kiem.noi_dung" type="text" class="form-control rounded-start-pill" placeholder="Tìm kiếm dịch vụ..."
+                aria-label="Search">
+            <button v-on:click="timkiem()" class="btn btn-primary rounded-end-pill" type="button">
+                <i class="fas fa-search"></i> <!-- Biểu tượng kính lúp -->
+            </button>
+        </div>
     </div>
-</div>
-<br><hr>
+    <br>
+    <hr>
     <h3 class="text-center text-black fw-bold">CÁC DỊCH VỤ CHĂM SÓC THÚ CƯNG ĐỈNH CỦA CHÓP<i
             class="fa-solid fa-fire-flame-curved" style="color: #fd1c1c;"></i></h3>
     <br>
     <!--  -->
     <div class="row">
-        <div class="col-lg-2"></div>
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="row" style="padding: 20px;">
-                    <div class="col-lg-3">
-                        <img src="https://res.cloudinary.com/dd1p908gm/image/upload/v1743344121/grooming-yorkshire_mszpdr.webp"
-                            alt="" class="rounded-circle p-1 bg-primary" width="250">
-                    </div>
-                    <div class="col-lg-9">
-                        <h3 class="fw-bold" style="color: darkblue;">DỊCH VỤ CẮT TỈA LÔNG CHÓ MÈO</h3>
-                        <p style="font-size: 20px;">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptate
-                            aliquid inventore at,
-                            debitis facere quia molestiae hic! Deleniti, sint vero, quisquam quae iusto aut impedit
-                            minima aliquam ducimus ratione expedita!</p>
-                        <p style="font-size: 25px;" class="text-danger fw-bold">Giá dao động:
-                            <span>250.000-600.000</span> VND</p>
-                        <router-link to="/client/chon-dich-vu">
-                            <div class="text-end ">
-                                <button class="btn btn-info btn-hover fw-bold">ĐẶT LỊCH NGAY</button>
-                            </div>
-                        </router-link>
+        <template v-for="(value, index) in list_dich_vu" :key="index">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="row" style="padding: 20px;">
+                        <div class="col-lg-3">
+                            <img :src="value.hinh_anh" alt="" class="rounded-circle p-1 bg-primary" width="250">
+                        </div>
+                        <div class="col-lg-9">
+                            <h3 class="fw-bold" style="color: darkblue;">{{ value.ten_dv }}</h3>
+                            <p style="font-size: 20px;">{{ value.mo_ta }}</p>
+                            <p style="font-size: 25px;" class="text-danger fw-bold">
+                                Giá dao động: <span>{{ value.gia }}</span> VND
+                            </p>
+                            <router-link to="/client/dat-lich" class="text-decoration-none">
+                                <div class="text-end ">
+                                    <button class="btn btn-info btn-hover fw-bold">ĐẶT LỊCH NGAY</button>
+                                </div>
+                            </router-link>
 
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-2"></div>
+            <div class="col-lg-2"></div>
+        </template>
     </div>
 </template>
 <script>
-export default {
+import axios from 'axios';
 
-}
+export default {
+    data() {
+        return {
+            list_dich_vu: [],
+            tim_kiem: {
+                noi_dung: ''
+            }
+        };
+
+    },
+
+    mounted() {
+        this.load()
+    },
+
+    methods: {
+        load() {
+            axios
+                .get('http://127.0.0.1:8000/api/dich-vu/load')
+                .then((res) => {
+                    this.list_dich_vu = res.data.data
+                })
+        },
+        timkiem() {
+            axios
+                .post('http://127.0.0.1:8000/api/dich-vu/tim-kiem', this.tim_kiem)
+                .then((res) => {
+                    this.list_dich_vu = res.data.data
+                })
+        },
+    },
+    
+};
+
 </script>
 <style>
 body {
     background-color: #f5f7fa;
-    background:url( https://cityvet.vn/storage/general-1/br-1.png ) no-repeat;background-size: cover;
+    background: url(https://cityvet.vn/storage/general-1/br-1.png ) no-repeat;
+    background-size: cover;
 }
+
 .btn-hover:hover {
     background-color: #dc3545 !important;
     /* Đổi thành màu đỏ */

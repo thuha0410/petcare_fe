@@ -107,7 +107,7 @@ const routes = [
         meta: {layout:"dangNhap"}
     },
     {
-        path : '/client/doi-mat-khau/:ma_doi',
+        path : '/client/doi-mat-khau',
         component: ()=>import('../components/Client/DoiMatKhau/index.vue'),
         meta: {layout:"dangNhap"}
     },
