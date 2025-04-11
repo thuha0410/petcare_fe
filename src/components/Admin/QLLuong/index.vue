@@ -59,7 +59,7 @@
                                     <tr>
                                         <td class="text-center align-middle">{{ index + 1 }}</td>
                                         <td class="text-center align-middle">{{ value.id_luong }}</td>
-                                        <td class="text-center align-middle">{{ value.id_nv }}</td>
+                                        <td class="text-center align-middle">{{ value.ten_nv }}</td>
                                         <td class="text-center align-middle">{{ value.tien_luong }}</td>
                                         <td class="text-center align-middle">{{ value.ngay_thanh_toan }}</td>
                                         <td class="text-center align-middle">{{ value.tien_thuong }}</td>
@@ -95,7 +95,7 @@ export default {
                 'id_nv': "",
                 'tien_luong': "",
                 'ngay_thanh_toan': "",
-                'tinh_trang': "",
+                'tinh_trang': 0,
                 'tien_thuong': "",
             },
             tim_kiem: {
@@ -136,7 +136,7 @@ export default {
                 )
                 .then(
                     (res) => {
-                        this.ds_khoa_hoc = res.data.data;
+                        this.ds_luong = res.data.data;
                     }
                 )
         },
