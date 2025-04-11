@@ -98,6 +98,9 @@ export default {
                 'tinh_trang': "",
                 'tien_thuong': "",
             },
+            tim_kiem: {
+                noi_dung: ''
+            }
         }
     },
     mounted() {
@@ -162,6 +165,13 @@ export default {
                         this.nhan_vien = res.data.data;
                     }
                 )
+        },
+        TimKiem() {
+            axios
+                .post('http://127.0.0.1:8000/api/tim-kiem-luong', this.tim_kiem)
+                .then((res) => {
+                    this.ds_luong = res.data.data
+                })
         },
     },
 }
