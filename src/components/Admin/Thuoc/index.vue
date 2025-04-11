@@ -2,8 +2,7 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between text-nowrap ">
             <h3 class="text-dark" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif;">QUẢN LÝ
-                NHÀ CUNG CẤP</h3>
-
+                THUỐC</h3>
             <button data-bs-toggle="modal" data-bs-target="#them" type="button"
                 class="btn btn-outline-dark px-5 radius-30"><i class="bx bx-cloud-upload mr-1"></i>Thêm mới</button>
         </div>
@@ -19,32 +18,34 @@
                     <thead>
                         <tr class="text-center align-middle text-nowrap">
                             <th>#</th>
-                            <th>Tên nhà cung cấp</th>
-                            <th>Email</th>
-                            <th>Số điện thoại</th>
-                            <th>Địa chỉ</th>
+                            <th>Tên thuốc</th>
+                            <th>Đơn vị</th>
+                            <th>Mô tả</th>
                             <th>Tình trạng</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <template v-for="(value, index) in list_nha_cung_cap" :key="index">
+                        <template v-for="(value, index) in list_thuoc" :key="index">
                             <tr class="text-center align-middle text-nowrap">
                                 <th>{{ index + 1 }}</th>
-                                <td>{{ value.ten_ncc }}</td>
-                                <td>{{ value.email }}</td>
-                                <td>{{ value.sdt }}</td>
-                                <td>{{ value.dia_chi }}</td>
-                                <td>
-                                    <button v-on:click="doiTT(value)" v-if="value.tinh_trang == 0"
-                                        class="btn btn-warning">Ngưng hoạt động</button>
-                                    <button v-on:click="doiTT(value)" v-else class="btn btn-success">Hoạt động</button>
+                                <td>{{ value.ten_thuoc }}</td>
+                                <td>{{ value.don_vi }}</td>
+                                <td class="text-center align-middle">
+                                    <span data-bs-toggle="modal" data-bs-target="#mota"><i
+                                            class="fa-solid fa-2x fa-circle-exclamation"
+                                            v-on:click="Object.assign(chi_tiet_thuoc, value)"></i></span>
                                 </td>
                                 <td>
-                                    <button v-on:click="Object.assign(update_nha_cung_cap, value)"
-                                        data-bs-toggle="modal" data-bs-target="#capnhat" style="width:100px ;"
-                                        class="btn btn-primary me-2">Cập nhật</button>
-                                    <button v-on:click="Object.assign(del_nha_cung_cap, value)" data-bs-toggle="modal"
+                                    <button v-on:click="doiTT(value)" v-if="value.tinh_trang == 0"
+                                        class="btn btn-warning">Ngưng sử dụng</button>
+                                    <button v-on:click="doiTT(value)" v-else class="btn btn-success">Đang sử dụng</button>
+                                </td>
+                                <td>
+                                    <button v-on:click="Object.assign(update_thuoc, value)" data-bs-toggle="modal"
+                                        data-bs-target="#capnhat" style="width:100px ;" class="btn btn-primary me-2">Cập
+                                        nhật</button>
+                                    <button v-on:click="Object.assign(del_thuoc, value)" data-bs-toggle="modal"
                                         data-bs-target="#xoa" style="width:100px ;" class="btn btn-danger">Xóa</button>
                                 </td>
                             </tr>
@@ -61,18 +62,16 @@
                     <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">NHẬP THÔNG TIN</h1>
                 </div>
                 <div class="modal-body">
-                    <label for="">Tên nhà cung cấp</label>
-                    <input v-model="nha_cung_cap.ten_ncc" class="form-control mb-2" type="text">
-                    <label for="">Email</label>
-                    <input v-model="nha_cung_cap.email" class="form-control mb-2" type="text">
-                    <label for="">Số điện thoại</label>
-                    <input v-model="nha_cung_cap.sdt" class="form-control mb-2" type="text">
-                    <label for="">Địa chỉ</label>
-                    <input v-model="nha_cung_cap.dia_chi" class="form-control mb-2" type="text">
+                    <label for="">Tên thuốc</label>
+                    <input v-model="thuoc.ten_thuoc" class="form-control mb-2" type="text">
+                    <label for="">Đơn vị</label>
+                    <input v-model="thuoc.don_vi" class="form-control mb-2" type="text">
+                    <label for="">Mô tả</label>
+                    <input v-model="thuoc.mo_ta" class="form-control mb-2" type="text">
                     <label for="">Tình trạng</label>
-                    <select v-model="nha_cung_cap.tinh_trang" class="form-control mb-2" name="" id="">
-                        <option value="0">Ngưng hoạt động</option>
-                        <option value="1">Hoạt động</option>
+                    <select v-model="thuoc.tinh_trang" class="form-control form-select mb-2" name="" id="">
+                        <option value="0">Ngưng sử dụng</option>
+                        <option value="1">Đang sử dụng</option>
                     </select>
                 </div>
                 <div class="modal-footer">
@@ -83,6 +82,23 @@
             </div>
         </div>
     </div>
+    <!-- modal chi tiet -->
+    <div class="modal fade" id="mota" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <div class="modal-header bg-secondary">
+                    <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">MÔ TẢ DỊCH VỤ</h1>
+                </div>
+                <div class="modal-body">
+                    {{ chi_tiet_thuoc.mo_ta }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- modal xoa -->
     <div class="modal fade" id="xoa" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xlg">
             <div class="modal-content">
@@ -90,7 +106,7 @@
                     <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">THÔNG BÁO!</h1>
                 </div>
                 <div class="modal-body">
-                    <h5>Bạn có muốn xóa <span class="text-danger">{{ del_nha_cung_cap.ten_ncc }}</span> không?</h5>
+                    <h5>Bạn chắc chắn muốn xóa <span class="text-danger">{{ del_thuoc.ten_thuoc }}</span> không?</h5>
                 </div>
                 <div class="modal-footer">
                     <button v-on:click="xoa()" type="button" class="btn btn-danger" data-bs-dismiss="modal">Xóa</button>
@@ -99,7 +115,6 @@
             </div>
         </div>
     </div>
-    
     <div class="modal fade" id="capnhat" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -107,18 +122,16 @@
                     <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">CẬP NHẬT THÔNG TIN</h1>
                 </div>
                 <div class="modal-body">
-                    <label for="">Tên nhà cung cấp</label>
-                    <input v-model="update_nha_cung_cap.ten_ncc" class="form-control mb-2" type="text">
-                    <label for="">Email</label>
-                    <input v-model="update_nha_cung_cap.email" class="form-control mb-2" type="text">
-                    <label for="">Số điện thoại</label>
-                    <input v-model="update_nha_cung_cap.sdt" class="form-control mb-2" type="text">
-                    <label for="">Địa chỉ</label>
-                    <input v-model="update_nha_cung_cap.dia_chi" class="form-control mb-2" type="text">
+                    <label for="">Tên thuốc</label>
+                    <input v-model="update_thuoc.ten_thuoc" class="form-control mb-2" type="text">
+                    <label for="">Đơn vị</label>
+                    <input v-model="update_thuoc.don_vi" class="form-control mb-2" type="text">
+                    <label for="">Mô tả</label>
+                    <input v-model="update_thuoc.mo_ta" class="form-control mb-2" type="text">
                     <label for="">Tình trạng</label>
-                    <select v-model="update_nha_cung_cap.tinh_trang" class="form-control mb-2" name="" id="">
-                        <option value="0">Ngưng hoạt động</option>
-                        <option value="1">Hoạt động</option>
+                    <select v-model="update_thuoc.tinh_trang" class="form-control form-select mb-2" name="" id="">
+                        <option value="0">Ngưng sử dụng</option>
+                        <option value="1">Đang sử dụng</option>
                     </select>
                 </div>
                 <div class="modal-footer">
@@ -133,29 +146,27 @@
 <script>
 import axios from 'axios'
 import { createToaster } from "@meforma/vue-toaster";
-
 const toaster = createToaster({ position: "top-right" });
 export default {
     methods: {
         load() {
             axios
-                .get('http://127.0.0.1:8000/api/nha-cung-cap/load')
+                .get('http://127.0.0.1:8000/api/thuoc/load')
                 .then((res) => {
-                    this.list_nha_cung_cap = res.data.data
+                    this.list_thuoc = res.data.data
                 })
         },
         them() {
             axios
-                .post('http://127.0.0.1:8000/api/nha-cung-cap/them', this.nha_cung_cap)
+                .post('http://127.0.0.1:8000/api/thuoc/them', this.thuoc)
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
                         this.load()
-                        this.nha_cung_cap = {
-                            'ten_ncc': '',
-                            'email': '',
-                            'sdt': '',
-                            'dia_chi': '',
+                        this.thuoc = {
+                            'ten_thuoc': '',
+                            'don_vi': '',
+                            'mo_ta': '',
                             'tinh_trang': '',
                         }
                     } else {
@@ -163,13 +174,12 @@ export default {
                     }
                 })
                 .catch((res) => {
-
                     toaster.error(res.response.data.message);
                 })
         },
         xoa() {
             axios
-                .post('http://127.0.0.1:8000/api/nha-cung-cap/xoa', this.del_nha_cung_cap)
+                .post('http://127.0.0.1:8000/api/thuoc/xoa', this.del_thuoc)
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -181,7 +191,7 @@ export default {
         },
         update() {
             axios
-                .post('http://127.0.0.1:8000/api/nha-cung-cap/update', this.update_nha_cung_cap)
+                .post('http://127.0.0.1:8000/api/thuoc/update', this.update_thuoc)
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -195,7 +205,7 @@ export default {
         },
         doiTT(x) {
             axios
-                .post('http://127.0.0.1:8000/api/nha-cung-cap/doi-TT', x)
+                .post('http://127.0.0.1:8000/api/thuoc/doi-TT', x)
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -208,9 +218,9 @@ export default {
         },
         timkiem() {
             axios
-                .post('http://127.0.0.1:8000/api/nha-cung-cap/tim-kiem', this.tim_kiem)
+                .post('http://127.0.0.1:8000/api/thuoc/tim-kiem', this.tim_kiem)
                 .then((res) => {
-                    this.list_nha_cung_cap = res.data.data
+                    this.list_thuoc = res.data.data
                 })
         },
     },
@@ -219,19 +229,19 @@ export default {
     },
     data() {
         return {
-            nha_cung_cap: {
-                'ten_ncc': '',
-                'email': '',
-                'sdt': '',
-                'dia_chi': '',
+            thuoc: {
+                'ten_thuoc': '',
+                'don_vi': '',
+                'mo_ta': '',
                 'tinh_trang': '',
             },
-            list_nha_cung_cap: [],
-            del_nha_cung_cap: {},
-            update_nha_cung_cap: {},
+            list_thuoc: [],
+            del_thuoc: {},
+            update_thuoc: {},
             tim_kiem: {
                 noi_dung: ''
-            }
+            },
+            chi_tiet_thuoc:{}
         }
     },
 }

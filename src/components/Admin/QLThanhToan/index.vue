@@ -16,7 +16,7 @@
                             <th>#</th>
                             <th>ID Hóa đơn</th>
                             <th>Tên khách hàng</th>
-                            <th>Ngày tháng</th>
+                            <th>Ngày xuất hóa đơn</th>
                             <th>ID pet</th>
                             <th>Phương thức</th>
                             <th>Tổng tiền</th>

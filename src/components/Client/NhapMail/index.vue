@@ -1,20 +1,9 @@
 <template>
-  <div class="container-fluid" style="height: 100vh">
+   <div class="container-fluid" style="height: 100vh">
     <div class="row justify-content-center align-items-center h-100">
       <div class="col-4 text-center">
-
-        <div v-if="activated" class="alert alert-success">
-          Tài khoản của bạn đã được kích hoạt!
-        </div>
-
-        <div v-if="waitingForVerify" class="alert alert-info">
-          Vui lòng kiểm tra email để xác thực tài khoản của bạn...
-        </div>
-
-        <h1
-          style="font-size: 50px; font-weight: bold; font-family: 'Fredoka', sans-serif;"
-        >
-          Vui lòng nhập email của bạn
+        <h1 style="font-size: 50px; font-weight: bold; font-family: 'Fredoka', sans-serif;">
+          Vui Lòng nhập email của bạn
         </h1>
 
         <div class="input-group flex-nowrap mt-3">
@@ -30,6 +19,7 @@
           />
         </div>
 
+        <!-- Gửi mail -->
         <button
           style="font-size: 18px; font-weight: bold; font-family: 'Fredoka', sans-serif; color: white;"
           class="button mt-4"
@@ -37,6 +27,22 @@
         >
           Xác nhận
         </button>
+
+        <!-- Gửi lại mail nếu đang chờ xác thực -->
+        <button
+          v-if="waitingForVerify"
+          class="btn btn-link mt-2"
+          :disabled="resendDisabled"
+          @click="resendMail"
+        >
+          Gửi lại email
+          <span v-if="resendDisabled">({{ countdown }}s)</span>
+        </button>
+
+        <!-- Thông báo khi tài khoản đã kích hoạt -->
+        <div v-if="activated" class="alert alert-success mt-3">
+          ✅ Tài khoản của bạn đã được kích hoạt!
+        </div>
       </div>
     </div>
   </div>
