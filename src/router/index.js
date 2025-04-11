@@ -102,6 +102,22 @@ const routes = [
         meta: {layout:'client'},
     },
     {
+        path : '/client/nhap-mail',
+        component: ()=>import('../components/Client/NhapMail/index.vue'),
+        meta: {layout:"dangNhap"}
+    },
+    {
+        path : '/client/doi-mat-khau/:ma_doi',
+        component: ()=>import('../components/Client/DoiMatKhau/index.vue'),
+        meta: {layout:"dangNhap"}
+    },
+    {
+        path : '/client/kich-hoat-tai-khoan/:id_khach_hang',
+        component: ()=>import('../components/Client/KichHoat/index.vue'),
+        meta: {layout:"dangNhap"},
+        props: true
+    },
+    {
         path : '/client/dat-lich-tiem-chung',
         component: ()=>import('../components/Client/DatLichTiemChung/index.vue'),
         meta: {layout:'client'},
@@ -148,7 +164,7 @@ const routes = [
     },
     {
         path : '/client/dang-nhap-dang-ky',
-        component: ()=>import('../components/Client/DangNhap/index.vue'),
+        component: ()=>import('../components/Client/DangNhapDangKy/index.vue'),
         meta: {layout:'dangNhap'},
     },
     

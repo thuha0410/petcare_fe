@@ -211,7 +211,7 @@
     <br>
     <hr>
     <!-- why chăm sóc-->
-    <h2 class="text-center text-danger fw-bold">TẠI SAO CẦN CHĂM SÓC THÚ CƯNG ĐÚNG CÁCH?</h2>\
+    <h2 class="text-center text-danger fw-bold">TẠI SAO CẦN CHĂM SÓC THÚ CƯNG ĐÚNG CÁCH?</h2>\``
     <p class="text-black" style="font-size: 20px;">Thú cưng không chỉ là một vật nuôi mà còn là người bạn trung thành,
         mang lại niềm vui và sự gắn kết trong gia
         đình. Tuy nhiên, để bé cưng luôn khỏe mạnh và hạnh phúc, bạn cần quan tâm đến chế độ chăm sóc hàng ngày. Dưới
