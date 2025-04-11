@@ -141,7 +141,7 @@
 <script>
 import axios from "axios";
 import { createToaster } from "@meforma/vue-toaster";
-const toaster = createToaster({ position: "top-left" });
+const toaster = createToaster({ position: "top-right" });
 export default {
   data() {
     return {
@@ -171,7 +171,7 @@ export default {
       axios
         .post("http://127.0.0.1:8000/api/khach-hang/dang-ky", this.khach_hang)
         .then((res) => {
-          toaster.error(res.data.message);
+          toaster.success(res.data.message);
           this.loaddata();
         });
     },
