@@ -12,7 +12,7 @@
           </select>
         </div>
         <div class="col-md-6 text-end">
-          <button class="btn btn-success" @click="showModal = true">
+          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#them">
             + Thêm hồ sơ
           </button>
         </div>
@@ -29,18 +29,21 @@
               <p class="card-text"><strong>Chẩn đoán:</strong> {{ hs.chan_doan }}</p>
             </div>
             <div class="card-footer bg-transparent border-top-0 text-end">
-              <button class="btn btn-primary btn-sm me-2" @click="editBenhAn(hs)">Sửa</button>
+              <button class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#sua" >Sửa</button>
               <button class="btn btn-danger btn-sm" @click="xoaBenhAn(hs.id_hsba)">Xóa</button>
             </div>
           </div>
         </div>
       </div>
-  
-      <!-- Modal thêm/sửa -->
-      <div v-if="showModal" class="modal-mask">
-        <div class="modal-wrapper">
-          <div class="modal-container p-4 bg-white rounded shadow" style="width: 500px">
-            <h5>{{ isEditing ? 'Sửa hồ sơ' : 'Thêm hồ sơ' }}</h5>
+    </div>
+     <!-- Modal -->
+  <div class="modal fade" id="them" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel"><h4>THÊM HỒ SƠ BỆNH ÁN</h4></h1>
+        </div>
+        <div class="modal-body">
             <div class="mb-3">
               <label>Chọn Pet</label>
               <select v-model="form.id_pet" class="form-select">
@@ -63,14 +66,51 @@
               <label>Chẩn đoán</label>
               <input type="text" v-model="form.chan_doan" class="form-control" placeholder="VD: Viêm tai, tiêu chảy...">
             </div>
-            <div class="text-end">
-              <button class="btn btn-secondary me-2" @click="closeModal">Hủy</button>
-              <button class="btn btn-primary" @click="luuBenhAn">Lưu</button>
-            </div>
-          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" @click="luuBenhAn" >Thêm</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
         </div>
       </div>
     </div>
+  </div>
+  <div class="modal fade" id="sua" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel"><h4>SỬA HỒ SƠ</h4></h1>
+        </div>
+        <div class="modal-body">
+            <div class="mb-3">
+              <label>Chọn Pet</label>
+              <select v-model="form.id_pet" class="form-select">
+                <option disabled value="">-- Chọn pet --</option>
+                <option v-for="pet in pets" :key="pet.id_pet" :value="pet.id_pet">{{ pet.ten_pet }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label>Bác sĩ phụ trách</label>
+              <select v-model="form.id_bs" class="form-select">
+                <option disabled value="">-- Chọn bác sĩ --</option>
+                <option v-for="bs in bacSis" :key="bs.id_bs" :value="bs.id_bs">{{ bs.ten_nv }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label>Ngày khám</label>
+              <input type="date" v-model="form.ngay_kham" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label>Chẩn đoán</label>
+              <input type="text" v-model="form.chan_doan" class="form-control" placeholder="VD: Viêm tai, tiêu chảy...">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" @click="editBenhAn(hs)" >Cập Nhật</button>
+          <button type="button" class="btn btn-secondary"  data-bs-dismiss="modal">Hủy</button>
+        </div>
+      </div>
+    </div>
+  </div>
   </template>
   
   <script>
@@ -118,11 +158,6 @@
             chan_doan: "Viêm đường ruột"
           }
         ];
-      },
-      closeModal() {
-        this.showModal = false;
-        this.isEditing = false;
-        this.resetForm();
       },
       editBenhAn(hs) {
         this.form = {

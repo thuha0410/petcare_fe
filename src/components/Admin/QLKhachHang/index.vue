@@ -82,7 +82,4 @@ export default {
 }
 </script>
 <style>
-/* body{
-      background-color: #ffedd4
-   } */
 </style>
