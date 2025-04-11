@@ -17,6 +17,16 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
+        path : '/admin/nhap-thuoc',
+        component: ()=>import('../components/Admin/NhapThuoc/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/ql-thuoc',
+        component: ()=>import('../components/Admin/Thuoc/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
         path : '/admin/ql-danh-gia',
         component: ()=>import('../components/Admin/QLDanhGia/index.vue'),
         meta: {layout:'admin'},
