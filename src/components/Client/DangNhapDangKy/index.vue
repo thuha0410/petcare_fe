@@ -30,28 +30,29 @@
             ><i class="fa-solid fa-square-envelope"></i
           ></span>
           <input
+            v-model="khach_hang.email"
             type="email"
             class="form-control"
-            placeholder="email của bạn"
-            aria-label="Username"
-            aria-describedby="addon-wrapping"
+            placeholder="Email của bạn"
           />
         </div>
         <div class="input-group flex-nowrap mt-3">
-          <span class="input-group-text" id="addon-wrapping"
-            ><i class="fa-solid fa-key"></i
-          ></span>
+          <span class="input-group-text" id="addon-wrapping">
+            <i class="fa-solid fa-key"></i>
+          </span>
           <input
+            v-model="khach_hang.pass"
             class="form-control"
-            aria-label="Username"
-            aria-describedby="addon-wrapping"
-            type="password"
+            style=""
             placeholder="Mật khẩu của bạn"
+            :type="showPassword ? 'text' : 'password'"
           />
         </div>
+        <router-link to="">
         <div class="text-end mt-2">
           <a href="#" class="link">Quên mật khẩu?</a>
         </div>
+        </router-link>
         <button
           style="
             font-size: 18px;
@@ -60,6 +61,7 @@
             color: white;
           "
           class="button mt-3"
+          v-on:click="dangNhap()"
         >
           ĐĂNG NHẬP
         </button>
@@ -68,14 +70,35 @@
       <div id="signup-form" style="display: none">
         <div class="input-group flex-nowrap">
           <span class="input-group-text" id="addon-wrapping"
+            ><i class="fa-solid fa-user"></i
+          ></span>
+          <input
+            v-model="khach_hang.ho_va_ten"
+            type="text"
+            class="form-control"
+            placeholder="Tên của bạn"
+          />
+        </div>
+        <div class="input-group flex-nowrap mt-3">
+          <span class="input-group-text" id="addon-wrapping"
             ><i class="fa-solid fa-square-envelope"></i
           ></span>
           <input
+            v-model="khach_hang.email"
             type="email"
             class="form-control"
-            placeholder="email của bạn"
-            aria-label="Username"
-            aria-describedby="addon-wrapping"
+            placeholder="Email của bạn"
+          />
+        </div>
+        <div class="input-group flex-nowrap mt-3">
+          <span class="input-group-text" id="addon-wrapping"
+            ><i class="fa-solid fa-phone"></i
+          ></span>
+          <input
+            v-model="khach_hang.so_dien_thoai"
+            class="form-control"
+            type="text"
+            placeholder="Số điện thoại của bạn"
           />
         </div>
         <div class="input-group flex-nowrap mt-3">
@@ -83,11 +106,10 @@
             ><i class="fa-solid fa-key"></i
           ></span>
           <input
+            v-model="khach_hang.pass"
             class="form-control"
-            aria-label="Username"
-            aria-describedby="addon-wrapping"
-            type="password"
             placeholder="Mật khẩu của bạn"
+            :type="showPassword ? 'text' : 'password'"
           />
         </div>
         <div class="input-group flex-nowrap mt-3">
@@ -96,10 +118,8 @@
           ></span>
           <input
             class="form-control"
-            aria-label="Username"
-            aria-describedby="addon-wrapping"
-            type="password"
             placeholder="Nhập lại mật khẩu"
+            :type="showPassword ? 'text' : 'password'"
           />
         </div>
         <button
@@ -110,6 +130,7 @@
             color: white;
           "
           class="button mt-4"
+          v-on:click="dangKy()"
         >
           Xác nhận
         </button>
@@ -127,13 +148,15 @@ export default {
       khach_hang: {
         email: "",
         pass: "",
+        ho_va_ten: "",
+        so_dien_thoai: "",
       },
     };
   },
   methods: {
     dangNhap() {
       axios
-        .post("http://127.0.0.1:8000/api/khachhang/dangNhap", this.khach_hang)
+        .post("http://127.0.0.1:8000/api/khach-hang/dang-nhap", this.khach_hang)
         .then((res) => {
           if (res.data.status == 1) {
             toaster.success(res.data.message);
@@ -142,6 +165,14 @@ export default {
           } else {
             toaster.error(res.data.message);
           }
+        });
+    },
+    dangKy() {
+      axios
+        .post("http://127.0.0.1:8000/api/khach-hang/dang-ky", this.khach_hang)
+        .then((res) => {
+          toaster.error(res.data.message);
+          this.loaddata();
         });
     },
     showLogin() {
@@ -229,5 +260,8 @@ body {
   border-radius: 12px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
   width: 450px;
+}
+.input-group:focus-within .show-password-icon {
+  display: none;
 }
 </style>
