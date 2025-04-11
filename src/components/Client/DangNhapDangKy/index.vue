@@ -48,7 +48,7 @@
             :type="showPassword ? 'text' : 'password'"
           />
         </div>
-        <router-link to="">
+        <router-link to="/client/doi-mat-khau">
         <div class="text-end mt-2">
           <a href="#" class="link">Quên mật khẩu?</a>
         </div>
