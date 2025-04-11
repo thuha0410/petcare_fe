@@ -4,6 +4,15 @@
 		<nav class="navbar navbar-expand-xl w-100">
 			<ul class="navbar-nav justify-content-start flex-grow-1 gap-1">
 				<li class="nav-item">
+					<router-link to="/admin/nhap-thuoc">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-prescription-bottle-medical"></i>
+							</div>
+							<div class="menu-title">Nhập thuốc</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
 					<router-link to="/admin/ql-lich-hen">
 						<a class="nav-link" href="/">
 							<div class="parent-icon"><i class="fa-solid fa-calendar-days"></i>
@@ -58,6 +67,15 @@
 					</router-link>
 				</li>
 				<li class="nav-item">
+					<router-link to="/admin/ql-thuoc">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-capsules"></i>
+							</div>
+							<div class="menu-title">QL Thuốc</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
 					<router-link to="/admin/ql-nha-cung-cap">
 						<a class="nav-link" href="/">
 							<div class="parent-icon"><i class="fa-solid fa-truck"></i>
@@ -66,9 +84,6 @@
 						</a>
 					</router-link>
 				</li>
-
-
-
 				<li class="nav-item">
 					<router-link to="/admin/ql-luong">
 						<a class="nav-link" href="/">

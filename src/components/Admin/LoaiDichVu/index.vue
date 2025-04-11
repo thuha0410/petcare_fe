@@ -72,7 +72,7 @@
                     <input v-model="loai_dv.ten_loaidv" class="form-control mb-2" type="text">
                     <label for="">Mô tả</label>
                     <textarea v-model="loai_dv.mo_ta" class="form-control" placeholder="Nhập mô tả dịch vụ..." name=""
-                        id="" rows="3"></textarea>
+                        id="" rows="5"></textarea>
                 </div>
                 <div class="modal-footer">
                     <button v-on:click="them()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Thêm
