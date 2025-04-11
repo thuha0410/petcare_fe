@@ -173,6 +173,7 @@ h1 {
     font-weight: 700;
     font-size: 50px;
     margin-bottom: 10px;
+    color: #e3e0de;
 }
 
 h3 {
@@ -184,7 +185,7 @@ h3 {
 }
 
 .background-container {
-    background-image: url('https://res.cloudinary.com/dd1p908gm/image/upload/v1744110341/bgr_lad4e8.jpg');
+    background-image: url('https://khoinguonsangtao.vn/wp-content/uploads/2021/09/background-xanh-duong-dam.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     padding: 70px 30px;
