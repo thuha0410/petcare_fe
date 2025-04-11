@@ -11,8 +11,8 @@
                     <label for="">Mã lương</label>
                     <input v-model="loai_luong.id_luong" class="form-control" type="text">
                     <label for="">Tên nhân viên</label>
-                    <select class="form-control" name="" id="">
-                        <template v-for="(value,index) in nhan_vien" :key="index">
+                    <select v-model="loai_luong.id_nv" class="form-control">
+                        <template v-for="(value, index) in nhan_vien" :key="index">
                             <option v-bind:value="value.id">{{ value.ten_nv }}</option>
                         </template>
                     </select>
@@ -36,7 +36,7 @@
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" placeholder="search" aria-label="Recipient's username"
                             aria-describedby="button-addon2">
-                        <button class="btn btn-secondary" type="button" id="button-addon2"><i
+                        <button v-on:click="TimKiem()" class="btn btn-secondary" type="button" id="button-addon2"><i
                                 class="fa-solid fa-magnifying-glass"></i>Tìm</button>
                     </div>
                 </div>
@@ -57,19 +57,19 @@
                             <tbody>
                                 <template v-for="(value, index) in ds_luong" :key="index">
                                     <tr>
-                                    <td class="text-center align-middle">{{ index+1 }}</td>
-                                    <td class="text-center align-middle">{{ value.id_luong }}</td>
-                                    <td class="text-center align-middle">{{ value.id_nv }}</td>
-                                    <td class="text-center align-middle">{{ value.tien_luong }}</td>
-                                    <td class="text-center align-middle">{{ value.ngay_thanh_toan }}</td>
-                                    <td class="text-center align-middle">{{ value.tien_thuong }}</td>
-                                    <td class="text-center align-middle">
-                                        <button v-on:click="doitt(value)" v-if="value.tinh_trang == 1"
-                                            class="btn btn-success">Đã thanh toán</button>
-                                        <button v-on:click="doitt(value)" v-if="value.tinh_trang == 0"
-                                            class="btn btn-warning">Chưa thanh toán</button>
-                                    </td>
-                                </tr>
+                                        <td class="text-center align-middle">{{ index + 1 }}</td>
+                                        <td class="text-center align-middle">{{ value.id_luong }}</td>
+                                        <td class="text-center align-middle">{{ value.id_nv }}</td>
+                                        <td class="text-center align-middle">{{ value.tien_luong }}</td>
+                                        <td class="text-center align-middle">{{ value.ngay_thanh_toan }}</td>
+                                        <td class="text-center align-middle">{{ value.tien_thuong }}</td>
+                                        <td class="text-center align-middle">
+                                            <button v-on:click="doitt(value)" v-if="value.tinh_trang == 1"
+                                                class="btn btn-success">Đã thanh toán</button>
+                                            <button v-on:click="doitt(value)" v-if="value.tinh_trang == 0"
+                                                class="btn btn-warning">Chưa thanh toán</button>
+                                        </td>
+                                    </tr>
                                 </template>
                             </tbody>
                         </table>
@@ -89,7 +89,7 @@ export default {
             ds_luong: [
 
             ],
-            nhan_vien:[],
+            nhan_vien: [],
             loai_luong: {
                 'id_luong': "",
                 'id_nv': "",
