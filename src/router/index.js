@@ -22,6 +22,11 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
+        path : '/admin/ql-ton-kho',
+        component: ()=>import('../components/Admin/QLTonKho/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
         path : '/admin/ql-thuoc',
         component: ()=>import('../components/Admin/Thuoc/index.vue'),
         meta: {layout:'admin'},
@@ -34,11 +39,6 @@ const routes = [
     {
         path : '/admin/phan-quyen',
         component: ()=>import('../components/Admin/PhanQuyen/index.vue'),
-        meta: {layout:'admin'},
-    },
-    {
-        path : '/admin/ql-bac-si',
-        component: ()=>import('../components/Admin/QLBacSi/index.vue'),
         meta: {layout:'admin'},
     },
     {
@@ -87,14 +87,9 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
-        path : '/admin/ql-bac-si',
-        component: ()=>import('../components/Admin/QLBacSi/index.vue'),
+        path : '/admin/ql-nhan-vien',
+        component: ()=>import('../components/Admin/QLNhanVien/index.vue'),
         meta: {layout:'admin'},
-    },
-    {
-        path : '/client/cham-soc',
-        component: ()=>import('../components/Client/ChamSoc/index.vue'),
-        meta: {layout:'client'},
     },
     {
         path : '/client/dat-lich',
@@ -123,13 +118,23 @@ const routes = [
         props: true
     },
     {
+        path : '/client/dat-lich',
+        component: ()=>import('../components/Client/DatLich/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
+        path : '/client/dat-lich-theo-bac-si',
+        component: ()=>import('../components/Client/DatLichTheoBacSi/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
         path : '/client/dat-lich-tiem-chung',
         component: ()=>import('../components/Client/DatLichTiemChung/index.vue'),
         meta: {layout:'client'},
     },
     {
         path : '/client/dat-lich-cham-soc',
-        component: ()=>import('../components/Client/ChamSoc/index.vue'),
+        component: ()=>import('../components/Client/DatLichChamSoc/index.vue'),
         meta: {layout:'client'},
     },
     {
@@ -194,9 +199,10 @@ const routes = [
         meta: {layout:'client'},
     },
     {
-        path : '/client/chon-dich-vu',
+        path : '/client/chon-dich-vu/:id',
         component: ()=>import('../components/Client/DichVu/ChonDichVu/index.vue'),
         meta: {layout:'client'},
+        props : true
     },
     {
         path : '/doctor/xem-ho-so-benh-an',

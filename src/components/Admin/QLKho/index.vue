@@ -27,9 +27,9 @@
                 <div style="background-color: darkblue; " class="card-header ">
                     <h4 style="color: white;" class="text-center">THÔNG TIN KHO</h4>
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Tìm thông tin kho..." aria-label="Recipient's username"
+                        <input v-model="tim_kiem.noi_dung" type="text" class="form-control" placeholder="Tìm thông tin kho..." aria-label="Recipient's username"
                             aria-describedby="button-addon2">
-                        <button class="btn btn-secondary" type="button" id="button-addon2"><i
+                        <button v-on:click="timkiem()" class="btn btn-secondary" type="button" id="button-addon2"><i
                                 class="fa-solid fa-magnifying-glass"></i>Tìm</button>
                     </div>
                     
@@ -130,7 +130,10 @@ export default {
                 'tinh_trang':''
             },
             update_kho:{},
-            del_kho:{}
+            del_kho:{},
+            tim_kiem: {
+                noi_dung: ''
+            },
         }
     },
     mounted() {
@@ -157,6 +160,13 @@ export default {
                     toaster.error(res.response.data.message);
                 })
 
+        },
+        timkiem() {
+            axios
+                .post('http://127.0.0.1:8000/api/kho/tim-kiem', this.tim_kiem)
+                .then((res) => {
+                    this.list_kho = res.data.data
+                })
         },
         xoa() {
             axios

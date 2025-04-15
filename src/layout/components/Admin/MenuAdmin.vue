@@ -8,7 +8,16 @@
 						<a class="nav-link" href="/">
 							<div class="parent-icon"><i class="fa-solid fa-prescription-bottle-medical"></i>
 							</div>
-							<div class="menu-title">Nhập thuốc</div>
+							<div class="menu-title">Phiếu nhập thuốc</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
+					<router-link to="/admin/ql-ton-kho">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-warehouse"></i>
+							</div>
+							<div class="menu-title">QL tồn kho</div>
 						</a>
 					</router-link>
 				</li>
@@ -40,11 +49,11 @@
 					</router-link>
 				</li>
 				<li class="nav-item">
-					<router-link to="/admin/ql-bac-si">
+					<router-link to="/admin/ql-nhan-vien">
 						<a class="nav-link" href="/">
 							<div class="parent-icon"><i class="fa-solid fa-user-doctor"></i>
 							</div>
-							<div class="menu-title">QL Bác Sĩ</div>
+							<div class="menu-title">QL Nhân Viên</div>
 						</a>
 					</router-link>
 				</li>

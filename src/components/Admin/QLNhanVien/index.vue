@@ -2,7 +2,7 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between ">
             <h3 class="text-dark" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif;">DANH SÁCH
-                BÁC SĨ</h3>
+                NHÂN VIÊN</h3>
             <button data-bs-toggle="modal" data-bs-target="#them" type="button"
                 class="btn btn-outline-dark px-5 radius-30"><i class="bx bx-cloud-upload mr-1"></i>Thêm mới</button>
         </div>
@@ -34,7 +34,7 @@
                             <tr class="text-center align-middle text-nowrap">
                                 <th>{{ index + 1 }}</th>
                                 <td>{{ value.ten_nv }}</td>
-                                <td>{{ value.gioi_tinh }}</td>
+                                <td>{{ value.gioi_tinh === 1 ? 'Nữ' : 'Nam' }}</td>
                                 <td><img style="height: 100px; width: 100px;" class="rounded-circle img-fluid"
                                         :src="value.hinh_anh">
                                 </td>
