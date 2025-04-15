@@ -30,7 +30,7 @@
             ><i class="fa-solid fa-square-envelope"></i
           ></span>
           <input
-            v-model="khach_hang.email"
+            v-model="khach_hang_dn.email"
             type="email"
             class="form-control"
             placeholder="Email của bạn"
@@ -41,7 +41,7 @@
             <i class="fa-solid fa-key"></i>
           </span>
           <input
-            v-model="khach_hang.pass"
+            v-model="khach_hang_dn.pass"
             class="form-control"
             style=""
             placeholder="Mật khẩu của bạn"
@@ -49,9 +49,9 @@
           />
         </div>
         <router-link to="/client/doi-mat-khau">
-        <div class="text-end mt-2">
-          <a href="#" class="link">Quên mật khẩu?</a>
-        </div>
+          <div class="text-end mt-2">
+            <a href="#" class="link">Quên mật khẩu?</a>
+          </div>
         </router-link>
         <button
           style="
@@ -73,7 +73,7 @@
             ><i class="fa-solid fa-user"></i
           ></span>
           <input
-            v-model="khach_hang.ho_va_ten"
+            v-model="khach_hang_dk.ho_va_ten"
             type="text"
             class="form-control"
             placeholder="Tên của bạn"
@@ -84,7 +84,7 @@
             ><i class="fa-solid fa-square-envelope"></i
           ></span>
           <input
-            v-model="khach_hang.email"
+            v-model="khach_hang_dk.email"
             type="email"
             class="form-control"
             placeholder="Email của bạn"
@@ -95,7 +95,7 @@
             ><i class="fa-solid fa-phone"></i
           ></span>
           <input
-            v-model="khach_hang.so_dien_thoai"
+            v-model="khach_hang_dk.so_dien_thoai"
             class="form-control"
             type="text"
             placeholder="Số điện thoại của bạn"
@@ -106,7 +106,7 @@
             ><i class="fa-solid fa-key"></i
           ></span>
           <input
-            v-model="khach_hang.pass"
+            v-model="khach_hang_dk.pass"
             class="form-control"
             placeholder="Mật khẩu của bạn"
             :type="showPassword ? 'text' : 'password'"
@@ -145,18 +145,22 @@ const toaster = createToaster({ position: "top-right" });
 export default {
   data() {
     return {
-      khach_hang: {
+      khach_hang_dk: {
         email: "",
         pass: "",
         ho_va_ten: "",
         so_dien_thoai: "",
+      },
+      khach_hang_dn: {
+        email: "",
+        pass: "",
       },
     };
   },
   methods: {
     dangNhap() {
       axios
-        .post("http://127.0.0.1:8000/api/khach-hang/dang-nhap", this.khach_hang)
+        .post("http://127.0.0.1:8000/api/khach-hang/dang-nhap", this.khach_hang_dn)
         .then((res) => {
           if (res.data.status == 1) {
             toaster.success(res.data.message);
@@ -169,9 +173,16 @@ export default {
     },
     dangKy() {
       axios
-        .post("http://127.0.0.1:8000/api/khach-hang/dang-ky", this.khach_hang)
+        .post("http://127.0.0.1:8000/api/khach-hang/dang-ky", this.khach_hang_dk)
         .then((res) => {
           toaster.success(res.data.message);
+          this.khach_hang_dk = {
+            emaildk: "",
+            passdk: "",
+            ho_va_ten: "",
+            so_dien_thoai: "",
+          };
+          this.showLogin();
           this.loaddata();
         });
     },
@@ -190,7 +201,6 @@ export default {
   },
 };
 </script>
-
 <style>
 body {
   font-family: Arial, sans-serif;

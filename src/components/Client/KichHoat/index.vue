@@ -1,5 +1,5 @@
 <template >
-    
+hjadjasgdjgd
 </template>
 <script>
 import axios from 'axios';
@@ -17,15 +17,13 @@ export default {
             }
             axios
                 .post('http://127.0.0.1:8000/api/khach-hang/kich-hoat', payload)
-                .then((res) => {
-                    console.log(res.data);
-                    
+                .then((res) => {                  
                     if (res.data.status == 1) {
                         toaster.success(res.data.message)
-                        this.$router.push('/khach-hang/dang-nhap')
+                        this.$router.push('/client/dang-nhap-dang-ky')
                     } else if (res.data.status == 2) {
                         toaster.success(res.data.message)
-                        this.$router.push('/khach-hang/dang-nhap')
+                        this.$router.push('/client/dang-nhap-dang-ky')
                     } else {
                         toaster.error(res.data.message)
                         this.$router.push('/')
