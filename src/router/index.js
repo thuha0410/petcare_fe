@@ -37,11 +37,6 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
-        path : '/admin/ql-bac-si',
-        component: ()=>import('../components/Admin/QLBacSi/index.vue'),
-        meta: {layout:'admin'},
-    },
-    {
         path : '/admin/ql-kho',
         component: ()=>import('../components/Admin/QLKho/index.vue'),
         meta: {layout:'admin'},
@@ -87,24 +82,9 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
-        path : '/admin/ql-bac-si',
-        component: ()=>import('../components/Admin/QLBacSi/index.vue'),
+        path : '/admin/ql-nhan-vien',
+        component: ()=>import('../components/Admin/QLNhanVien/index.vue'),
         meta: {layout:'admin'},
-    },
-    {
-        path : '/client/cham-soc',
-        component: ()=>import('../components/Client/ChamSoc/index.vue'),
-        meta: {layout:'client'},
-    },
-    {
-        path : '/client/dat-lich',
-        component: ()=>import('../components/Client/DatLich/index.vue'),
-        meta: {layout:'client'},
-    },
-    {
-        path : '/client/dat-lich-theo-bac-si',
-        component: ()=>import('../components/Client/DatLichTheoBacSi/index.vue'),
-        meta: {layout:'client'},
     },
     {
         path : '/client/nhap-mail',
@@ -123,13 +103,23 @@ const routes = [
         props: true
     },
     {
+        path : '/client/dat-lich',
+        component: ()=>import('../components/Client/DatLich/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
+        path : '/client/dat-lich-theo-bac-si',
+        component: ()=>import('../components/Client/DatLichTheoBacSi/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
         path : '/client/dat-lich-tiem-chung',
         component: ()=>import('../components/Client/DatLichTiemChung/index.vue'),
         meta: {layout:'client'},
     },
     {
         path : '/client/dat-lich-cham-soc',
-        component: ()=>import('../components/Client/ChamSoc/index.vue'),
+        component: ()=>import('../components/Client/DatLichChamSoc/index.vue'),
         meta: {layout:'client'},
     },
     {
@@ -186,11 +176,6 @@ const routes = [
     {
         path : '/client/bang-gia',
         component: ()=>import('../components/Client/BangGia/index.vue'),
-        meta: {layout:'client'},
-    },
-    {
-        path : '/client/chon-dich-vu',
-        component: ()=>import('../components/Client/DichVu/ChonDichVu/index.vue'),
         meta: {layout:'client'},
     },
     {
