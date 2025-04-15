@@ -92,6 +92,16 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
+        path : '/client/dat-lich',
+        component: ()=>import('../components/Client/DatLich/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
+        path : '/client/dat-lich-theo-bac-si',
+        component: ()=>import('../components/Client/DatLichTheoBacSi/index.vue'),
+        meta: {layout:'client'},
+    },
+    {
         path : '/client/nhap-mail',
         component: ()=>import('../components/Client/NhapMail/index.vue'),
         meta: {layout:"dangNhap"}
@@ -187,6 +197,12 @@ const routes = [
         path : '/client/bang-gia',
         component: ()=>import('../components/Client/BangGia/index.vue'),
         meta: {layout:'client'},
+    },
+    {
+        path : '/client/chon-dich-vu/:id',
+        component: ()=>import('../components/Client/DichVu/ChonDichVu/index.vue'),
+        meta: {layout:'client'},
+        props : true
     },
     {
         path : '/doctor/xem-ho-so-benh-an',
