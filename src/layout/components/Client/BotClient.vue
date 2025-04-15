@@ -15,23 +15,6 @@
             <!-- Nút gửi -->
             <p class="text-end"><button style="width: 130px;" class="btn btn-primary">Gửi đánh giá</button></p>
             <!-- Danh sách đánh giá đã gửi
-    <div v-if="reviews.length" class="mt-4">
-      <h5>Đánh giá gần đây:</h5>
-      <div
-        v-for="(rev, index) in reviews"
-        :key="index"
-        class="border-top pt-2 mt-2"
-      >
-        <strong>{{ rev.username }}</strong>
-        <div>
-          <span v-for="star in 5" :key="star">
-            <i
-              :class="star <= rev.rating ? 'text-warning fas fa-star' : 'text-muted far fa-star'"
-            ></i>
-          </span>
-        </div>
-        <p class="mb-0">{{ rev.comment }}</p>
-      </div>
     </div> -->
         </div>
     </div>

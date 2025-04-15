@@ -179,6 +179,11 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
+        path : '/admin/ql-chuc-vu',
+        component: ()=>import('../components/Admin/QLChucVu/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
         path : '/admin/hoa-don',
         component: ()=>import('../components/Admin/QLThanhToan/index.vue'),
         meta: {layout:'admin'},
