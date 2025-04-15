@@ -117,7 +117,7 @@ const routes = [
         meta: {layout:"dangNhap"}
     },
     {
-        path : '/client/kich-hoat-tai-khoan/:id_khach_hang',
+        path : '/client/:id_khach_hang',
         component: ()=>import('../components/Client/KichHoat/index.vue'),
         meta: {layout:"dangNhap"},
         props: true
