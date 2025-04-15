@@ -114,8 +114,6 @@
                             <option :value="0">Không</option>
                         </select>
                     </div>
-
-                    <!-- Nếu chọn CÓ -->
                     <div class="row mb-3" v-if="dich_vu.phan_loai_kg === 1">
                         <div class="col">
                             <label class="form-label">Cân nặng từ (kg)</label>
@@ -126,8 +124,6 @@
                             <input v-model="dich_vu.can_nang_max" type="number" class="form-control" step="0.1">
                         </div>
                     </div>
-
-                    <!-- Nếu chọn KHÔNG -->
                     <div class="mb-3 text-muted fst-italic" v-else>
                         Dịch vụ không phân loại theo cân nặng.
                     </div>

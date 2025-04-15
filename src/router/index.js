@@ -92,11 +92,6 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
-        path : '/client/cham-soc',
-        component: ()=>import('../components/Client/ChamSoc/index.vue'),
-        meta: {layout:'client'},
-    },
-    {
         path : '/client/dat-lich',
         component: ()=>import('../components/Client/DatLich/index.vue'),
         meta: {layout:'client'},
@@ -129,7 +124,7 @@ const routes = [
     },
     {
         path : '/client/dat-lich-cham-soc',
-        component: ()=>import('../components/Client/ChamSoc/index.vue'),
+        component: ()=>import('../components/Client/DatLichChamSoc/index.vue'),
         meta: {layout:'client'},
     },
     {
@@ -189,9 +184,10 @@ const routes = [
         meta: {layout:'client'},
     },
     {
-        path : '/client/chon-dich-vu',
+        path : '/client/chon-dich-vu/:id',
         component: ()=>import('../components/Client/DichVu/ChonDichVu/index.vue'),
         meta: {layout:'client'},
+        props : true
     },
     {
         path : '/doctor/xem-ho-so-benh-an',

@@ -9,8 +9,13 @@
                     <h3 class="text-white">Thông tin cơ sở y tế</h3>
                 </div>
                 <div class="card-body">
-                    <p class="fw-bold" style="font-size: 20px;"><i class="fa-solid fa-building"></i> Phòng khám PetCare</p>
+                    <p class="fw-bold" style="font-size: 20px;"><i class="fa-solid fa-building"></i> Phòng khám PetCare
+                    </p>
                     <p class="ms-3" style="font-size: 15px;">03 Quang Trung, Hải Châu 1, Hải Châu, Đà Nẵng</p>
+
+                    <p class="fw-bold" style="font-size: 20px;"><i class="fa-brands fa-servicestack"></i> Tên dịch vụ
+                    </p>
+                    <p class="ms-3" style="font-size: 15px;">{{ list_dv.ten_dv }}</p>
 
                     <p class="fw-bold" style="font-size: 20px;"><i class="fa-solid fa-calendar-days"></i> Ngày:</p>
                     <p class="ms-3" style="font-size: 15px;">{{ selectedDate || "Chưa chọn" }}</p>
@@ -20,6 +25,7 @@
                 </div>
             </div>
         </div>
+
         <!-- Card Nội dung -->
         <div class="col-lg-7">
             <!-- Hiển thị lịch nếu showCalendar = true -->
@@ -51,12 +57,13 @@
                         <tbody>
                             <tr>
                                 <td class="text-center align-middle">1</td>
-                                <td class="text-center align-middle">Lorem ipsum dolor sit amet consectetur.</td>
-                                <td class="text-center align-middle">250.000</td>
+                                <td class="text-center align-middle">{{ list_dv.ten_dv || '...' }}</td>
+                                <td class="text-center align-middle">{{ list_dv.gia_dv || '...' }}</td>
                                 <td class="text-center align-middle">
                                     <button class="btn btn-outline-secondary" data-bs-toggle="modal"
                                         data-bs-target="#info">Chi tiết</button>
-                                    <button class="btn btn-primary ms-2 btn-hover" @click="toggleCalendar">Đặt khám ngay</button>
+                                    <button class="btn btn-primary ms-2 btn-hover" @click="toggleCalendar">Đặt khám
+                                        ngay</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -83,70 +90,78 @@
 </template>
 
 <script>
-import { ref } from 'vue';
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import axios from 'axios';
 
 export default {
-    components: {
-        FullCalendar
+    components: { FullCalendar },
+    data() {
+        return {
+            id : this.$route.params.id,
+            list_dv: {},
+            showCalendar: false,
+            selectedDate: null,
+            selectedTime: null,
+            availableTimes: [
+                "08:00 - 09:00",
+                "09:00 - 10:00",
+                "10:00 - 11:00",
+                "13:00 - 14:00",
+                "14:00 - 15:00",
+                "15:00 - 16:00",
+                "16:00 - 17:00"
+            ],
+            calendarOptions: {
+                plugins: [dayGridPlugin, interactionPlugin],
+                initialView: 'dayGridMonth',
+                locale: 'vi',
+                selectable: true,
+                editable: true,
+                height: 600,
+                contentHeight: 'auto',
+                dateClick: this.handleDateClick
+            }
+        };
     },
-    setup() {
-        const showCalendar = ref(false); // Điều kiện để ẩn/hiện lịch
-        const selectedDate = ref(null);
-        const selectedTime = ref(null);
-        const availableTimes = ref([
-            "08:00 - 09:00",
-            "09:00 - 10:00",
-            "10:00 - 11:00",
-            "13:00 - 14:00",
-            "14:00 - 15:00",
-            "15:00 - 16:00",
-            "16:00 - 17:00"
-        ]);
-
-        const calendarOptions = ref({
-            plugins: [dayGridPlugin, interactionPlugin],
-            initialView: 'dayGridMonth',
-            locale: 'vi',
-            selectable: true,
-            editable: true,
-            height: 600,
-            contentHeight: 'auto',
-            dateClick: (info) => {
-                selectedDate.value = info.dateStr;
-                selectedTime.value = null;
-            }
-        });
-
-        const selectTime = (time) => {
-            selectedTime.value = time;
-        };
-
-        const toggleCalendar = () => {
-            if (showCalendar.value) {
-                // Nếu đang mở lịch, ẩn lịch & reset chọn ngày & giờ
-                showCalendar.value = false;
-                selectedDate.value = null;
-                selectedTime.value = null;
+    mounted() {
+        this.loadDichVu();
+    },
+    methods: {
+        loadDichVu() {
+            axios
+                .get("http://127.0.0.1:8000/api/dich-vu/load-chi-tiet/" + this.id)
+                .then((res) => {
+                    this.list_dv = res.data.data;
+                });
+        },
+        toggleCalendar() {
+            if (this.showCalendar) {
+                this.showCalendar = false;
+                this.selectedDate = null;
+                this.selectedTime = null;
             } else {
-                // Nếu đang ở trang dịch vụ, mở lịch
-                showCalendar.value = true;
+                this.showCalendar = true;
             }
-        };
-
-        return { showCalendar, calendarOptions, selectedDate, selectedTime, availableTimes, selectTime, toggleCalendar };
+        },
+        selectTime(time) {
+            this.selectedTime = time;
+        },
+        handleDateClick(info) {
+            this.selectedDate = info.dateStr;
+            this.selectedTime = null;
+        }
     }
 };
 </script>
 
 <style>
-
 .btn-hover:hover {
     background-color: #dc3545 !important;
     border-color: #dc3545 !important;
 }
+
 @import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css';
 @import 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css';
 </style>

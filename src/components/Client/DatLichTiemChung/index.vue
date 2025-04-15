@@ -41,46 +41,64 @@
                 <button class="btn btn-outline-primary" type="button" id="button-addon2">Tìm kiếm</button>
             </div>
             <br>
-            <div class="card p-3">
-                <div class="row align-items-center">
-                    <!-- Cột hình ảnh -->
-                    <div class="col-lg-4 d-flex justify-content-center">
-                        <img src="https://th.bing.com/th/id/OIP.DhYKv8K9HqzcSSiB-NIXBQHaHa?rs=1&pid=ImgDetMain"
-                            class="img-fluid rounded" style="width: 70%; max-width: 150px;">
-                    </div>
-
-                    <!-- Cột nội dung -->
-                    <div class="col-lg-8">
-                        <h5 class="card-title text-primary mt-3">Tiêm chủng Não mô cầu BC</h5>
-                        <div class="row mt-2">
-                            <div class="col-md-3 fw-bold">Mô tả:</div>
-                            <div class="col-md-9">Vắc xin viêm màng não mô cầu BC là giải pháp phòng ngừa hiệu quả cho
-                                cả trẻ em và người lớn trước vi khuẩn gây bệnh não mô cầu tuýp B và C. Để bảo vệ sức
-                                khỏe gia đình một cách toàn diện, bạn nên tìm hiểu kỹ về lợi ích, lịch tiêm chủng cũng
-                                như các lưu ý quan trọng khi tiêm vắc xin này.</div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-md-3 fw-bold">Giá khám:</div>
-                            <div class="col-md-9 text-primary"><strong>150.000 đ</strong></div>
+            <template v-for="(value, index) in list_dich_vu" :key="index">
+                <div class="card p-3">
+                    <div class="row align-items-center">
+                        <!-- Cột hình ảnh -->
+                        <div class="col-lg-4 d-flex justify-content-center">
+                            <img :src="value.hinh_anh"
+                                class="img-fluid rounded" style="width: 70%; max-width: 150px;">
                         </div>
 
-                        <!-- Icon + Button -->
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <p class="text-success m-0">
-                                <i class="fa-solid fa-shield-cat"></i> PetCare
-                            </p>
-                            <button class="btn btn-info text-white ">Đặt ngay</button>
+                        <!-- Cột nội dung -->
+                        <div class="col-lg-8">
+                            <h5 class="card-title text-primary mt-3">{{ value.ten_dv }}</h5>
+                            <div class="row mt-2">
+                                <div class="col-md-3 fw-bold">Mô tả:</div>
+                                <div class="col-md-9">{{ value.mo_ta }}</div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-3 fw-bold">Giá khám:</div>
+                                <div class="col-md-9 text-primary"><strong>{{ value.gia }} đ</strong></div>
+                            </div>
+
+                            <!-- Icon + Button -->
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <p class="text-success m-0">
+                                    <i class="fa-solid fa-shield-cat"></i> PetCare
+                                </p>
+                                <router-link to="/client/chon-dich-vu">
+                                    <div class="text-end me-3 mb-3"><button class="btn btn-info">Đặt ngay</button></div>
+                                </router-link>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </template>
         </div>
         <div class="col-lg-2"></div>
     </div>
 </template>
 <script>
+import axios from 'axios';
 export default {
-
+    data() {
+        return {
+            list_dich_vu: []
+        }
+    },
+    mounted() {
+        this.loaddata()
+    },
+    methods: {
+        loaddata() {
+            axios
+                .get("http://127.0.0.1:8000/api/dich-vu/load")
+                .then((res) => {
+                    this.list_dich_vu = res.data.data.filter(item => item.id_loaidv == 1);
+                });
+        }
+    },
 }
 </script>
 <style>
