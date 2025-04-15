@@ -52,7 +52,7 @@
                             <p style="font-size: 25px;" class="text-danger fw-bold">
                                 Giá dao động: <span>{{ value.gia }}</span> VND
                             </p>
-                            <router-link to="/client/dat-lich" class="text-decoration-none">
+                            <router-link to="/client/chon-dich-vu/" class="text-decoration-none">
                                 <div class="text-end ">
                                     <button class="btn btn-info btn-hover fw-bold">ĐẶT LỊCH NGAY</button>
                                 </div>

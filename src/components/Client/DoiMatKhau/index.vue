@@ -34,7 +34,7 @@
           Đặt lại mật khẩu
         </button>
   
-        <router-link to="/client/dang-nhap">
+        <router-link to="/client/dang-nhap-dang-ky">
           <div class="text-center mt-3">
             <a href="#" class="link">Quay lại đăng nhập</a>
           </div>
