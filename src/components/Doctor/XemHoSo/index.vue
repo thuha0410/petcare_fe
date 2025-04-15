@@ -1,140 +1,225 @@
 <template>
-    <div class="container mt-5">
-        <h2 class="text-center">Hồ Sơ Bệnh Án</h2>
-
-        <!-- Bộ lọc -->
-        <div class="mb-3 d-flex justify-content-between">
-            <!-- Lọc theo bác sĩ -->
-            <div>
-                <label for="filterDoctor" class="form-label me-2">Lọc theo bác sĩ:</label>
-                <select id="filterDoctor" v-model="selectedDoctor" class="form-select w-auto">
-                    <option value="">Tất cả</option>
-                    <option v-for="doctor in doctorIds" :key="doctor" :value="doctor">
-                        Bác sĩ ID {{ doctor }}
-                    </option>
-                </select>
-            </div>
-
-            <!-- Lọc theo tình trạng -->
-            <div>
-                <label for="filterStatus" class="form-label me-2">Lọc theo tình trạng:</label>
-                <select id="filterStatus" v-model="selectedStatus" class="form-select w-auto">
-                    <option value="">Tất cả</option>
-                    <option value="Đang điều trị">Đang điều trị</option>
-                    <option value="Đã khỏi">Đã khỏi</option>
-                    <option value="Đang theo dõi">Đang theo dõi</option>
-                    <option value="Cần phẫu thuật">Cần phẫu thuật</option>
-                </select>
-            </div>
+    <div class="container py-4">
+      <h2 class="mb-4">Hồ Sơ Bệnh Án</h2>
+  
+      <!-- Bộ lọc bác sĩ -->
+      <div class="row mb-4 align-items-end">
+        <div class="col-md-6">
+          <label class="form-label">Bác sĩ</label>
+          <select class="form-select" v-model="filterBacSi">
+            <option value="">Tất cả</option>
+            <option v-for="bs in bacSis" :key="bs.id_bs" :value="bs.id_bs">{{ bs.ten_nv }}</option>
+          </select>
         </div>
-
-        <!-- Bảng dữ liệu -->
-        <table class="table table-bordered table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID Hồ Sơ</th>
-                    <th>ID Bác Sĩ</th>
-                    <th>Ngày Khám</th>
-                    <th>Chẩn Đoán</th>
-                    <th>ID Pet</th>
-                    <th>Tình Trạng</th>
-                    <th>Hành Động</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="record in filteredRecords" :key="record.id">
-                    <td>{{ record.id }}</td>
-                    <td>{{ record.doctorId }}</td>
-                    <td>{{ record.date }}</td>
-                    <td>
-                        <button class="btn btn-warning btn-sm" @click="editDiagnosis(record)">
-                            Xem chẩn đoán
-                        </button>
-                    </td>
-                    <td>{{ record.petId }}</td>
-                    <td>{{ record.status }}</td>
-                    <td>
-                        <button class="btn btn-primary btn-sm">Chỉnh Sửa</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- Modal chỉnh sửa chẩn đoán -->
-        <div class="modal fade" id="editDiagnosisModal" tabindex="-1" aria-labelledby="editDiagnosisModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editDiagnosisModalLabel">Xem Chẩn Đoán</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p><strong>Hồ Sơ ID:</strong> {{ selectedRecord.id }}</p>
-                        <p><strong>Bác Sĩ:</strong> {{ selectedRecord.doctorId }}</p>
-                        <p><strong>Ngày Khám:</strong> {{ selectedRecord.date }}</p>
-                        <p><strong>ID Pet:</strong> {{ selectedRecord.petId }}</p>
-                        <p><strong>Tình Trạng:</strong> {{ selectedRecord.status }}</p>
-                        <hr>
-                        <label for="diagnosisText" class="form-label"><strong>Chỉnh sửa chẩn Đoán:</strong></label>
-                        <textarea id="diagnosisText" v-model="selectedRecord.diagnosis" class="form-control" rows="3"></textarea>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button class="btn btn-success" @click="saveDiagnosis">Lưu</button>
-                    </div>
-                </div>
-            </div>
+        <div class="col-md-6 text-end">
+          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#them">
+            + Thêm hồ sơ
+          </button>
         </div>
+      </div>
+  
+      <!-- Danh sách hồ sơ bệnh án -->
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div class="col" v-for="hs in filteredBenhAns" :key="hs.id_hsba">
+          <div class="card h-100 shadow-sm border rounded-4">
+            <div class="card-body">
+              <h5 class="card-title">🐾 Pet: {{ hs.pet.ten_pet }}</h5>
+              <p class="card-text"><strong>Bác sĩ:</strong> {{ hs.bac_si.ten_nv }}</p>
+              <p class="card-text"><strong>Ngày khám:</strong> {{ hs.ngay_kham }}</p>
+              <p class="card-text"><strong>Chẩn đoán:</strong> {{ hs.chan_doan }}</p>
+            </div>
+            <div class="card-footer bg-transparent border-top-0 text-end">
+              <button class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#sua" >Sửa</button>
+              <button class="btn btn-danger btn-sm" @click="xoaBenhAn(hs.id_hsba)">Xóa</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</template>
-
-<script>
-export default {
+     <!-- Modal -->
+  <div class="modal fade" id="them" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel"><h4>THÊM HỒ SƠ BỆNH ÁN</h4></h1>
+        </div>
+        <div class="modal-body">
+            <div class="mb-3">
+              <label>Chọn Pet</label>
+              <select v-model="form.id_pet" class="form-select">
+                <option disabled value="">-- Chọn pet --</option>
+                <option v-for="pet in pets" :key="pet.id_pet" :value="pet.id_pet">{{ pet.ten_pet }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label>Bác sĩ phụ trách</label>
+              <select v-model="form.id_bs" class="form-select">
+                <option disabled value="">-- Chọn bác sĩ --</option>
+                <option v-for="bs in bacSis" :key="bs.id_bs" :value="bs.id_bs">{{ bs.ten_nv }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label>Ngày khám</label>
+              <input type="date" v-model="form.ngay_kham" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label>Chẩn đoán</label>
+              <input type="text" v-model="form.chan_doan" class="form-control" placeholder="VD: Viêm tai, tiêu chảy...">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" @click="luuBenhAn" >Thêm</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="sua" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel"><h4>SỬA HỒ SƠ</h4></h1>
+        </div>
+        <div class="modal-body">
+            <div class="mb-3">
+              <label>Chọn Pet</label>
+              <select v-model="form.id_pet" class="form-select">
+                <option disabled value="">-- Chọn pet --</option>
+                <option v-for="pet in pets" :key="pet.id_pet" :value="pet.id_pet">{{ pet.ten_pet }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label>Bác sĩ phụ trách</label>
+              <select v-model="form.id_bs" class="form-select">
+                <option disabled value="">-- Chọn bác sĩ --</option>
+                <option v-for="bs in bacSis" :key="bs.id_bs" :value="bs.id_bs">{{ bs.ten_nv }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label>Ngày khám</label>
+              <input type="date" v-model="form.ngay_kham" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label>Chẩn đoán</label>
+              <input type="text" v-model="form.chan_doan" class="form-control" placeholder="VD: Viêm tai, tiêu chảy...">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" @click="editBenhAn(hs)" >Cập Nhật</button>
+          <button type="button" class="btn btn-secondary"  data-bs-dismiss="modal">Hủy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </template>
+  
+  <script>
+  export default {
     data() {
-        return {
-            medicalRecords: [
-                { id: 1, doctorId: 101, date: "2025-04-01", diagnosis: "Viêm da dị ứng", petId: 301, status: "Đang điều trị" },
-                { id: 2, doctorId: 102, date: "2025-04-02", diagnosis: "Rối loạn tiêu hóa", petId: 302, status: "Đã khỏi" },
-                { id: 3, doctorId: 101, date: "2025-04-03", diagnosis: "Nhiễm trùng tai", petId: 303, status: "Đang theo dõi" },
-                { id: 4, doctorId: 103, date: "2025-04-04", diagnosis: "Gãy xương chân", petId: 304, status: "Cần phẫu thuật" },
-                { id: 5, doctorId: 102, date: "2025-04-05", diagnosis: "Viêm phổi", petId: 305, status: "Đang điều trị" }
-            ],
-            selectedDoctor: "", // Giá trị lọc theo ID bác sĩ
-            selectedStatus: "", // Giá trị lọc theo tình trạng
-            selectedRecord: {} // Dữ liệu của hồ sơ đang chỉnh sửa
-        };
+      return {
+        benhAns: [],
+        pets: [],
+        bacSis: [],
+        filterBacSi: "",
+        showModal: false,
+        isEditing: false,
+        form: {
+          id_hsba: null,
+          id_pet: "",
+          id_bs: "",
+          ngay_kham: "",
+          chan_doan: ""
+        }
+      };
     },
     computed: {
-        doctorIds() {
-            return [...new Set(this.medicalRecords.map(record => record.doctorId))];
-        },
-        filteredRecords() {
-            return this.medicalRecords.filter(record => {
-                const matchesDoctor = !this.selectedDoctor || record.doctorId == this.selectedDoctor;
-                const matchesStatus = !this.selectedStatus || record.status === this.selectedStatus;
-                return matchesDoctor && matchesStatus;
-            });
-        }
+      filteredBenhAns() {
+        return this.filterBacSi
+          ? this.benhAns.filter(hs => hs.bac_si.id_bs === this.filterBacSi)
+          : this.benhAns;
+      }
     },
     methods: {
-        editDiagnosis(record) {
-            this.selectedRecord = { ...record };
-            let modal = new bootstrap.Modal(document.getElementById('editDiagnosisModal'));
-            modal.show();
-        },
-        saveDiagnosis() {
-            const index = this.medicalRecords.findIndex(r => r.id === this.selectedRecord.id);
-            if (index !== -1) {
-                this.medicalRecords[index].diagnosis = this.selectedRecord.diagnosis;
-            }
-            let modalElement = document.getElementById('editDiagnosisModal');
-            let modal = bootstrap.Modal.getInstance(modalElement);
-            modal.hide();
+      loadData() {
+        this.bacSis = [
+          { id_bs: 1, ten_nv: "BS Nguyễn Văn A" },
+          { id_bs: 2, ten_nv: "BS Trần Ái Đoàn" }
+        ];
+        this.pets = [
+          { id_pet: 301, ten_pet: "Milu" },
+          { id_pet: 302, ten_pet: "Lucy" }
+        ];
+        this.benhAns = [
+          {
+            id_hsba: 1,
+            pet: this.pets[0],
+            bac_si: this.bacSis[0],
+            ngay_kham: "2025-04-01",
+            chan_doan: "Viêm đường ruột"
+          }
+        ];
+      },
+      editBenhAn(hs) {
+        this.form = {
+          ...hs,
+          id_pet: hs.pet.id_pet,
+          id_bs: hs.bac_si.id_bs
+        };
+        this.isEditing = true;
+        this.showModal = true;
+      },
+      xoaBenhAn(id) {
+        this.benhAns = this.benhAns.filter(h => h.id_hsba !== id);
+      },
+      luuBenhAn() {
+        const pet = this.pets.find(p => p.id_pet === this.form.id_pet);
+        const bs = this.bacSis.find(b => b.id_bs === this.form.id_bs);
+        if (this.isEditing) {
+          const index = this.benhAns.findIndex(h => h.id_hsba === this.form.id_hsba);
+          this.benhAns[index] = {
+            ...this.form,
+            pet,
+            bac_si: bs
+          };
+        } else {
+          const newId = this.benhAns.length + 1;
+          this.benhAns.push({
+            ...this.form,
+            id_hsba: newId,
+            pet,
+            bac_si: bs
+          });
         }
+        this.closeModal();
+      },
+      resetForm() {
+        this.form = {
+          id_hsba: null,
+          id_pet: "",
+          id_bs: "",
+          ngay_kham: "",
+          chan_doan: ""
+        };
+      }
+    },
+    mounted() {
+      this.loadData();
     }
-};
-</script>
-
-<style>
-@import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css';
-</style>
+  };
+  </script>
+  
+  <style scoped>
+  .modal-mask {
+    position: fixed;
+    z-index: 9998;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  </style>
+  

@@ -131,6 +131,15 @@
 					</router-link>
 				</li>
 				<li class="nav-item">
+					<router-link to="/admin/ql-chuc-vu">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-user-tie"></i>
+							</div>
+							<div class="menu-title">QL Chức Vụ</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
 					<router-link to="/admin/phan-quyen">
 						<a class="nav-link" href="/">
 							<div class="parent-icon"><i class="fa-solid fa-users"></i>

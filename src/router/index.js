@@ -179,6 +179,11 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
+        path : '/admin/ql-chuc-vu',
+        component: ()=>import('../components/Admin/QLChucVu/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
         path : '/admin/hoa-don',
         component: ()=>import('../components/Admin/QLThanhToan/index.vue'),
         meta: {layout:'admin'},
@@ -212,6 +217,11 @@ const routes = [
         path : '/client/thanh-toan',
         component: ()=>import('../components/Client/ThanhToan/index.vue'),
         meta: {layout:'client'},
+    },
+    {
+        path : '/doctor/ke-don-thuoc',
+        component: ()=>import('../components/Doctor/KeDonThuoc/index.vue'),
+        meta: {layout:'doctor'}
     },
 ]
 
