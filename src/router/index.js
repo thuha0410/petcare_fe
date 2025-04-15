@@ -22,6 +22,11 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
+        path : '/admin/ql-ton-kho',
+        component: ()=>import('../components/Admin/QLTonKho/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
         path : '/admin/ql-thuoc',
         component: ()=>import('../components/Admin/Thuoc/index.vue'),
         meta: {layout:'admin'},

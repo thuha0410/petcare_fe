@@ -66,8 +66,34 @@
 
         <!-- DANH SÁCH PHIẾU NHẬP -->
         <div class="card">
+
             <div class="card-header bg-secondary text-white d-flex justify-content-between">
                 <h5 class="mb-0 text-white">DANH SÁCH PHIẾU NHẬP</h5>
+            </div>
+            <div class="d-flex justify-content-between align-items-center my-3 flex-wrap gap-2">
+                <!-- TÌM KIẾM BÊN TRÁI -->
+                <div class="input-group ms-3" style="max-width: 350px;">
+                    <input v-model="tim_kiem.noi_dung" type="text" class="form-control"
+                        placeholder="Nhập tên kho hoặc nhà cung cấp...">
+                    <button v-on:click="timkiem()" class="btn btn-outline-secondary">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+
+                <!-- LỌC NGÀY BÊN PHẢI -->
+                <div class="d-flex align-items-center gap-2">
+                    <label class="me-1 mb-0">Từ:</label>
+                    <input v-model="loc_ngay.tu_ngay" type="date" class="form-control form-control-sm">
+                    <label class="me-1 mb-0 ms-2">Đến:</label>
+                    <input v-model="loc_ngay.den_ngay" type="date" class="form-control form-control-sm">
+                    <button class="btn btn-sm btn-dark me-2" v-on:click="locTheoNgay()"><i
+                            class="fa-solid fa-filter"></i></button>
+
+                    <div class="text-nowrap me-2">
+                        <button class="btn btn-outline-secondary btn-sm" v-on:click="xoaBoLoc()">Xoá bộ lọc</button>
+
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <table class="table table-bordered text-center">
@@ -90,7 +116,10 @@
                             <td>{{ phieu.ngay_nhap }}</td>
                             <td>{{ phieu.chi_tiet?.length || 0 }}</td>
                             <td>{{ tinhTong(phieu.chi_tiet).toLocaleString() }} VND</td>
-                            <td><button class="btn btn-info btn-sm" v-on:click="xemChiTiet(phieu)">Chi tiết</button>
+                            <td>
+                                <button class="btn btn-info btn-sm" v-on:click="xemChiTiet(phieu)">Chi tiết</button>
+                                <button v-on:click="Object.assign(del_phieu, phieu)" class="btn btn-danger btn-sm ms-2"
+                                    data-bs-toggle="modal" data-bs-target="#modalXacNhanXoa">Xóa</button>
                             </td>
                         </tr>
                     </tbody>
@@ -168,6 +197,24 @@
                 </div>
             </div>
         </div>
+        <!-- modal xoa phieu nhap -->
+        <div class="modal fade" id="modalXacNhanXoa" tabindex="-1" aria-hidden="true" ref="modalXacNhanXoa">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">Xác nhận xoá</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Bạn có chắc chắn muốn xoá phiếu nhập này không?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+                        <button class="btn btn-danger" v-on:click="xoa()" data-bs-dismiss="modal">Xoá</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -183,6 +230,7 @@ export default {
                 id_ncc: '',
                 ngay_nhap: new Date().toISOString().slice(0, 10),
             },
+            del_phieu: {},
             chiTiet: [],
             danhSachPhieu: [],
             chiTietDangXem: [],
@@ -194,6 +242,13 @@ export default {
                 so_luong: 1,
                 gia_nhap: 1000,
                 han_su_dung: '',
+            },
+            tim_kiem: {
+                noi_dung: ''
+            },
+            loc_ngay: {
+                tu_ngay: '',
+                den_ngay: ''
             },
             highlightWarning: false,
         };
@@ -209,6 +264,29 @@ export default {
                     this.listKho = res.data.kho;
                     this.listNCC = res.data.ncc;
                     this.listThuoc = res.data.thuoc;
+                });
+        },
+        timkiem() {
+            axios
+                .post('http://127.0.0.1:8000/api/phieu-nhap/tim-kiem', this.tim_kiem)
+                .then((res) => {
+                    this.danhSachPhieu = res.data.data
+                })
+        },
+
+        xoa() {
+            axios
+                .post('http://127.0.0.1:8000/api/phieu-nhap/xoa', this.del_phieu)
+                .then((res) => {
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message)
+                        this.loadPhieu()
+                    } else {
+                        toaster.error('Xóa thất bại')
+                    }
+                })
+                .catch((err) => {
+                    toaster.error('Lỗi khi xoá: ' + err.message);
                 });
         },
         moModalThuoc() {
@@ -289,6 +367,29 @@ export default {
             this.chiTiet.splice(index, 1);
             toaster.success('Đã xóa dòng thuốc.');
         },
+        locTheoNgay() {
+            if (!this.loc_ngay.tu_ngay || !this.loc_ngay.den_ngay) {
+                return this.$toast.warning("Vui lòng chọn đầy đủ TỪ NGÀY và ĐẾN NGÀY!");
+            }
+
+            axios
+                .post("http://127.0.0.1:8000/api/phieu-nhap/loc-theo-ngay", {
+                    tu_ngay: this.loc_ngay.tu_ngay,
+                    den_ngay: this.loc_ngay.den_ngay
+                })
+                .then((res) => {
+                    this.danhSachPhieu = res.data.data;
+                })
+                .catch((err) => {
+                    this.$toast.error("Lỗi khi lọc: " + err.message);
+                });
+        },
+        xoaBoLoc() {
+            this.loc_ngay.tu_ngay = '';
+            this.loc_ngay.den_ngay = '';
+            this.tim_kiem.noi_dung = '';
+            this.loadPhieu(); // gọi lại để hiển thị toàn bộ
+        }
     }
 };
 </script>
