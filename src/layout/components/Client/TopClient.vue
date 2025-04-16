@@ -52,10 +52,31 @@
 
 
                 <!-- Nút CTA -->
-                
+                <template v-if="user.check == 1">
+                    <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"
+                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://res.cloudinary.com/dd1p908gm/image/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/v1744797071/331a803a8e1291013ddeb4e51ff51f36_hlezfr.jpg" class="user-img" alt="user avatar">
+                    <div class="user-info ps-3">
+                        <p class="user-name mb-0">{{ user.name }}</p>
+                        <p class="designattion mb-0">{{ user.email }}</p>
+                    </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a v-on:click="dangXuat()" class="dropdown-item" href="javascript:;"><i
+                                class='bx bx-log-out-circle'></i><span>Đăng
+                                Xuất</span></a>
+                    </li>
+                    <li><a v-on:click="dangXuatAll()" class="dropdown-item" href="javascript:;"><i
+                                class='bx bx-log-out-circle'></i><span>Đăng Xuất
+                                Tất Cả</span></a>
+                    </li>
+                </ul>
+                </template>
+                <template v-else>
                 <router-link to="/client/dang-nhap-dang-ky">
                     <a class="btn btn-custom ms-3 text-nowrap d-flex" href="#">ĐĂNG NHẬP</a>
                 </router-link>
+                </template>
             </div>
         </div>
     </nav>
@@ -65,13 +86,62 @@
 export default {
     data() {
         return {
+            user: {},
             isOpen: false,
             searchQuery: '',
         };
     },
+    mounted() {
+        this.user = {
+            name: localStorage.getItem("name_kh"),
+            email: localStorage.getItem("email_kh"),
+            check: localStorage.getItem("check_kh")
+
+        }
+    },
     methods: {
         toggleNavbar() {
             this.isOpen = !this.isOpen;
+        },
+         dangXuat() {
+            axios
+                .get('http://127.0.0.1:8000/api/khach-hang/dang-xuat', {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem("token_client")
+                    }
+                })
+                .then((res) => {
+                    if (res.data.status) {
+                        toaster.success(res.data.message)
+                        localStorage.removeItem('token_client')
+                        localStorage.removeItem('name_kh')
+                        localStorage.removeItem('email_kh')
+                        localStorage.removeItem('check_kh')
+                        this.$router.push('/client/dang-nhap-dang-ky')
+                    } else {
+                        toaster.error(res.data.message)
+                    }
+                })
+        },
+        dangXuatAll() {
+            axios
+                .get('http://127.0.0.1:8000/api/khach-hang/dang-xuat-all', {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem("token_client")
+                    }
+                })
+                .then((res) => {
+                    if (res.data.status) {
+                        toaster.success(res.data.message)
+                        localStorage.removeItem('token_client')
+                        localStorage.removeItem('name_kh')
+                        localStorage.removeItem('email_kh')
+                        localStorage.removeItem('check_kh')
+                        this.$router.push('/client/dang-nhap-dang-ky')
+                    } else {
+                        toaster.error(res.data.message)
+                    }
+                })
         }
     }
 };
