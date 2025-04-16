@@ -13,7 +13,7 @@
                     placeholder="Nhập bình luận của bạn..."></textarea>
             </div>
             <!-- Nút gửi -->
-            <p class="text-end"><button style="width: 130px;" class="btn btn-primary">Gửi đánh giá</button></p>
+            <p class="text-end"><button v-on:click="them()" style="width: 130px;" class="btn btn-primary">Gửi đánh giá</button></p>
             <!-- Danh sách đánh giá đã gửi
     </div> -->
         </div>
@@ -66,7 +66,6 @@
                 <div>
                     <span class="" style="width: 5px; color: white;"></span>
                 </div>
-
             </div>
             <div class="text-center">
                 <a href=""><img class="me-2"
@@ -84,6 +83,34 @@
 </template>
 <script>
 export default {
+    data() {
+        return {
+            danh_gia: []
+        }
+    },
+    methods: {
+        them() {
+            axios
+                .post('http://127.0.0.1:8000/api/danh-gia/them', this.danh_gia)
+                .then((res) => {
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message)
+                        this.dich_vu = {
+                            'id_kh':"",
+                            'noi_dung':"",
+                            'ngay_tao':"",
+                            'tinh_trang':"",
+                        }
+                    } else {
+                        toaster.error('Thêm mới đánh giá thất bại')
+                    }
+                })
+                .catch((res) => {
+                    toaster.error(res.response.data.message);
+                })
+
+        },
+    },
 
 }
 </script>

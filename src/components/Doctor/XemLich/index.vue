@@ -29,7 +29,6 @@
 </template>
 
 <script>
-import { ref } from 'vue';
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -38,38 +37,47 @@ export default {
     components: {
         FullCalendar
     },
-    setup() {
-        const eventInfo = ref({ title: "", start: "", description: "" });
-
-        const calendarOptions = ref({
-            plugins: [dayGridPlugin, interactionPlugin],
-            initialView: 'dayGridMonth',
-            locale: 'vi',
-            editable: true,
-            events: [
-                {
-                    title: "Họp nhóm phát triển",
-                    start: "2025-04-10T10:00:00",
-                    description: "Họp nhóm phát triển phần mềm tại phòng họp số 2."
-                },
-                {
-                    title: "Thuyết trình dự án",
-                    start: "2025-04-15T14:00:00",
-                    description: "Thuyết trình về dự án mới cho ban giám đốc."
-                }
-            ],
-            eventClick: (info) => {
-                eventInfo.value = {
-                    title: info.event.title,
-                    start: info.event.start.toLocaleString(),
-                    description: info.event.extendedProps.description || "Không có mô tả."
-                };
-                let modal = new bootstrap.Modal(document.getElementById('eventModal'));
-                modal.show();
+    data() {
+        return {
+            eventInfo: {
+                title: "",
+                start: "",
+                description: ""
+            },
+            calendarOptions: {
+                plugins: [dayGridPlugin, interactionPlugin],
+                initialView: 'dayGridMonth',
+                locale: 'vi',
+                editable: true,
+                events: [
+                    {
+                        title: "Họp nhóm phát triển",
+                        start: "2025-04-10T10:00:00",
+                        description: "Họp nhóm phát triển phần mềm tại phòng họp số 2."
+                    },
+                    {
+                        title: "Thuyết trình dự án",
+                        start: "2025-04-15T14:00:00",
+                        description: "Thuyết trình về dự án mới cho ban giám đốc."
+                    }
+                ],
+                eventClick: null
             }
-        });
-
-        return { calendarOptions, eventInfo };
+        };
+    },
+    methods: {
+        handleEventClick(info) {
+            this.eventInfo = {
+                title: info.event.title,
+                start: info.event.start.toLocaleString(),
+                description: info.event.extendedProps.description || "Không có mô tả."
+            };
+            const modal = new bootstrap.Modal(document.getElementById('eventModal'));
+            modal.show();
+        }
+    },
+    created() {
+        this.calendarOptions.eventClick = this.handleEventClick;
     }
 };
 </script>
