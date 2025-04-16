@@ -219,83 +219,43 @@
             </div>
         </div>
         <!-- modal sua phieu -->
-        <div class="modal fade" id="modalSuaPhieu" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
+        <!-- Modal sửa chi tiết thuốc -->
+        <div class="modal fade" id="modalSuaPhieu" tabindex="-1" ref="modalSuaChiTiet">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header bg-warning">
-                        <h5 class="modal-title text-white">Sửa phiếu nhập</h5>
+                    <div class="modal-header bg-warning text-white">
+                        <h5 class="modal-title">Sửa danh sách thuốc</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label class="form-label">Kho nhập</label>
-                                <select v-model="update_phieu.id_kho" class="form-select">
-                                    <option disabled value="">-- Chọn kho --</option>
-                                    <option v-for="kho in listKho" :key="kho.id" :value="kho.id">
-                                        {{ kho.ten_kho }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Nhà cung cấp</label>
-                                <select v-model="update_phieu.id_ncc" class="form-select">
-                                    <option disabled value="">-- Chọn nhà cung cấp --</option>
-                                    <option v-for="ncc in listNCC" :key="ncc.id" :value="ncc.id">
-                                        {{ ncc.ten_ncc }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Ngày nhập</label>
-                                <input type="date" v-model="update_phieu.ngay_nhap" class="form-control" />
-                            </div>
-                        </div>
-
-                        <h6 class="fw-bold">Danh sách thuốc</h6>
                         <table class="table table-bordered text-center">
-                            <thead class="table-light">
+                            <thead>
                                 <tr>
                                     <th>Thuốc</th>
                                     <th>Số lượng</th>
                                     <th>Giá nhập</th>
                                     <th>Hạn sử dụng</th>
-                                    <th>Thành tiền</th>
-                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(item, index) in chiTiet" :key="index">
-                                    <td>
-                                        <select v-model="item.id_thuoc" class="form-select">
-                                            <option disabled value="">-- Chọn thuốc --</option>
-                                            <option v-for="thuoc in listThuoc" :key="thuoc.id" :value="thuoc.id">
-                                                {{ thuoc.ten_thuoc }}
-                                            </option>
-                                        </select>
-                                    </td>
+                                <tr v-for="(item, index) in update_phieu.chi_tiet" :key="index">
+                                    <td>{{ getTenThuoc(item.id_thuoc) }}</td>
                                     <td><input type="number" class="form-control" v-model.number="item.so_luong" /></td>
                                     <td><input type="number" class="form-control" v-model.number="item.gia_nhap" /></td>
                                     <td><input type="date" class="form-control" v-model="item.han_su_dung" /></td>
-                                    <td>{{ (item.so_luong * item.gia_nhap).toLocaleString() }}</td>
-                                    <td><button class="btn btn-danger btn-sm" @click="xoaDong(index)">Xoá</button></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="4" class="text-end fw-bold">Tổng tiền:</td>
-                                    <td class="fw-bold text-danger">{{ tinhTongTien().toLocaleString() }} VND</td>
-                                    <td></td>
                                 </tr>
                             </tbody>
                         </table>
-
-                        <div class="d-flex justify-content-between">
-                            <button class="btn btn-secondary" v-on:click="themDong()">+ Thêm dòng thuốc</button>
-                            <button class="btn btn-warning text-white" v-on:click="capNhatPhieu()">Cập nhật phiếu</button>
-                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button class="btn btn-warning" v-on:click="capNhat()" data-bs-dismiss="modal">Cập
+                            nhật</button>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 </template>
 
@@ -348,7 +308,7 @@ export default {
                     this.listThuoc = res.data.thuoc;
                 });
         },
-        suaPhieu(phieu) {
+        capnhat(){
 
         },
         timkiem() {
