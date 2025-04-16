@@ -177,7 +177,6 @@ const routes = [
         component: ()=>import('../components/Client/DangNhapDangKy/index.vue'),
         meta: {layout:'dangNhap'},
     },
-    
     {
         path : '/admin/ql-luong',
         component: ()=>import('../components/Admin/QLLuong/index.vue'),
