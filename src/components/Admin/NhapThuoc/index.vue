@@ -71,7 +71,7 @@
                 <h5 class="mb-0 text-white">DANH SÁCH PHIẾU NHẬP</h5>
             </div>
             <div class="d-flex justify-content-between align-items-center my-3 flex-wrap gap-2">
-                <!-- TÌM KIẾM BÊN TRÁI -->
+                <!-- TÌM KIẾM -->
                 <div class="input-group ms-3" style="max-width: 350px;">
                     <input v-model="tim_kiem.noi_dung" type="text" class="form-control"
                         placeholder="Nhập tên kho hoặc nhà cung cấp...">
@@ -80,7 +80,7 @@
                     </button>
                 </div>
 
-                <!-- LỌC NGÀY BÊN PHẢI -->
+                <!-- LỌC NGÀY -->
                 <div class="d-flex align-items-center gap-2">
                     <label class="me-1 mb-0">Từ:</label>
                     <input v-model="loc_ngay.tu_ngay" type="date" class="form-control form-control-sm">
@@ -105,7 +105,7 @@
                             <th>Ngày nhập</th>
                             <th>Số thuốc</th>
                             <th>Tổng tiền</th>
-                            <th>Chi tiết</th>
+                            <th>Hành động</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -118,6 +118,9 @@
                             <td>{{ tinhTong(phieu.chi_tiet).toLocaleString() }} VND</td>
                             <td>
                                 <button class="btn btn-info btn-sm" v-on:click="xemChiTiet(phieu)">Chi tiết</button>
+                                <button class="btn btn-warning btn-sm ms-2" data-bs-toggle="modal"
+                                    data-bs-target="#modalSuaPhieu"
+                                    v-on:click="Object.assign(update_phieu, phieu)">Sửa</button>
                                 <button v-on:click="Object.assign(del_phieu, phieu)" class="btn btn-danger btn-sm ms-2"
                                     data-bs-toggle="modal" data-bs-target="#modalXacNhanXoa">Xóa</button>
                             </td>
@@ -215,6 +218,44 @@
                 </div>
             </div>
         </div>
+        <!-- modal sua phieu -->
+        <!-- Modal sửa chi tiết thuốc -->
+        <div class="modal fade" id="modalSuaPhieu" tabindex="-1" ref="modalSuaChiTiet">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-white">
+                        <h5 class="modal-title">Sửa danh sách thuốc</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-bordered text-center">
+                            <thead>
+                                <tr>
+                                    <th>Thuốc</th>
+                                    <th>Số lượng</th>
+                                    <th>Giá nhập</th>
+                                    <th>Hạn sử dụng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item, index) in update_phieu.chi_tiet" :key="index">
+                                    <td>{{ getTenThuoc(item.id_thuoc) }}</td>
+                                    <td><input type="number" class="form-control" v-model.number="item.so_luong" /></td>
+                                    <td><input type="number" class="form-control" v-model.number="item.gia_nhap" /></td>
+                                    <td><input type="date" class="form-control" v-model="item.han_su_dung" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button class="btn btn-warning" v-on:click="capNhat()" data-bs-dismiss="modal">Cập
+                            nhật</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -231,6 +272,7 @@ export default {
                 ngay_nhap: new Date().toISOString().slice(0, 10),
             },
             del_phieu: {},
+            update_phieu: {},
             chiTiet: [],
             danhSachPhieu: [],
             chiTietDangXem: [],
@@ -265,6 +307,9 @@ export default {
                     this.listNCC = res.data.ncc;
                     this.listThuoc = res.data.thuoc;
                 });
+        },
+        capnhat(){
+
         },
         timkiem() {
             axios
