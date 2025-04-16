@@ -58,7 +58,7 @@
                             <tr>
                                 <td class="text-center align-middle">1</td>
                                 <td class="text-center align-middle">{{ list_dv.ten_dv || '...' }}</td>
-                                <td class="text-center align-middle">{{ list_dv.gia_dv || '...' }}</td>
+                                <td class="text-center align-middle">{{ list_dv.gia || '...' }} VNĐ</td>
                                 <td class="text-center align-middle">
                                     <button class="btn btn-outline-secondary" data-bs-toggle="modal"
                                         data-bs-target="#info">Chi tiết</button>
