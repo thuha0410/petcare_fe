@@ -8,22 +8,23 @@
         </div>
         <div class="card-body ">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Tìm kiếm"
-                    aria-label="Recipient's username" aria-describedby="button-addon2">
-                <button class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
+                <input type="text" class="form-control" placeholder="Tìm kiếm" aria-label="Recipient's username"
+                    aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i
+                        class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
             </div>
             <div class="table table-responsive">
                 <table class="table table-bordered">
                     <thead>
                         <tr class="text-center align-middle text-nowrap">
                             <th>#</th>
-                            <th>ID khách hàng</th>
+                            <th>Tên khách hàng</th>
                             <th>Tên pet</th>
                             <th>Chủng loại</th>
                             <th>Giới tính</th>
                             <th>Tuổi</th>
                             <th>Hình ảnh</th>
-                            <th>Cân nặng</th>
+                            <th>Cân nặng(kg)</th>
                             <th>Tình trạng</th>
                             <th>Action</th>
                         </tr>
@@ -32,13 +33,13 @@
                         <template v-for="(value, index) in ds_pet" :key="index">
                             <tr class="text-center align-middle text-nowrap">
                                 <th>{{ index + 1 }}</th>
-                                <td>{{ value.id_kh }}</td>
+                                <td>{{ value.ho_va_ten }}</td>
                                 <td>{{ value.ten_pet }}</td>
-                                <td>{{ value.chung_loai }}</td>
-                                <td>{{ value.gioi_tinh }}</td>
+                                <td>{{ value.chung_loai === 1 ? 'Mèo' : 'Chó' }}</td>
+                                <td>{{ value.gioi_tinh === 1 ? 'Cái' : 'Đực' }}</td>
                                 <td>{{ value.tuoi }}</td>
                                 <td>
-                                    <img class="img-fluid" style="height: 100px;" :src="value.hinh_anh" alt="">
+                                    <img class=" img-fluid" style="height: 100px; width: 100px;" :src="value.hinh_anh" alt="">
                                 </td>
                                 <td>{{ value.can_nang }}</td>
                                 <td>
@@ -51,7 +52,7 @@
                                     <button v-on:click="Object.assign(sua_pet, value)" data-bs-toggle="modal"
                                         data-bs-target="#sua" class="btn btn-primary">Sửa</button>
                                     <button v-on:click="Object.assign(xoa_pet, value)" data-bs-toggle="modal"
-                                        data-bs-target="#xoa" class="btn btn-danger">Xoá</button>
+                                        data-bs-target="#xoa" class="btn btn-danger ms-2">Xoá</button>
                                 </td>
                             </tr>
                         </template>
@@ -60,6 +61,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="them" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -72,7 +74,11 @@
                     <label for="">Tên pet</label>
                     <input v-model="pet.ten_pet" class="form-control mb-2" type="text">
                     <label for="">Chủng loại</label>
-                    <input v-model="pet.chung_loai" class="form-control mb-2" type="text">
+                    <select v-model="pet.chung_loai" class="form-control mb-2" name="" id="">
+                        <option value="0">Mèo</option>
+                        <option value="1">Chó</option>
+                    </select>
+                    <!-- <input v-model="pet.chung_loai" class="form-control mb-2" type="text"> -->
                     <label for="">Giới tính</label>
                     <select v-model="pet.gioi_tinh" class="form-control mb-2" name="" id="">
                         <option value="0">Đực</option>
@@ -91,12 +97,14 @@
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" v-on:click="them()" class="btn btn-primary" data-bs-dismiss="modal">Thêm</button>
+                    <button type="button" v-on:click="them()" class="btn btn-primary"
+                        data-bs-dismiss="modal">Thêm</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="xoa" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xlg">
             <div class="modal-content">
@@ -113,6 +121,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="sua" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -120,12 +129,15 @@
                     <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">CẬP NHẬT THÔNG TIN</h1>
                 </div>
                 <div class="modal-body">
-                    <label for="">ID khách hàng</label>
+                    <label for="">Ten khách hàng</label>
                     <input v-model="sua_pet.id_kh" class="form-control mb-2" type="text">
                     <label for="">Tên pet</label>
                     <input v-model="sua_pet.ten_pet" class="form-control mb-2" type="text">
                     <label for="">Chủng loại</label>
-                    <input v-model="sua_pet.chung_loai" class="form-control mb-2" type="text">
+                    <select v-model="sua_pet.chung_loai" class="form-control mb-2" name="" id="">
+                        <option value="0">Mèo</option>
+                        <option value="1">Chó</option>
+                    </select>
                     <label for="">Giới tính</label>
                     <select v-model="sua_pet.gioi_tinh" class="form-control mb-2" name="" id="">
                         <option value="0">Đực</option>
@@ -135,7 +147,7 @@
                     <input v-model="sua_pet.tuoi" class="form-control mb-2" type="text">
                     <label for="">Hình ảnh</label>
                     <!-- <img class="form-control" :src="pet.hinh_anh" alt=""> -->
-                     <input v-model="sua_pet.hinh_anh" type="text">
+                    <input v-model="sua_pet.hinh_anh" type="text">
                     <label for="">Cân nặng</label>
                     <input v-model="sua_pet.can_nang" class="form-control mb-2" type="text">
                     <label for="">Tình trạng</label>
@@ -145,7 +157,8 @@
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" v-on:click="sua()" data-bs-dismiss="modal">Cập nhật</button>
+                    <button type="button" class="btn btn-primary" v-on:click="sua()" data-bs-dismiss="modal">Cập
+                        nhật</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
@@ -159,9 +172,7 @@ const toaster = createToaster({ position: "top-right" });
 export default {
     data() {
         return {
-            ds_pet: [
-
-            ],
+            ds_pet: [],
             pet: {
                 "id_kh": "",
                 'ten_pet': "",
@@ -172,23 +183,19 @@ export default {
                 'can_nang': "",
                 'tinh_trang': "",
             },
+            list_khach_hang: [],
             xoa_pet: {},
             sua_pet: {},
         }
     },
     mounted() {
         this.loadData();
+        this.loadKhachHang();
     },
     methods: {
         them() {
             axios
-                .post('http://127.0.0.1:8000/api/them-pet', this.pet,
-                    //  {
-                    //     headers: {
-                    //         Authorization: 'Bearer ' + localStorage.getItem('token_admin')
-                    //     }
-                    // }
-                )
+                .post('http://127.0.0.1:8000/api/them-pet', this.pet )
                 .then(
                     (res) => {
                         if (res.data.status == 1)
@@ -233,28 +240,25 @@ export default {
         },
         loadData() {
             axios
-                .get('http://127.0.0.1:8000/api/load-pet',
-                    // {
-                    //     headers: {
-                    //         Authorization: 'Bearer ' + localStorage.getItem('token_admin')
-                    //     }
-                    // }
-                )
+                .get('http://127.0.0.1:8000/api/load-pet')
                 .then(
                     (res) => {
                         this.ds_pet = res.data.data;
                     }
                 )
         },
+        loadKhachHang(){
+            axios
+                .get("http://127.0.0.1:8000/api/khach-hang/load", {
+                })
+                .then((res) => {
+                    this.list_khach_hang = res.data.data
+                    console.log(this.list_khach_hang);
+                });
+        },
         doitt(x) {
             axios
-                .post('http://127.0.0.1:8000/api/thay-doi-tt-pet', x,
-                    // {
-                    //     headers: {
-                    //         Authorization: 'Bearer ' + localStorage.getItem('token_admin')
-                    //     }
-                    // }
-                )
+                .post('http://127.0.0.1:8000/api/thay-doi-tt-pet', x)
                 .then(
                     (res) => {
                         if (res.data.status == 1)
