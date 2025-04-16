@@ -82,7 +82,9 @@
                                 <p class="text-success m-0">
                                     <i class="fa-solid fa-shield-cat"></i> PetCare
                                 </p>
-                                <button class="btn btn-info text-white ">Đặt ngay</button>
+                                <router-link :to="`/client/chon-dich-vu/` + value.id">
+                                    <button class="btn btn-info text-white ">Đặt ngay</button>
+                                </router-link>
                             </div>
                         </div>
                     </div>
