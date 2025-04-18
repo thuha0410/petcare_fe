@@ -24,8 +24,8 @@
     <!-- search -->
     <div class="container mt-2 d-flex justify-content-center">
         <div class="input-group" style="max-width: 600px; height: 50px;">
-            <input v-model="tim_kiem.noi_dung" type="text" class="form-control rounded-start-pill" placeholder="Tìm kiếm dịch vụ..."
-                aria-label="Search">
+            <input v-model="tim_kiem.noi_dung" type="text" class="form-control rounded-start-pill"
+                placeholder="Tìm kiếm dịch vụ..." aria-label="Search">
             <button v-on:click="timkiem()" class="btn btn-primary rounded-end-pill" type="button">
                 <i class="fas fa-search"></i> <!-- Biểu tượng kính lúp -->
             </button>
@@ -41,12 +41,12 @@
         <template v-for="(value, index) in list_dich_vu" :key="index">
             <div class="col-lg-2"></div>
             <div class="col-lg-8">
-                <div class="card">
-                    <div class="row" style="padding: 20px;">
-                        <div class="col-lg-3">
-                            <img :src="value.hinh_anh" alt="" class="rounded-circle p-1 bg-primary" width="250">
+                <div class="card p-3">
+                    <div class="row align-items-center" style="padding: 20px;">
+                        <div class="col-lg-4 d-flex justify-content-center">
+                            <img :src="value.hinh_anh" alt="" class="img-fluid rounded" style="width: 250px; ">
                         </div>
-                        <div class="col-lg-9">
+                        <div class="col-lg-8">
                             <h3 class="fw-bold" style="color: darkblue;">{{ value.ten_dv }}</h3>
                             <p style="font-size: 20px;">{{ value.mo_ta }}</p>
                             <p style="font-size: 25px;" class="text-danger fw-bold">
@@ -100,7 +100,7 @@ export default {
                 })
         },
     },
-    
+
 };
 
 </script>
