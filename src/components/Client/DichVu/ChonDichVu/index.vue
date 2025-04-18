@@ -72,6 +72,7 @@
             </div>
 
             <!-- Chọn giờ -->
+            <!-- Chọn giờ -->
             <div class="card mt-3" v-if="selectedDate && showCalendar">
                 <div class="card-header" style="background-color: darkblue;">
                     <h3 class="text-white text-center">Chọn giờ</h3>
@@ -82,13 +83,16 @@
                         {{ time }}
                     </button>
                 </div>
+                <div class="text-center mb-3">
+                    <button class="btn btn-success mt-2" @click="xacNhanLichHen" :disabled="!selectedTime">
+                        Xác nhận lịch hẹn
+                    </button>
+                </div>
             </div>
         </div>
-
         <div class="col-lg-1"></div>
     </div>
 </template>
-
 <script>
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -99,7 +103,7 @@ export default {
     components: { FullCalendar },
     data() {
         return {
-            id : this.$route.params.id,
+            id: this.$route.params.id,
             list_dv: {},
             showCalendar: false,
             selectedDate: null,
