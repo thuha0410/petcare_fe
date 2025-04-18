@@ -34,8 +34,7 @@
         <!-- template bac si -->
         <template v-for="(value, index) in list_nhan_vien" :key="index">
             <div class="col">
-                <router-link to="/client/xem-bs">
-
+                <router-link :to="'/client/xem-bs/' + value.id">
                     <div class="card card-hv radius-15">
                         <div class="card-body text-center">
                             <div class="p-4 border radius-15">
