@@ -5,7 +5,7 @@
         </div>
         <div class="card-body">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" v-model="tim_kiem.noi_dung" placeholder="Tìm kiếm"
+                <input type="text" class="form-control" v-model="tim_kiem.noi_dung" @input="timkiem" placeholder="Tìm kiếm"
                     aria-label="Recipient's username" aria-describedby="button-addon2">
 
                 <button v-on:click="timkiem()" class="btn btn-outline-secondary text-dark" type="button"

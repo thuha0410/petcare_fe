@@ -8,8 +8,8 @@
         </div>
         <div class="card-body ">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Tìm kiếm" aria-label="Recipient's username"
-                    aria-describedby="button-addon2">
+                <input v-model="tim_kiem.noi_dung" @input="timkiem" type="text" class="form-control"
+                    placeholder="Tìm kiếm" aria-label="Recipient's username" aria-describedby="button-addon2">
                 <button v-on:click="timkiem()" class="btn btn-outline-secondary text-dark" type="button"
                     id="button-addon2"><i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
             </div>
@@ -102,8 +102,9 @@
                     <input v-model="nhan_vien.email" class="form-control mb-2" type="text">
                     <label for="">Password</label>
                     <input v-model="nhan_vien.password" class="form-control mb-2" type="password">
-                    <label for="">Tiền khám</label>
-                    <input v-model="nhan_vien.tien_kham" class="form-control mb-2" type="text">
+                        <label for="">Tiền khám</label>
+                        <input v-model="nhan_vien.tien_kham" class="form-control mb-2" type="text">
+                    
                     <label for="">Mô tả</label>
                     <input v-model="nhan_vien.mo_ta" class="form-control mb-2" type="text">
                     <label for="">Tình trạng</label>
@@ -221,7 +222,7 @@ export default {
     },
     mounted() {
         this.load(),
-        this.loadChucVu()
+            this.loadChucVu()
     },
     methods: {
         load() {
@@ -257,6 +258,7 @@ export default {
                             'hinh_anh': '',
                             'tinh_trang': '',
                             'id_chucvu': '',
+                            'is_bac_si': ''
                         }
                     } else {
                         toaster.error('Thêm mới thất bại')
