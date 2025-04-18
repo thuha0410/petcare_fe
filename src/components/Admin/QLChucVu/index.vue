@@ -4,7 +4,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between text-nowrap ">
                     <h3 class="text-dark" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif;">
-                    NHẬP THÔNG TIN    
+                        NHẬP THÔNG TIN
                     </h3>
                 </div>
                 <div class="card-body ">
@@ -17,7 +17,8 @@
                     </select>
                 </div>
                 <div class="card-footer text-end">
-                    <button v-on:click="them()" type="button" class="btn btn-outline-primary px-5 radius-30 ">Thêm</button>
+                    <button v-on:click="them()" type="button"
+                        class="btn btn-outline-primary px-5 radius-30 ">Thêm</button>
                 </div>
             </div>
         </div>
@@ -25,7 +26,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between text-nowrap ">
                     <h3 class="text-dark" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif;">
-                    DANH SÁCH CHỨC VỤ    
+                        DANH SÁCH CHỨC VỤ
                     </h3>
                 </div>
                 <div class="card-body ">

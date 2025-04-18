@@ -1,23 +1,31 @@
 <template>
-    <div class="container">
-        <div class="card p-4 my-4 shadow">
-            <h3 class="mb-3">ĐÁNH GIÁ DỊCH VỤ NGAY <i class="fa-solid fa-comment" style="color: #2c60ba;"></i></h3>
-            <!-- Hiển thị tên người dùng -->
-            <div class="mb-2">
-                <i class="fa-solid fa-circle-user me-2 fa-2x" style="color: #2963c7;"></i>
-                <label class="text-black" style="font-size: 18px;" for="">Tên người dùng</label>
+    <div class="container mt-5">
+        <div class="card p-4 shadow-sm" style="background-color: #e9f0fc; border-radius: 16px; border: none;">
+            <!-- Tiêu đề -->
+            <h3 class="mb-4 fw-bold text-primary d-flex align-items-center">
+                <i class="fa-solid fa-comment-dots me-2"></i>
+                Đánh giá dịch vụ ngay
+            </h3>
+
+            <!-- Thông tin người dùng -->
+            <div class="d-flex align-items-center mb-3">
+                <i class="fa-solid fa-circle-user fa-2x me-3 text-primary"></i>
+                <label class="mb-0 fs-5 text-dark">Tên người dùng</label>
             </div>
-            <!-- Nhập bình luận -->
-            <div class="mb-3">
-                <textarea class="form-control" rows="3" v-model="comment"
-                    placeholder="Nhập bình luận của bạn..."></textarea>
+
+            <!-- Ô nhập bình luận -->
+            <div class="mb-4">
+                <textarea class="form-control" rows="4" v-model="comment" placeholder="Nhập bình luận của bạn..."
+                    style="resize: none; border-radius: 12px;"></textarea>
             </div>
+
             <!-- Nút gửi -->
             <p class="text-end"><button v-on:click="them()" style="width: 130px;" class="btn btn-primary">Gửi đánh giá</button></p>
             <!-- Danh sách đánh giá đã gửi
     </div> -->
         </div>
     </div>
+
     <div class="container-fluid bd-footer py-4 py-md-5 mt-5 bg-body-tertiary" style="background-color: #1F365E;">
 
         <div class="container">
