@@ -238,11 +238,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(item, index) in update_phieu.chi_tiet" :key="index">
-                                    <td>{{ getTenThuoc(item.id_thuoc) }}</td>
-                                    <td><input type="number" class="form-control" v-model.number="item.so_luong" /></td>
-                                    <td><input type="number" class="form-control" v-model.number="item.gia_nhap" /></td>
-                                    <td><input type="date" class="form-control" v-model="item.han_su_dung" /></td>
+                                <tr v-for="(value, index) in update_phieu.chi_tiet" :key="index">
+                                    <td>{{ getTenThuoc(value.id_thuoc) }}</td>
+                                    <td><input type="number" class="form-control" v-model.number="value.so_luong" />
+                                    </td>
+                                    <td><input type="number" class="form-control" v-model.number="value.gia_nhap" />
+                                    </td>
+                                    <td><input type="date" class="form-control" v-model="value.han_su_dung" /></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -272,7 +274,10 @@ export default {
                 ngay_nhap: new Date().toISOString().slice(0, 10),
             },
             del_phieu: {},
-            update_phieu: {},
+            update_phieu: {
+                id: null,
+                chi_tiet: [],
+            },
             chiTiet: [],
             danhSachPhieu: [],
             chiTietDangXem: [],
@@ -281,8 +286,8 @@ export default {
             listThuoc: [],
             thuocNhap: {
                 id_thuoc: '',
-                so_luong: 1,
-                gia_nhap: 1000,
+                so_luong: '',
+                gia_nhap: '',
                 han_su_dung: '',
             },
             tim_kiem: {
@@ -308,8 +313,21 @@ export default {
                     this.listThuoc = res.data.thuoc;
                 });
         },
-        capnhat(){
-
+        capnhat() {
+            axios
+                .post("http://127.0.0.1:8000/api/phieu-nhap/update", this.update_phieu)
+                .then((res) => {
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message);
+                        this.loadPhieu();     // reload danh sách phiếu
+                        this.loadTonKho();    // reload bảng tồn kho !!!
+                    } else {
+                        toaster.error("Cập nhật thất bại");
+                    }
+                })
+                .catch((err) => {
+                    toaster.error("Lỗi: " + err.message);
+                });
         },
         timkiem() {
             axios
