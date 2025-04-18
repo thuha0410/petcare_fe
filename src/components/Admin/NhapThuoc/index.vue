@@ -313,14 +313,13 @@ export default {
                     this.listThuoc = res.data.thuoc;
                 });
         },
-        capnhat() {
+        capNhat() {
             axios
                 .post("http://127.0.0.1:8000/api/phieu-nhap/update", this.update_phieu)
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message);
                         this.loadPhieu();     // reload danh sách phiếu
-                        this.loadTonKho();    // reload bảng tồn kho !!!
                     } else {
                         toaster.error("Cập nhật thất bại");
                     }

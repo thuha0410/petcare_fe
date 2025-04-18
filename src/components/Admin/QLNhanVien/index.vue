@@ -39,7 +39,10 @@
                                         :src="value.hinh_anh">
                                 </td>
                                 <td>{{ value.email }}</td>
-                                <td>{{ value.tien_kham }}</td>
+                                <td>
+                                    <span v-if="value.ten_chuc_vu === 'Bác sĩ'">{{ value.tien_kham }}</span>
+                                    <span v-else>-</span>
+                                </td>
                                 <td class="text-center align-middle">
                                     <span data-bs-toggle="modal" data-bs-target="#mota"><i
                                             class="fa-solid fa-2x fa-circle-exclamation"
@@ -92,7 +95,7 @@
                     <label for="">Họ và tên</label>
                     <input v-model="nhan_vien.ten_nv" class="form-control mb-2" type="text">
                     <label for="">Giới tính</label>
-                    <select v-model="nhan_vien.gioi_tinh" class="form-control mb-2" name="" id="">
+                    <select v-model="nhan_vien.gioi_tinh" class="form-control mb-2 form-select" name="" id="">
                         <option value="0">Nam</option>
                         <option value="1">Nữ</option>
                     </select>
@@ -102,8 +105,6 @@
                     <input v-model="nhan_vien.email" class="form-control mb-2" type="text">
                     <label for="">Password</label>
                     <input v-model="nhan_vien.password" class="form-control mb-2" type="password">
-                    <label for="">Tiền khám</label>
-                    <input v-model="nhan_vien.tien_kham" class="form-control mb-2" type="text">
                     <label for="">Mô tả</label>
                     <input v-model="nhan_vien.mo_ta" class="form-control mb-2" type="text">
                     <label for="">Tình trạng</label>
@@ -112,10 +113,15 @@
                         <option value="1">Hoạt động</option>
                     </select>
                     <label for="">Tên chức vụ</label>
-                    <select v-model="nhan_vien.ten_chuc_vu" class="form-control mb-2 form-select" name="" id="">
-                        <option value="1">Bác sĩ</option>
-                        <option value="2">Nhân viên</option>
+                    <select v-model="nhan_vien.id_chucvu" class="form-control mb-2 form-select" name="" id="">
+                        <template v-for="(value, index) in list_chuc_vu" :key="index">
+                            <option v-bind:value="value.id">{{ value.ten_chuc_vu }}</option>
+                        </template>
                     </select>
+                    <div class="" v-if="isBacSi(nhan_vien.id_chucvu)">
+                        <label for="">Tiền khám</label>
+                        <input v-model="nhan_vien.tien_kham" class="form-control mb-2" type="number">
+                    </div>
                     <!-- <input v-model="nhan_vien.id_chucvu" class="form-control mb-2" type="text"> -->
                 </div>
                 <div class="modal-footer">
@@ -164,8 +170,7 @@
                     <input v-model="update_nhan_vien.email" class="form-control mb-2" type="text">
                     <label for="">Password</label>
                     <input v-model="update_nhan_vien.password" class="form-control mb-2" type="password">
-                    <label for="">Tiền khám</label>
-                    <input v-model="update_nhan_vien.tien_kham" class="form-control mb-2" type="text">
+
                     <label for="">Mô tả</label>
                     <textarea v-model="update_nhan_vien.mo_ta" class="form-control mb-2" name="" id="" cols="10"
                         rows="10"></textarea>
@@ -175,10 +180,16 @@
                         <option value="1">Hoạt động</option>
                     </select>
                     <label for="">Tên chức vụ</label>
-                    <select v-model="update_nhan_vien.ten_chuc_vu" class="form-control mb-2 form-select" name="" id="">
-                        <option value="1">Bác sĩ</option>
-                        <option value="2">Nhân viên</option>
+                    <select v-model="update_nhan_vien.id_chucvu" class="form-control mb-2 form-select" name="" id="">
+                        <template v-for="(value, index) in list_chuc_vu" :key="index">
+                            <option v-bind:value="value.id">{{ value.ten_chuc_vu }}</option>
+                        </template>
                     </select>
+                    <div class="" v-if="isBacSi(update_nhan_vien.id_chucvu)">
+                        <label for="">Tiền khám</label>
+                        <input v-model="update_nhan_vien.tien_kham" class="form-control mb-2" type="number">
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button v-on:click="update()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cập
@@ -221,7 +232,7 @@ export default {
     },
     mounted() {
         this.load(),
-        this.loadChucVu()
+            this.loadChucVu()
     },
     methods: {
         load() {
@@ -230,6 +241,10 @@ export default {
                 .then((res) => {
                     this.list_nhan_vien = res.data.data
                 })
+        },
+        isBacSi(idChucVu) {
+            const chucVu = this.list_chuc_vu.find(c => c.id === idChucVu);
+            return chucVu && chucVu.ten_chuc_vu === 'Bác sĩ';
         },
         loadChucVu() {
             axios
