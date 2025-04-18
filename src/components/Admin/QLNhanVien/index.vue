@@ -35,7 +35,7 @@
                                 <th>{{ index + 1 }}</th>
                                 <td>{{ value.ten_nv }}</td>
                                 <td>{{ value.gioi_tinh === 1 ? 'Nữ' : 'Nam' }}</td>
-                                <td><img style="height: 100px; width: 100px;" class="rounded-circle img-fluid"
+                                <td><img style="height: 110px; width: 100px;" class="rounded-circle img-fluid"
                                         :src="value.hinh_anh">
                                 </td>
                                 <td>{{ value.email }}</td>
@@ -50,7 +50,7 @@
                                         class="btn btn-secondary">Nghỉ</button>
                                     <button v-on:click="doiTT(value)" v-else class="btn btn-success">Hoạt động</button>
                                 </td>
-                                <td>{{ value.id_chucvu }}</td>
+                                <td>{{ value.ten_chuc_vu }}</td>
                                 <td>
                                     <button v-on:click="Object.assign(update_nhan_vien, value)" data-bs-toggle="modal"
                                         data-bs-target="#capnhat" style="width:100px ;" class="btn btn-primary me-2">Cập
@@ -111,8 +111,12 @@
                         <option value="0">Nghỉ</option>
                         <option value="1">Hoạt động</option>
                     </select>
-                    <label for="">Mã chức vụ</label>
-                    <input v-model="nhan_vien.id_chucvu" class="form-control mb-2" type="text">
+                    <label for="">Tên chức vụ</label>
+                    <select v-model="nhan_vien.ten_chuc_vu" class="form-control mb-2 form-select" name="" id="">
+                        <option value="1">Bác sĩ</option>
+                        <option value="2">Nhân viên</option>
+                    </select>
+                    <!-- <input v-model="nhan_vien.id_chucvu" class="form-control mb-2" type="text"> -->
                 </div>
                 <div class="modal-footer">
                     <button v-on:click="them()" type="button" class="btn btn-primary"
@@ -170,8 +174,11 @@
                         <option value="0">Nghỉ</option>
                         <option value="1">Hoạt động</option>
                     </select>
-                    <label for="">Mã chức vụ</label>
-                    <input v-model="update_nhan_vien.id_chucvu" class="form-control mb-2" type="text">
+                    <label for="">Tên chức vụ</label>
+                    <select v-model="update_nhan_vien.ten_chuc_vu" class="form-control mb-2 form-select" name="" id="">
+                        <option value="1">Bác sĩ</option>
+                        <option value="2">Nhân viên</option>
+                    </select>
                 </div>
                 <div class="modal-footer">
                     <button v-on:click="update()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cập
@@ -203,6 +210,7 @@ export default {
                 'id_chucvu': '',
             },
             list_nhan_vien: [],
+            list_chuc_vu: [],
             del_nhan_vien: {},
             update_nhan_vien: {},
             chi_tiet_nv: {},
@@ -212,7 +220,8 @@ export default {
         }
     },
     mounted() {
-        this.load()
+        this.load(),
+        this.loadChucVu()
     },
     methods: {
         load() {
@@ -221,6 +230,15 @@ export default {
                 .then((res) => {
                     this.list_nhan_vien = res.data.data
                 })
+        },
+        loadChucVu() {
+            axios
+                .get("http://127.0.0.1:8000/api/chuc-vu/load", {
+                })
+                .then((res) => {
+                    this.list_chuc_vu = res.data.data
+                    console.log(this.list_chuc_vu);
+                });
         },
         them() {
             axios
