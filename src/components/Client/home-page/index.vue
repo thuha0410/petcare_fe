@@ -19,101 +19,50 @@
             </p> <router-link to="/client/dat-lich">
                 <button class="btn btn-primary btn-lg custom-btn">ĐẶT LỊCH NGAY</button>
             </router-link>
-            
+
             <p class="text-white mt-2">Hãy bảo vệ sức khỏe thú cưng ngay hôm nay!</p>
         </div>
     </div>
     <!-- list bac si -->
     <br>
-   
     <br>
     <br><br>
     <!-- ds bac si -->
-    <h3 class="text-center text-gray fw-bold">DANH SÁCH BÁC SĨ CỦA PHÒNG KHÁM</h3>
+    <h3 style="color: darkblue;" class="text-center text-gray fw-bold">DANH SÁCH BÁC SĨ CỦA PHÒNG KHÁM</h3>
     <br>
     <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-4">
         <!-- template bac si -->
-        <div class="col">
-            <router-link to="/client/xem-bs">
-                <div class="card card-hv radius-15">
-                <div class="card-body text-center">
-                    <div class="p-4 border radius-15">
-                        <img src="https://png.pngtree.com/png-clipart/20200224/original/pngtree-cute-dog-avatar-with-a-yellow-background-png-image_5205692.jpg"
-                            width="110" height="110" class="rounded-circle shadow" alt="">
-                        <h5 class="mb-0 mt-5">ThS BS Nguyễn Thảo</h5>
-                        <p class="mb-3">Bác sĩ Đa khoa</p>
-                        <hr>
-                        <div>
-                            <i class="fa-solid fa-dollar-sign"></i> <span>200.000 VND</span>
-                        </div>
-                        <br>
-                        <div class="d-grid"> <a href="#" class="btn btn-outline-primary radius-15">Đặt lịch ngay</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </router-link>
-        </div>
-        <div class="col">
-            <div class="card card-hv radius-15">
-                <div class="card-body text-center">
-                    <div class="p-4 border radius-15">
-                        <img src="https://png.pngtree.com/png-clipart/20200224/original/pngtree-cute-dog-avatar-with-a-yellow-background-png-image_5205692.jpg"
-                            width="110" height="110" class="rounded-circle shadow" alt="">
-                        <h5 class="mb-0 mt-5">ThS BS Nguyễn Thảo</h5>
-                        <p class="mb-3">Bác sĩ Đa khoa</p>
-                        <hr>
-                        <div>
-                            <i class="fa-solid fa-dollar-sign"></i> <span>200.000 VND</span>
-                        </div>
-                        <br>
-                        <div class="d-grid"> <a href="#" class="btn btn-outline-primary radius-15">Đặt lịch ngay</a>
+        <template v-for="(value, index) in list_nhan_vien" :key="index">
+            <div class="col">
+                <router-link to="/client/xem-bs">
+
+                    <div class="card card-hv radius-15">
+                        <div class="card-body text-center">
+                            <div class="p-4 border radius-15">
+                                <img :src="value.hinh_anh" width="100" height="130" class="rounded-circle shadow"
+                                    alt="">
+                                <h5 style="color: darkblue;" class="mb-0 mt-5">ThS. {{ value.ten_nv }}</h5>
+                                <p style="color: darkslateblue;">Yêu thú cưng như chính gia đình mình</p>
+                                <hr>
+                                <div style="color: red;"><span class="fw-bold"> {{ value.tien_kham }} VND</span>
+                                </div>
+                                <br>
+                                <div class="d-grid"> <a href="#" class="btn btn-outline-primary radius-15">Đặt lịch
+                                        ngay</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+
+                </router-link>
             </div>
-        </div>
-        <div class="col">
-            <div class="card card-hv radius-15">
-                <div class="card-body text-center">
-                    <div class="p-4 border radius-15">
-                        <img src="https://png.pngtree.com/png-clipart/20200224/original/pngtree-cute-dog-avatar-with-a-yellow-background-png-image_5205692.jpg"
-                            width="110" height="110" class="rounded-circle shadow" alt="">
-                        <h5 class="mb-0 mt-5">ThS BS Nguyễn Thảo</h5>
-                        <p class="mb-3">Bác sĩ Đa khoa</p>
-                        <hr>
-                        <div>
-                            <i class="fa-solid fa-dollar-sign"></i> <span>200.000 VND</span>
-                        </div>
-                        <br>
-                        <div class="d-grid"> <a href="#" class="btn btn-outline-primary radius-15">Đặt lịch ngay</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card card-hv radius-15">
-                <div class="card-body text-center">
-                    <div class="p-4 border radius-15">
-                        <img src="https://png.pngtree.com/png-clipart/20200224/original/pngtree-cute-dog-avatar-with-a-yellow-background-png-image_5205692.jpg"
-                            width="110" height="110" class="rounded-circle shadow" alt="">
-                        <h5 class="mb-0 mt-5">ThS BS Nguyễn Thảo</h5>
-                        <p class="mb-3">Bác sĩ Đa khoa</p>
-                        <hr>
-                        <div>
-                            <i class="fa-solid fa-dollar-sign"></i> <span>200.000 VND</span>
-                        </div>
-                        <br>
-                        <div class="d-grid"> <a href="#" class="btn btn-outline-primary radius-15">Đặt lịch ngay</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </template>
+
     </div>
-    <a class="text-center hover:text-dark" style="font-size: 25px;" href="/client/dat-lich-theo-bac-si">Xem thêm >></a>
+    <a class="text-center hover:text-dark" style="font-size: 25px;" href="/client/dat-lich-theo-bac-si"><button
+            class="btn btn-outline-primary rounded-pill">Xem thêm</button></a>
     <br>
+    <hr>
     <br>
     <!-- banner -->
     <div id="carouselExampleDark" class="carousel carousel-dark slide">
@@ -337,10 +286,32 @@
             <a class="" style="font-size: 25px;" href="">Xem thêm dịch vụ <i class="fa-solid fa-arrow-right"></i></a>
         </div>
     </router-link>
-    
+
 </template>
 <script>
+import axios from 'axios';
+
 export default {
+    data() {
+        return {
+            list_nhan_vien: [],
+        };
+
+    },
+    mounted() {
+        this.load()
+    },
+
+    methods: {
+        load() {
+            axios
+                .get('http://127.0.0.1:8000/api/dich-vu/load-bac-si')
+                .then((res) => {
+                    this.list_nhan_vien = res.data.data
+                })
+        },
+    },
+}
 //     data() {
 //     return {
 //       rating: 0,
@@ -369,7 +340,7 @@ export default {
 //       this.comment = '';
 //     }
 //   }
-}
+
 </script>
 <style>
 .custom-btn:hover {
