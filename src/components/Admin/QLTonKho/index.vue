@@ -101,8 +101,6 @@ export default {
     data() {
         return {
             list_ton_kho: [],
-            update_ton_kho: {},
-            del_ton_kho: {},
             list_kho: [],
             tim_kiem: {
                 noi_dung: ''

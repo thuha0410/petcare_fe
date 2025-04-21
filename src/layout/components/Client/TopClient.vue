@@ -95,9 +95,9 @@ export default {
         this.user = {
             name: localStorage.getItem("name_kh"),
             email: localStorage.getItem("email_kh"),
-            check: localStorage.getItem("check_kh")
-
+            KiemTraDN: localStorage.getItem("check_kh")
         }
+        console.log(this.user)
     },
     methods: {
         toggleNavbar() {
