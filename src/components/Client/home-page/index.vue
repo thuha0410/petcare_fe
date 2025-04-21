@@ -77,17 +77,17 @@
         <div class="carousel-inner">
             <div class="carousel-item active" data-bs-interval="10000">
                 <img src="https://res.cloudinary.com/dd1p908gm/image/upload/v1743317725/The_Art_of_Living_1_v4mew0.png"
-                    class="d-block w-100" style="height: 600px;" alt="...">
+                    class="d-block w-100" style="height: 700px;" alt="...">
 
             </div>
             <div class="carousel-item" data-bs-interval="2000">
                 <img src="https://res.cloudinary.com/dd1p908gm/image/upload/v1743326113/The_Art_of_Living_4_ghy2i4.png"
-                    class="d-block w-100" style="height: 600px;" alt="...">
+                    class="d-block w-100" style="height: 700px;" alt="...">
 
             </div>
             <div class="carousel-item">
                 <img src="https://res.cloudinary.com/dd1p908gm/image/upload/v1743320674/The_Art_of_Living_3_tuykwx.png"
-                    class="d-block w-100" style="height: 600px;" alt="...">
+                    class="d-block w-100" style="height: 700px;" alt="...">
 
             </div>
         </div>
@@ -283,7 +283,8 @@
     </div>
     <router-link to="/client/xem-dich-vu">
         <div class="text-center">
-            <a class="" style="font-size: 25px;" href="">Xem thêm dịch vụ <i class="fa-solid fa-arrow-right"></i></a>
+            <a class="text-center hover:text-dark" style="font-size: 25px;" href="/client/dat-lich-theo-bac-si"><button
+                class="btn btn-outline-primary rounded-pill">Xem thêm</button></a>
         </div>
     </router-link>
 
