@@ -19,7 +19,8 @@
                                     <td class="text-center align-middle">{{ index + 1 }}</td>
                                     <td class="text-center align-middle">{{ value.ten_chuc_vu }}</td>
                                     <td class="text-center align-middle">
-                                        <button v-on:click="Object.assign(chuc_vu, value)" class="btn btn-primary">Phân
+                                        <button v-on:click="Object.assign(chuc_vu, value), loadCQ()"
+                                            class="btn btn-primary">Thêm
                                             quyền</button>
                                     </td>
                                 </tr>
@@ -35,10 +36,11 @@
                 <div class="card-body">
                     <h4 class="ms-2">DANH SÁCH CHỨC NĂNG</h4>
                     <div class="input-group mb-3">
-                        <input v-model="tim_kiem.noi_dung" type="text" class="form-control"  placeholder="Tìm kiếm chức năng"
-                            aria-label="Recipient's username" aria-describedby="button-addon2">
-                        <button v-on:click="tim_kiem_chuc_nang()"  class="btn btn-outline-secondary text-dark" type="button"
-                            id="button-addon2"><i class="fa-solid fa-magnifying-glass"
+                        <input v-model="tim_kiem.noi_dung" type="text" class="form-control"
+                            placeholder="Tìm kiếm chức năng" aria-label="Recipient's username"
+                            aria-describedby="button-addon2">
+                        <button v-on:click="tim_kiem_chuc_nang()" class="btn btn-outline-secondary text-dark"
+                            type="button" id="button-addon2"><i class="fa-solid fa-magnifying-glass"
                                 style="color: #000000;"></i>Tìm</button>
                     </div>
                     <hr>
@@ -57,7 +59,7 @@
                                         <th>{{ index + 1 }}</th>
                                         <td>{{ value.ten_chuc_nang }}</td>
                                         <td>
-                                            <button v-on:click="CapQuyen(value.id)" class="btn btn-primary">Cấp
+                                            <button v-on:click="CapQuyen(value)" class="btn btn-primary">Cấp
                                                 quyền</button>
                                         </td>
                                     </tr>
@@ -79,19 +81,21 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr class="text-center text-nowrap align-middle">
-                                    <th>Tên chức vụ</th>
                                     <th>Tên chức năng</th>
+                                    <th>Tên chức vụ</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="text-center align-middle">
-                                    <th>Admin</th>
-                                    <td>Xem khóa học</td>
-                                    <td>
-                                        <button class="btn btn-danger">Xóa</button>
-                                    </td>
-                                </tr>
+                                <template v-for="(value, index) in list_daPhanQuyen" :key="index">
+                                    <tr class="text-center align-middle">
+                                        <th>{{ value.ten_chuc_nang }}</th>
+                                        <td>{{ value.ten_chuc_vu }}</td>
+                                        <td>
+                                            <button v-on:click="xoa(value)" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </template>
                             </tbody>
                         </table>
                     </div>
@@ -102,17 +106,26 @@
 </template>
 <script>
 import axios from 'axios'
-
+import { createToaster } from "@meforma/vue-toaster";
+const toaster = createToaster({ position: 'top-left' });
 export default {
     data() {
         return {
             list_chuc_nang: [],
             list_chuc_vu: [],
-            chuc_vu: {},
+            chuc_vu: {
+                ten_chuc_vu: null,
+            },
+            list_daPhanQuyen: [],
             tim_kiem: {
                 noi_dung: ''
             }
         }
+    },
+    mounted() {
+        this.load_chuc_vu(),
+            this.load_chuc_nang(),
+            this.loadCQ()
     },
     methods: {
         load_chuc_vu() {
@@ -129,17 +142,39 @@ export default {
                     this.list_chuc_nang = res.data.data
                 })
         },
+        loadCQ() {
+            axios
+                .post("http://127.0.0.1:8000/api/phan-quyen/load-cap-quyen", this.chuc_vu)
+                .then((res) => {
+                    this.list_daPhanQuyen = res.data.data
+                })
+        },
+        xoa(x) {
+            axios
+                .post("http://127.0.0.1:8000/api/phan-quyen/xoa", x)
+                .then((res) => {
+                    if (res.data.status == 1) {
+                        toaster.success(res.data.message)
+                        this.loadCQ()
+                    } else {
+                        toaster.error(res.data.message)
+
+                    }
+                });
+        },
         CapQuyen(x) {
+            console.log("Giá trị nhận được khi click Cấp quyền:", x);
             var payload = {
                 id_chuc_vu: this.chuc_vu.id,
-                id_chuc_nang: x.id,
+                id_chuc_nang: x.id
             }
+            console.log("Payload gửi đi:", payload);
             axios
-                .get('http://127.0.0.1:8000/api/phan-quyen/cap-quyen', payload)
+                .post('http://127.0.0.1:8000/api/phan-quyen/cap-quyen', payload)
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
-                        this.load_chuc_vu()
+                        this.loadCQ()
                     } else {
                         toaster.error('Cấp quyền thất bại')
                     }
@@ -152,11 +187,8 @@ export default {
                 })
                 .catch(() => console.error('Lỗi khi tìm kiếm'));
         }
-    },
-    mounted() {
-        this.load_chuc_vu(),
-            this.load_chuc_nang()
-    },
+    }
+
 }
 </script>
 <style></style>
