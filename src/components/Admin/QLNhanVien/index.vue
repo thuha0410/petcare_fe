@@ -104,7 +104,7 @@
                     <label for="">Email</label>
                     <input v-model="nhan_vien.email" class="form-control mb-2" type="text">
                     <label for="">Password</label>
-                    <input v-model="nhan_vien.password" class="form-control mb-2" type="password">
+                    <input v-model="nhan_vien.password" class="form-control mb-2" type="text">
                     <label for="">Mô tả</label>
                     <input v-model="nhan_vien.mo_ta" class="form-control mb-2" type="text">
                     <label for="">Tình trạng</label>
@@ -169,7 +169,7 @@
                     <label for="">Email</label>
                     <input v-model="update_nhan_vien.email" class="form-control mb-2" type="text">
                     <label for="">Password</label>
-                    <input v-model="update_nhan_vien.password" class="form-control mb-2" type="password">
+                    <input v-model="update_nhan_vien.password" class="form-control mb-2" type="text">
 
                     <label for="">Mô tả</label>
                     <textarea v-model="update_nhan_vien.mo_ta" class="form-control mb-2" name="" id="" cols="10"
@@ -233,15 +233,18 @@ export default {
     mounted() {
         this.load(),
             this.loadChucVu()
-            this.loadChucVu()
     },
     methods: {
         load() {
             axios
-                .get('http://127.0.0.1:8000/api/nhan-vien/load')
+                .get("http://127.0.0.1:8000/api/nhan-vien/load", {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    }
+                })
                 .then((res) => {
                     this.list_nhan_vien = res.data.data
-                })
+                });
         },
         isBacSi(idChucVu) {
             const chucVu = this.list_chuc_vu.find(c => c.id === idChucVu);
@@ -258,7 +261,11 @@ export default {
         },
         them() {
             axios
-                .post('http://127.0.0.1:8000/api/nhan-vien/them', this.nhan_vien)
+                .post('http://127.0.0.1:8000/api/nhan-vien/them', this.nhan_vien,{
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    }}
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -273,7 +280,6 @@ export default {
                             'hinh_anh': '',
                             'tinh_trang': '',
                             'id_chucvu': '',
-                            'is_bac_si': ''
                         }
                     } else {
                         toaster.error('Thêm mới thất bại')
@@ -286,7 +292,11 @@ export default {
         },
         xoa() {
             axios
-                .post('http://127.0.0.1:8000/api/nhan-vien/xoa', this.del_nhan_vien)
+                .post('http://127.0.0.1:8000/api/nhan-vien/xoa', this.del_nhan_vien,{
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    }}
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -298,7 +308,11 @@ export default {
         },
         update() {
             axios
-                .post('http://127.0.0.1:8000/api/nhan-vien/update', this.update_nhan_vien)
+                .post('http://127.0.0.1:8000/api/nhan-vien/update', this.update_nhan_vien,{
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    }}
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -312,7 +326,11 @@ export default {
         },
         doiTT(x) {
             axios
-                .post('http://127.0.0.1:8000/api/nhan-vien/doi-TT', x)
+                .post('http://127.0.0.1:8000/api/nhan-vien/doi-TT', x,{
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    }}
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -325,7 +343,11 @@ export default {
         },
         timkiem() {
             axios
-                .post('http://127.0.0.1:8000/api/nhan-vien/tim-kiem', this.tim_kiem)
+                .post('http://127.0.0.1:8000/api/nhan-vien/tim-kiem', this.tim_kiem,{
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    }}
+                )
                 .then((res) => {
                     this.list_nhan_vien = res.data.data
                 })
