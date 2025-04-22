@@ -1,50 +1,33 @@
 <template>
-  <div>
-    <!-- PHIẾU NHẬP THUỐC -->
-    <div class="card mb-4">
-      <div
-        class="card-header text-white d-flex justify-content-between"
-        style="background-color: darkblue"
-      >
-        <h5 class="mb-0 text-white fw-bold">PHIẾU NHẬP THUỐC</h5>
-      </div>
-      <div class="card-body">
-        <div class="row mb-3">
-          <div class="col-md-4">
-            <label class="form-label">Tên kho</label>
-            <select
-              v-model="phieuNhap.id_kho"
-              class="form-select"
-              :class="{ 'is-invalid': highlightWarning && !phieuNhap.id_kho }"
-            >
-              <option disabled value="">-- Chọn kho --</option>
-              <option v-for="kho in listKho" :key="kho.id" :value="kho.id">
-                {{ kho.ten_kho }}
-              </option>
-            </select>
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Tên nhà cung cấp</label>
-            <select
-              v-model="phieuNhap.id_ncc"
-              class="form-select"
-              :class="{ 'is-invalid': highlightWarning && !phieuNhap.id_ncc }"
-            >
-              <option disabled value="">-- Chọn nhà cung cấp --</option>
-              <option v-for="ncc in listNCC" :key="ncc.id" :value="ncc.id">
-                {{ ncc.ten_ncc }}
-              </option>
-            </select>
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Ngày nhập</label>
-            <input
-              type="date"
-              v-model="phieuNhap.ngay_nhap"
-              class="form-control"
-            />
-          </div>
-        </div>
+    <div class="container-fluid">
+        <!-- PHIẾU NHẬP THUỐC -->
+        <div class="card mb-4">
+            <div class="card-header text-white d-flex justify-content-between" style="background-color: darkblue;">
+                <h5 class="mb-0 text-white fw-bold">PHIẾU NHẬP THUỐC</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Tên kho</label>
+                        <select v-model="phieuNhap.id_kho" class="form-select"
+                            :class="{ 'is-invalid': highlightWarning && !phieuNhap.id_kho }">
+                            <option disabled value="">-- Chọn kho --</option>
+                            <option v-for="kho in listKho" :key="kho.id" :value="kho.id">{{ kho.ten_kho }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Tên nhà cung cấp</label>
+                        <select v-model="phieuNhap.id_ncc" class="form-select"
+                            :class="{ 'is-invalid': highlightWarning && !phieuNhap.id_ncc }">
+                            <option disabled value="">-- Chọn nhà cung cấp --</option>
+                            <option v-for="ncc in listNCC" :key="ncc.id" :value="ncc.id">{{ ncc.ten_ncc }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Ngày nhập</label>
+                        <input type="date" v-model="phieuNhap.ngay_nhap" class="form-control" />
+                    </div>
+                </div>
 
         <table class="table table-bordered">
           <thead class="text-center">
