@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container-fluid">
         <!-- PHIẾU NHẬP THUỐC -->
         <div class="card mb-4">
             <div class="card-header text-white d-flex justify-content-between" style="background-color: darkblue;">
