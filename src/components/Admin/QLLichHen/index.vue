@@ -26,23 +26,24 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <template>
+                        <template v-for="(value, index) in list_lich" :key="index">
                             <tr class="text-center align-middle">
-                                <th>1</th>
-                                <td>id123</td>
-                                <td>id123</td>
-                                <td>datetime</td>
-                                <td>id123</td>
-                                <td>300000</td>
+                                <th>{{ index + 1 }}</th>
+                                <td>{{ value.id_lich }}</td>
+                                <td>{{ value.ten_pet }}</td>
+                                <td>{{ value.ngay_gio_hen }}</td>
+                                <td>{{ value.ten_nv }}</td>
+                                <td>{{ value.tien_coc }}</td>
                                 <td>
-                                    <button class="btn btn-warning me-2">chờ duyệt</button>
-                                    <button class="btn btn-success ">đã xác nhận</button>
-                                    <button class='btn btn-danger ms-2'> đã hủy </button>
+                                    <button v-on:click="doiTT(value)" v-if="value.tinh_trang == 0"
+                                        class="btn btn-warning">Chờ duyệt</button>
+                                    <button v-on:click="doiTT(value)" v-else class="btn btn-success">Đã duyệt</button>
                                 </td>
                                 <td>
-                                    <button data-bs-toggle="modal" data-bs-target="#capnhat" style="width:100px;"
+                                    <button v-on:click="Object.assign(update_lich, value)" data-bs-toggle="modal"
+                                    data-bs-target="#capnhat" style="width:100px;"
                                         class="btn btn-primary me-2">Cập nhật</button>
-                                    <button data-bs-toggle="modal" data-bs-target="#xoa" style="width:100px;"
+                                    <button v-on:click="Object.assign(del_lich, value)" data-bs-toggle="modal" data-bs-target="#xoa" style="width:100px;"
                                         class="btn btn-danger ">Xóa</button>
                                 </td>
                             </tr>
@@ -53,45 +54,48 @@
         </div>
     </div>
     <div class="modal fade" id="xoa" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-xlg">
             <div class="modal-content">
                 <div class="modal-header bg-danger">
                     <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">THÔNG BÁO!</h1>
                 </div>
                 <div class="modal-body">
-                    <h5>Bạn có muốn xóa không?</h5>
+                    <h5>Bạn có muốn xóa lịch hẹn này không?</h5>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Xóa</button>
+                    <button v-on:click="xoa()" type="button" class="btn btn-danger" data-bs-dismiss="modal">Xóa</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="capnhat" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog ">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">CẬP NHẬT THÔNG TIN</h1>
                 </div>
                 <div class="modal-body">
-                    <label for="">Họ và tên</label>
-                    <input class="form-control mb-2" type="text">
-                    <label for="">Số điện thoại</label>
-                    <input class="form-control mb-2" type="text">
-                    <label for="">Email</label>
-                    <input class="form-control mb-2" type="text">
-                    <label for="">Ngày sinh</label>
-                    <input class="form-control mb-2" type="text">
+                    <label for="">Mã lịch hẹn</label>
+                    <input v-model="update_lich.id_lich" class="form-control mb-2" type="text">
+                    <label for="">Tên thú cưng</label>
+                    <input v-model="update_lich.ten_pet" class="form-control mb-2" type="text">
+                    <label for="">Ngày giờ hẹn</label>
+                    <input v-model="update_lich.ngay_gio_hen" class="form-control mb-2" type="text">
+                    <label for="">Tên bác sĩ</label>
+                    <input v-model="update_lich.ten_nv" class="form-control mb-2" type="password">
+                    <label for="">Tiền cọc</label>
+                    <input v-model="update_lich.tien_coc" class="form-control mb-2" type="text">
                     <label for="">Tình trạng</label>
-                    <select class="form-control mb-2" name="" id="">
-                        <option value="0">chờ duyệt</option>
-                        <option value="1">đã xác nhận</option>
-                        <option value="2">đã hủy </option>
+                    <select v-model="update_lich.tinh_trang" class="form-control mb-2" name="" id="">
+                        <option value="0">Chờ duyệt</option>
+                        <option value="1">Đã duyệt</option>
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cập nhật</button>
+                    <button v-on:click="update()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cập
+                        nhật</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
@@ -99,8 +103,52 @@
     </div>
 </template>
 <script>
+import axios from 'axios';
+
 export default {
-    
+    data() {
+        return {
+            list_lich: [],
+            update_lich: [],
+            del_lich: [],
+            nhan_vien: [],
+            pet: [],
+        }
+    },
+    mounted() {
+        this.loadLichHen();
+        this.loadNhanVien();
+        this.loadPet();
+    },
+    methods: {
+        loadLichHen() {
+            axios
+                .get('http://127.0.0.1:8000/api/lich-hen/load')
+                .then((res) => {
+                    this.list_lich = res.data.data
+                })
+        },
+        loadNhanVien() {
+            axios
+                .get("http://127.0.0.1:8000/api/nhan-vien/load", {
+                })
+                .then((res) => {
+                    this.nhan_vien = res.data.data
+                    console.log(this.nhan_vien);
+                });
+        },
+        loadPet() {
+            axios
+                .get("http://127.0.0.1:8000/api/load-pet", {
+                })
+                .then((res) => {
+                    this.pet = res.data.data
+                    console.log(this.pet);
+                });
+        },
+        
+
+    },
 }
 </script>
 <style></style>
