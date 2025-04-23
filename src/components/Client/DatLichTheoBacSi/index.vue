@@ -55,102 +55,87 @@
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" placeholder="Tìm kiếm bác sĩ"
                         aria-label="Recipient's username" aria-describedby="button-addon2">
-                    <button class="btn btn-outline-primary" type="button" id="button-addon2">Tìm kiếm</button>
+                    <button v-on:click="timkiem()" class="btn btn-outline-primary" type="button" id="button-addon2">Tìm kiếm</button>
                 </div>
                 <br>
-                <div class="card p-3">
-                    <div class="row align-items-center">
-                        <!-- Cột hình ảnh -->
-                        <div class="col-lg-4 d-flex justify-content-center">
-                            <img src="https://monozy.net/wp-content/uploads/2023/12/chup-anh-profile-bac-si-phong-kham-657d4478271fd.jpg"
-                                class="img-fluid rounded" style="width: 70%; max-width: 150px;">
-                        </div>
-
-                        <!-- Cột nội dung -->
-                        <div class="col-lg-8">
-                            <h5 class="card-title text-primary mt-3">BS. Lương Văn Ái</h5>
-
-                            <!-- Thông tin bác sĩ -->
-                            <div class="row">
-                                <div class="col-md-3 fw-bold">Chuyên khoa:</div>
-                                <div class="col-md-9">Thú y</div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-md-3 fw-bold">Mô tả:</div>
-                                <div class="col-md-9">Bác sĩ Lương Văn Ái với nhiều năm kinh nghiệm, tư vấn, điều trị
-                                    các bệnh lý trong nhãn khoa: viêm giác mạc, khô mắt, mộng thịt, viêm màng bồ đào,
-                                    tật khúc xạ, đục thủy tinh thể...</div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-md-3 fw-bold">Giá khám:</div>
-                                <div class="col-md-9 text-primary"><strong>150.000 đ</strong></div>
+                <template v-for="(value, index) in list_nhan_vien" :key="index">
+                    <div class="card p-3">
+                        <div class="row align-items-center">
+                            <!-- Cột hình ảnh -->
+                            <div class="col-lg-4 d-flex justify-content-center">
+                                <img :src="value.hinh_anh" alt="" 
+                                    class="img-fluid rounded" style="width: 70%; max-width: 150px;">
                             </div>
 
-                            <!-- Icon + Button -->
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <p class="text-success m-0">
-                                    <i class="fa-solid fa-shield-cat"></i> PetCare
-                                </p>
-                                <button class="btn btn-info text-white ">Đặt khám ngay</button>
+                            <!-- Cột nội dung -->
+                            <div class="col-lg-8">
+                                <h5 class="card-title text-primary mt-3">BS. {{ value.ten_nv }}</h5>
+
+                                <!-- Thông tin bác sĩ -->
+                                <div class="row mt-2">
+                                    <div class="col-md-3 fw-bold">Mô tả:</div>
+                                    <div class="col-md-9">Mô tả: <span>{{ value.mo_ta }}</span></div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-3 fw-bold">Giá khám:</div>
+                                    <div class="col-md-9 text-danger"><strong>{{ value.tien_kham}}</strong> VND</div>
+                                </div>
+
+                                <!-- Icon + Button -->
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <p class="text-success m-0">
+                                        <i class="fa-solid fa-shield-cat"></i> PetCare
+                                    </p>
+                                    <button class="btn btn-info text-white ">Đặt khám ngay</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="card p-3">
-                    <div class="row align-items-center">
-                        <!-- Cột hình ảnh -->
-                        <div class="col-lg-4 d-flex justify-content-center">
-                            <img src="https://monozy.net/wp-content/uploads/2023/12/chup-anh-profile-bac-si-phong-kham-657d4478271fd.jpg"
-                                class="img-fluid rounded" style="width: 70%; max-width: 150px;">
-                        </div>
-
-                        <!-- Cột nội dung -->
-                        <div class="col-lg-8">
-                            <h5 class="card-title text-primary mt-3">BS. Lương Văn Ái</h5>
-
-                            <!-- Thông tin bác sĩ -->
-                            <div class="row">
-                                <div class="col-md-3 fw-bold">Chuyên khoa:</div>
-                                <div class="col-md-9">Thú y</div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-md-3 fw-bold">Mô tả:</div>
-                                <div class="col-md-9">Bác sĩ Lương Văn Ái với nhiều năm kinh nghiệm, tư vấn, điều trị
-                                    các bệnh lý trong nhãn khoa: viêm giác mạc, khô mắt, mộng thịt, viêm màng bồ đào,
-                                    tật khúc xạ, đục thủy tinh thể...</div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-md-3 fw-bold">Giá khám:</div>
-                                <div class="col-md-9 text-primary"><strong>150.000 đ</strong></div>
-                            </div>
-
-                            <!-- Icon + Button -->
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <p class="text-success m-0">
-                                    <i class="fa-solid fa-shield-cat"></i> PetCare
-                                </p>
-                                <button class="btn btn-info text-white ">Đặt khám ngay</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-
+                </template>
             </div>
             <div class="col-lg-2"></div>
         </div>
     </div>
 </template>
 <script>
+import axios from 'axios';
 
 export default {
+    data() {
+        return {
+            list_nhan_vien: [],
+            tim_kiem: {
+                noi_dung: ''
+            }
+        };
 
+    },
+    mounted() {
+        this.load()
+    },
+
+    methods: {
+        load() {
+            axios
+                .get('http://127.0.0.1:8000/api/dich-vu/load-bac-si')
+                .then((res) => {
+                    this.list_nhan_vien = res.data.data
+                })
+        },
+        timkiem() {
+            axios
+                .post('http://127.0.0.1:8000/api/dich-vu/tim-kiem', this.tim_kiem)
+                .then((res) => {
+                    this.list_nhan_vien = res.data.data
+                })
+        },
+    },
 }
 </script>
 <style>
 body {
     background-color: #f5f7fa;
-    background:url( https://cityvet.vn/storage/general-1/br-1.png ) no-repeat;background-size: cover;
+    background: url(https://cityvet.vn/storage/general-1/br-1.png ) no-repeat;
+    background-size: cover;
 }
 </style>
