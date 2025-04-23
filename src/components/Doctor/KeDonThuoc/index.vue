@@ -93,11 +93,15 @@
           <span style="font-size: 18px; color: #000000;">Bạn có muốn in đơn thuốc này không ?</span>
         </div>
         <div class="modal-footer">
-          <a :href="$router.resolve('/doctor/in-don-thuoc').href" target="_blank" rel="noopener noreferrer">
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-              In
-            </button>
-          </a>
+          <a
+    :href="$router.resolve('/doctor/in-don-thuoc').href"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+      In
+    </button>
+  </a>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
         </div>
       </div>
