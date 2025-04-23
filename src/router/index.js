@@ -178,9 +178,10 @@ const routes = [
         meta: {layout:'client'},
     },
     {
-        path : '/client/xem-bs',
+        path : '/client/xem-bs/:id',
         component: ()=>import('../components/Client/XemBS/index.vue'),
         meta: {layout:'client'},
+        props: true
     },
     {
         path : '/client/dang-nhap-dang-ky',

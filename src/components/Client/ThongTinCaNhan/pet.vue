@@ -73,6 +73,7 @@
       };
     },
     methods: {
+      
       toggleEdit() {
         if (this.isEditing) {
           console.log("Thông tin đã lưu:", this.pet);
