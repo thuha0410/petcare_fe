@@ -92,6 +92,11 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
+        path : '/nhan-vien/dang-nhap',
+        component: ()=>import('../components/Admin/DangNhap/index.vue'),
+        meta: {layout:'dangNhap'},
+    },
+    {
         path : '/client/dat-lich',
         component: ()=>import('../components/Client/DatLich/index.vue'),
         meta: {layout:'client'},

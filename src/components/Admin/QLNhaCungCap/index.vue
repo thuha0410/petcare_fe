@@ -9,7 +9,7 @@
         </div>
         <div class="card-body ">
             <div class="input-group mb-3">
-                <input v-model="tim_kiem.noi_dung" type="text" class="form-control" placeholder="Tìm kiếm"
+                <input v-model="tim_kiem.noi_dung" @input="timkiem" type="text" class="form-control" placeholder="Tìm kiếm"
                     aria-label="Recipient's username" aria-describedby="button-addon2">
                 <button v-on:click="timkiem()" class="btn btn-outline-secondary text-dark" type="button"
                     id="button-addon2"><i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
