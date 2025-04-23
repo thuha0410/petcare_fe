@@ -85,6 +85,15 @@
 					</router-link>
 				</li>
 				<li class="nav-item">
+					<router-link to="/admin/ql-ho-so-benh-an">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-id-card"></i>
+							</div>
+							<div class="menu-title">QL Hồ Sơ Bệnh Án</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
 					<router-link to="/admin/ql-nha-cung-cap">
 						<a class="nav-link" href="/">
 							<div class="parent-icon"><i class="fa-solid fa-truck"></i>
