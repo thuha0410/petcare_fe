@@ -77,11 +77,6 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
-        path : '/admin/ql-ho-so-benh-an',
-        component: ()=>import('../components/Admin/QLHoSoBenhAn/index.vue'),
-        meta: {layout:'admin'},
-    },
-    {
         path : '/admin/ql-kho',
         component: ()=>import('../components/Admin/QLKho/index.vue'),
         meta: {layout:'admin'},
