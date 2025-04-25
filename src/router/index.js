@@ -10,7 +10,10 @@ const routes = [
     {
         path : '/admin/ql-dich-vu',
         component: ()=>import('../components/Admin/QLDichVu/index.vue'),
-        meta: {layout:'admin'},
+        meta: {
+            layout:'admin',
+            permission: 4  // ID chức năng Quản lý dịch vụ
+        },
         beforeEnter: kiemTraAdmin
     },
     {
