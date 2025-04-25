@@ -214,6 +214,8 @@
 
 import axios from 'axios';
 import { createToaster } from "@meforma/vue-toaster";
+import { checkPermission, handleNoPermission, setupAxiosInterceptors } from '@/utils/permission';
+
 const toaster = createToaster({ position: 'top-right' });
 export default {
     data() {
@@ -247,21 +249,34 @@ export default {
             },
             del_dich_vu: {},
             list_loai_dv: [],
-            chi_tiet_dv: {}
+            chi_tiet_dv: {},
+            hasPermission: false
         }
     },
     mounted() {
-        this.loaddata(),
-            this.loaddataLoaiDV()
+        setupAxiosInterceptors();
+        this.checkPermission();
+        this.loaddata();
+        this.loaddataLoaiDV();
     },
     methods: {
+        async checkPermission() {
+            this.hasPermission = await checkPermission(4);
+            if (!this.hasPermission) {
+                handleNoPermission();
+            }
+        },
         onPhanLoaiChange() {
             if (this.update_dich_vu.phan_loai_kg === 0) {
                 this.update_dich_vu.can_nang_min = '';
                 this.update_dich_vu.can_nang_max = '';
             }
         },
-        them() {
+        async them() {
+            if (!this.hasPermission) {
+                handleNoPermission();
+                return;
+            }
             axios
                 .post('http://127.0.0.1:8000/api/dich-vu/them', this.dich_vu)
                 .then((res) => {
@@ -284,66 +299,99 @@ export default {
                     }
                 })
                 .catch((res) => {
-                    toaster.error(res.response.data.message);
-                })
-
+                    if (res.response.status === 403) {
+                        handleNoPermission();
+                    } else {
+                        toaster.error(res.response.data.message);
+                    }
+                });
         },
-        xoa() {
+        async xoa() {
+            if (!this.hasPermission) {
+                handleNoPermission();
+                return;
+            }
             axios
                 .post("http://127.0.0.1:8000/api/dich-vu/del", this.del_dich_vu)
                 .then((res) => {
-                    if (res.data.status == true) {
-                        toaster.success(res.data.message);
-                        this.loaddata();
-                    } else {
-                        toaster.error("Xóa dịch vụ thất bại!")
-                    }
+                if (res.data.status == true) {
+                    toaster.success(res.data.message);
+                    this.loaddata();
+                } else {
+                    toaster.error("Xóa dịch vụ thất bại!")
+                }
 
-                });
+            })
+            .catch((res) => {
+                if (res.response.status === 403) {
+                    handleNoPermission();
+                } else {
+                    toaster.error(res.response.data.message);
+                }
+            });
         },
-
-        update() {
+        async update() {
+            if (!this.hasPermission) {
+                handleNoPermission();
+                return;
+            }
             axios
                 .post("http://127.0.0.1:8000/api/dich-vu/update", this.update_dich_vu)
                 .then((res) => {
-                    if (res.data.status == true) {
-                        toaster.success(res.data.message);
-                        this.loaddata();
-                    } else {
-                        toaster.error("Cập nhật dịch vụ thất bại!")
-                    }
-                });
+                if (res.data.status == true) {
+                    toaster.success(res.data.message);
+                    this.loaddata();
+                } else {
+                    toaster.error("Cập nhật dịch vụ thất bại!")
+                }
+            })
+            .catch((res) => {
+                if (res.response.status === 403) {
+                    handleNoPermission();
+                } else {
+                    toaster.error(res.response.data.message);
+                }
+            });
         },
-        doi_trang_thai(x) {
+        async doi_trang_thai(x) {
+            if (!this.hasPermission) {
+                handleNoPermission();
+                return;
+            }
             axios
                 .post("http://127.0.0.1:8000/api/dich-vu/doi", x)
                 .then((res) => {
-                    if (res.data.status == true) {
-                        toaster.success(res.data.message);
-                        this.loaddata();
-                    } else {
-                        toaster.error("Đổi trạng thái dịch vụ thất bại!")
-                    }
-                });
+                if (res.data.status == true) {
+                    toaster.success(res.data.message);
+                    this.loaddata();
+                } else {
+                    toaster.error("Đổi trạng thái dịch vụ thất bại!")
+                }
+            })
+            .catch((res) => {
+                if (res.response.status === 403) {
+                    handleNoPermission();
+                } else {
+                    toaster.error(res.response.data.message);
+                }
+            });
         },
-        loaddata() {
-            axios
-                .get("http://127.0.0.1:8000/api/dich-vu/load")
-                .then((res) => {
-                    this.list_dich_vu = res.data.data
-                });
+        async loaddata() {
+            if (!this.hasPermission) {
+                handleNoPermission();
+                return;
+            }
+            const response = await axios.get("http://127.0.0.1:8000/api/dich-vu/load");
+            this.list_dich_vu = response.data.data;
         },
-        loaddataLoaiDV() {
-            axios
-                .get("http://127.0.0.1:8000/api/loai-dich-vu/load", {
-                })
-                .then((res) => {
-                    this.list_loai_dv = res.data.data
-                    console.log(this.list_loai_dv);
-
-                });
+        async loaddataLoaiDV() {
+            if (!this.hasPermission) {
+                handleNoPermission();
+                return;
+            }
+            const response = await axios.get("http://127.0.0.1:8000/api/loai-dich-vu/load");
+            this.list_loai_dv = response.data.data;
         },
-
     },
 }
 </script>

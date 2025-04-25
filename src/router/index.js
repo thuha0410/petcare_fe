@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router"; 
+import kiemTraAdmin from './kiemTraAdmin';
 
 const routes = [
     {
@@ -10,6 +11,7 @@ const routes = [
         path : '/admin/ql-dich-vu',
         component: ()=>import('../components/Admin/QLDichVu/index.vue'),
         meta: {layout:'admin'},
+        beforeEnter: kiemTraAdmin
     },
     {
         path : '/admin/ql-loai-dich-vu',
