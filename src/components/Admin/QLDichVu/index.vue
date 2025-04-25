@@ -211,11 +211,10 @@
     </div>
 </template>
 <script>
+
 import axios from 'axios';
 import { createToaster } from "@meforma/vue-toaster";
-
 const toaster = createToaster({ position: 'top-right' });
-
 export default {
     data() {
         return {
@@ -243,7 +242,7 @@ export default {
                 hinh_anh: '',
                 can_nang_min: '',
                 can_nang_max: '',
-                phan_loai_kg: 1,
+                phan_loai_kg: 1, // Mặc định là "Có"
                 tinh_trang: ''
             },
             del_dich_vu: {},
@@ -252,132 +251,100 @@ export default {
         }
     },
     mounted() {
-        this.loaddata();
-        this.loaddataLoaiDV();
+        this.loaddata(),
+            this.loaddataLoaiDV()
     },
     methods: {
-        getAuthHeaders() {
-            const token = localStorage.getItem('token_admin');
-            return {
-                headers: {
-                    Authorization: 'Bearer ' + token
-                }
-            };
-        },
         onPhanLoaiChange() {
             if (this.update_dich_vu.phan_loai_kg === 0) {
                 this.update_dich_vu.can_nang_min = '';
                 this.update_dich_vu.can_nang_max = '';
             }
         },
-        async them() {
-            try {
-                const res = await axios.post('http://127.0.0.1:8000/api/dich-vu/them', this.dich_vu, this.getAuthHeaders());
-                if (res.data.status) {
-                    toaster.success(res.data.message);
-                    this.loaddata();
-                    this.dich_vu = {
-                        "ten_dv": '',
-                        'id_loaidv': '',
-                        'mo_ta': '',
-                        'gia': '',
-                        'hinh_anh': '',
-                        'can_nang_min': '',
-                        'can_nang_max': '',
-                        'phan_loai_kg': 1,
-                        'tinh_trang': ''
-                    };
-                }
-            } catch (error) {
-                if (error.response && error.response.status === 403) {
-                    toaster.error('Bạn không có quyền thực hiện chức năng này');
-                } else if (error.response) {
-                    toaster.error(error.response.data.message);
-                } else {
-                    toaster.error('Có lỗi xảy ra khi thêm dịch vụ');
-                }
-            }
+        them() {
+            axios
+                .post('http://127.0.0.1:8000/api/dich-vu/them', this.dich_vu)
+                .then((res) => {
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message)
+                        this.loaddata()
+                        this.dich_vu = {
+                            "ten_dv": '',
+                            'id_loaidv': '',
+                            'mo_ta': '',
+                            'gia': '',
+                            'hinh_anh': '',
+                            'can_nang_min': '',
+                            'can_nang_max': '',
+                            'phan_loai_kg': '',
+                            'tinh_trang': ''
+                        }
+                    } else {
+                        toaster.error('Thêm mới dịch vụ thất bại')
+                    }
+                })
+                .catch((res) => {
+                    toaster.error(res.response.data.message);
+                })
+
         },
-        async xoa() {
-            try {
-                const res = await axios.post("http://127.0.0.1:8000/api/dich-vu/del", this.del_dich_vu, this.getAuthHeaders());
-                if (res.data.status) {
-                    toaster.success(res.data.message);
-                    this.loaddata();
-                }
-            } catch (error) {
-                if (error.response && error.response.status === 403) {
-                    toaster.error('Bạn không có quyền thực hiện chức năng này');
-                } else if (error.response) {
-                    toaster.error(error.response.data.message);
-                } else {
-                    toaster.error('Có lỗi xảy ra khi xóa dịch vụ');
-                }
-            }
+        xoa() {
+            axios
+                .post("http://127.0.0.1:8000/api/dich-vu/del", this.del_dich_vu)
+                .then((res) => {
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message);
+                        this.loaddata();
+                    } else {
+                        toaster.error("Xóa dịch vụ thất bại!")
+                    }
+
+                });
         },
-        async update() {
-            try {
-                const res = await axios.post("http://127.0.0.1:8000/api/dich-vu/update", this.update_dich_vu, this.getAuthHeaders());
-                if (res.data.status) {
-                    toaster.success(res.data.message);
-                    this.loaddata();
-                }
-            } catch (error) {
-                if (error.response && error.response.status === 403) {
-                    toaster.error('Bạn không có quyền thực hiện chức năng này');
-                } else if (error.response) {
-                    toaster.error(error.response.data.message);
-                } else {
-                    toaster.error('Có lỗi xảy ra khi cập nhật dịch vụ');
-                }
-            }
+
+        update() {
+            axios
+                .post("http://127.0.0.1:8000/api/dich-vu/update", this.update_dich_vu)
+                .then((res) => {
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message);
+                        this.loaddata();
+                    } else {
+                        toaster.error("Cập nhật dịch vụ thất bại!")
+                    }
+                });
         },
-        async doi_trang_thai(x) {
-            try {
-                const res = await axios.post("http://127.0.0.1:8000/api/dich-vu/doi", x, this.getAuthHeaders());
-                if (res.data.status) {
-                    toaster.success(res.data.message);
-                    this.loaddata();
-                }
-            } catch (error) {
-                if (error.response && error.response.status === 403) {
-                    toaster.error('Bạn không có quyền thực hiện chức năng này');
-                } else if (error.response) {
-                    toaster.error(error.response.data.message);
-                } else {
-                    toaster.error('Có lỗi xảy ra khi đổi trạng thái');
-                }
-            }
+        doi_trang_thai(x) {
+            axios
+                .post("http://127.0.0.1:8000/api/dich-vu/doi", x)
+                .then((res) => {
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message);
+                        this.loaddata();
+                    } else {
+                        toaster.error("Đổi trạng thái dịch vụ thất bại!")
+                    }
+                });
         },
-        async loaddata() {
-            try {
-                const response = await axios.get("http://127.0.0.1:8000/api/dich-vu/load", this.getAuthHeaders());
-                this.list_dich_vu = response.data.data;
-            } catch (error) {
-                if (error.response && error.response.status === 403) {
-                    toaster.error('Bạn không có quyền xem dịch vụ');
-                } else if (error.response) {
-                    toaster.error(error.response.data.message);
-                } else {
-                    toaster.error('Có lỗi xảy ra khi tải dữ liệu');
-                }
-            }
+        loaddata() {
+            axios
+                .get("http://127.0.0.1:8000/api/dich-vu/load")
+                .then((res) => {
+                    this.list_dich_vu = res.data.data
+                });
         },
-        async loaddataLoaiDV() {
-            try {
-                const response = await axios.get("http://127.0.0.1:8000/api/loai-dich-vu/load", this.getAuthHeaders());
-                this.list_loai_dv = response.data.data;
-            } catch (error) {
-                if (error.response && error.response.status === 403) {
-                    toaster.error('Bạn không có quyền xem loại dịch vụ');
-                } else if (error.response) {
-                    toaster.error(error.response.data.message);
-                } else {
-                    toaster.error('Có lỗi xảy ra khi tải loại dịch vụ');
-                }
-            }
-        }
-    }
+        loaddataLoaiDV() {
+            axios
+                .get("http://127.0.0.1:8000/api/loai-dich-vu/load", {
+                })
+                .then((res) => {
+                    this.list_loai_dv = res.data.data
+                    console.log(this.list_loai_dv);
+
+                });
+        },
+
+    },
 }
 </script>
 <style></style>
