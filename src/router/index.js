@@ -92,6 +92,11 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
+        path : '/nhan-vien/dang-nhap',
+        component: ()=>import('../components/Admin/DangNhap/index.vue'),
+        meta: {layout:'dangNhap'},
+    },
+    {
         path : '/client/dat-lich',
         component: ()=>import('../components/Client/DatLich/index.vue'),
         meta: {layout:'client'},
@@ -168,9 +173,10 @@ const routes = [
         meta: {layout:'client'},
     },
     {
-        path : '/client/xem-bs',
+        path : '/client/xem-bs/:id',
         component: ()=>import('../components/Client/XemBS/index.vue'),
         meta: {layout:'client'},
+        props: true
     },
     {
         path : '/client/dang-nhap-dang-ky',

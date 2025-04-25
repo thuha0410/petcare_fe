@@ -21,6 +21,7 @@
                             <th>Tên thuốc</th>
                             <th>Đơn vị</th>
                             <th>Mô tả</th>
+                            <th>Giá bán</th>
                             <th>Tình trạng</th>
                             <th>Action</th>
                         </tr>
@@ -36,6 +37,7 @@
                                             class="fa-solid fa-2x fa-circle-exclamation"
                                             v-on:click="Object.assign(chi_tiet_thuoc, value)"></i></span>
                                 </td>
+                                <td>{{ value.gia_ban }}</td>
                                 <td>
                                     <button v-on:click="doiTT(value)" v-if="value.tinh_trang == 0"
                                         class="btn btn-warning">Ngưng sử dụng</button>
@@ -68,6 +70,8 @@
                     <input v-model="thuoc.don_vi" class="form-control mb-2" type="text">
                     <label for="">Mô tả</label>
                     <input v-model="thuoc.mo_ta" class="form-control mb-2" type="text">
+                    <label for="">Giá bán</label>
+                    <input v-model="thuoc.gia_ban" class="form-control mb-2" type="number">
                     <label for="">Tình trạng</label>
                     <select v-model="thuoc.tinh_trang" class="form-control form-select mb-2" name="" id="">
                         <option value="0">Ngưng sử dụng</option>
@@ -128,6 +132,8 @@
                     <input v-model="update_thuoc.don_vi" class="form-control mb-2" type="text">
                     <label for="">Mô tả</label>
                     <input v-model="update_thuoc.mo_ta" class="form-control mb-2" type="text">
+                    <label for="">Giá bán</label>
+                    <input v-model="update_thuoc.gia_ban" class="form-control mb-2" type="number">
                     <label for="">Tình trạng</label>
                     <select v-model="update_thuoc.tinh_trang" class="form-control form-select mb-2" name="" id="">
                         <option value="0">Ngưng sử dụng</option>
@@ -167,6 +173,7 @@ export default {
                             'ten_thuoc': '',
                             'don_vi': '',
                             'mo_ta': '',
+                            'gia_ban': '',
                             'tinh_trang': '',
                         }
                     } else {
@@ -233,6 +240,7 @@ export default {
                 'ten_thuoc': '',
                 'don_vi': '',
                 'mo_ta': '',
+                'gia_ban': '',
                 'tinh_trang': '',
             },
             list_thuoc: [],

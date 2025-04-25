@@ -71,24 +71,26 @@
                 </div>
             </div>
 
-            <!-- Chọn giờ -->
             <div class="card mt-3" v-if="selectedDate && showCalendar">
                 <div class="card-header" style="background-color: darkblue;">
                     <h3 class="text-white text-center">Chọn giờ</h3>
                 </div>
                 <div class="card-body d-flex flex-wrap justify-content-center">
-                    <button v-for="time in availableTimes" :key="time" class="btn btn-outline-primary m-2"
-                        @click="selectTime(time)">
-                        {{ time }}
+                    <button v-for="(value,index) in availableTimes" :key="index" class="btn btn-outline-primary m-2"
+                        @click="selectTime(value.khung_gio), Object.assign(id_lich, value.id)">
+                        {{ value.khung_gio }}
+                    </button>
+                </div>
+                <div class="text-center mb-3">
+                    <button class="btn btn-success mt-2" @click="xacNhanLichHen(id_lich)" :disabled="!selectedTime">
+                        Xác nhận lịch hẹn
                     </button>
                 </div>
             </div>
         </div>
-
         <div class="col-lg-1"></div>
     </div>
 </template>
-
 <script>
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -99,20 +101,13 @@ export default {
     components: { FullCalendar },
     data() {
         return {
-            id : this.$route.params.id,
+            id: this.$route.params.id,
             list_dv: {},
             showCalendar: false,
             selectedDate: null,
             selectedTime: null,
-            availableTimes: [
-                "08:00 - 09:00",
-                "09:00 - 10:00",
-                "10:00 - 11:00",
-                "13:00 - 14:00",
-                "14:00 - 15:00",
-                "15:00 - 16:00",
-                "16:00 - 17:00"
-            ],
+            id_lich: null,
+            availableTimes: [],
             calendarOptions: {
                 plugins: [dayGridPlugin, interactionPlugin],
                 initialView: 'dayGridMonth',
@@ -127,8 +122,19 @@ export default {
     },
     mounted() {
         this.loadDichVu();
+        this.loadLich();
+        
+        
     },
     methods: {
+        loadLich() {
+            axios
+                .get("http://127.0.0.1:8000/api/lich/load")
+                .then((res) => {
+                    this.availableTimes = res.data.data;
+                    
+                });
+        },
         loadDichVu() {
             axios
                 .get("http://127.0.0.1:8000/api/dich-vu/load-chi-tiet/" + this.id)
@@ -151,6 +157,29 @@ export default {
         handleDateClick(info) {
             this.selectedDate = info.dateStr;
             this.selectedTime = null;
+        },
+        xacNhanLichHen(id) {
+            console.log(this.availableTimes);
+            if (!this.selectedDate || !this.selectedTime) return;
+
+            const data = {
+                ten_dv: this.list_dv.ten_dv,
+                id_lich: id,
+                id_nv: this.list_dv.id,
+                id_pet: this.list_dv.id_pet,
+                ngay: this.selectedDate,
+                gio: this.selectedTime,
+            };
+            axios
+                .post('http://127.0.0.1:8000/api/lich-hen/them', data)
+                .then((res) => {
+                    alert("Đặt lịch thành công!");
+                    this.toggleCalendar();
+                })
+                .catch((err) => {
+                    console.error(err);
+                    alert("Có lỗi xảy ra khi đặt lịch.");
+                });
         }
     }
 };

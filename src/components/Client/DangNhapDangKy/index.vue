@@ -101,8 +101,9 @@
           <input
             v-model="khach_hang.so_dien_thoai"
             class="form-control"
-            type="text"
+            type="tel"
             placeholder="Số điện thoại của bạn"
+            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
           />
         </div>
         <div class="input-group flex-nowrap mt-3">
