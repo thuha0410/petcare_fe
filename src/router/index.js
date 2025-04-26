@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router"; 
 import kiemTraAdmin from './kiemTraAdmin';
 import { kiemTraQuyen } from '../utils/kiemTraQuyen';
+import api from '@/services/api';
 
 const routes = [
     {
