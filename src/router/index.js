@@ -77,11 +77,6 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
-        path : '/admin/ql-ho-so-benh-an',
-        component: ()=>import('../components/Admin/QLHoSoBenhAn/index.vue'),
-        meta: {layout:'admin'},
-    },
-    {
         path : '/admin/ql-kho',
         component: ()=>import('../components/Admin/QLKho/index.vue'),
         meta: {layout:'admin'},
@@ -178,9 +173,10 @@ const routes = [
         meta: {layout:'client'},
     },
     {
-        path : '/client/xem-bs',
+        path : '/client/xem-bs/:id',
         component: ()=>import('../components/Client/XemBS/index.vue'),
         meta: {layout:'client'},
+        props: true
     },
     {
         path : '/client/dang-nhap-dang-ky',

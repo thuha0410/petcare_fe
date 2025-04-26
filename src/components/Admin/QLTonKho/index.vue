@@ -47,50 +47,69 @@
                     </div>
                 </div>
             </div>
-                
 
-                <div class="table table-responsive">
-                    <table class="table table-bordered text-center">
-                        <thead>
-                            <tr>
-                                <th>STT</th>
-                                <th>Tên kho</th>
-                                <th>Tên thuốc</th>
-                                <th>Giá nhập</th>
-                                <th>Số lượng tồn</th>
-                                <th>Hạn sử dụng</th>
-                                <th>Ngày nhập</th>
-                                <th>Tình trạng</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(item, index) in list_ton_kho" :key="index" :class="{
-                                'table-danger': new Date(item.han_su_dung) < new Date(),
-                                'table-warning': isSapHetHan(item.han_su_dung)
-                            }">
-                                <td>{{ index + 1 }}</td>
-                                <td>{{ item.ten_kho || '[N/A]' }}</td>
-                                <td>{{ item.ten_thuoc || '[N/A]' }}</td>
-                                <td>{{ item.gia_nhap.toLocaleString() }} VND</td>
-                                <td>{{ item.so_luong_ton_kho }}</td>
-                                <td>{{ item.han_su_dung }}</td>
-                                <td>{{ item.ngay_nhap }}</td>
-                                <td>
-                                    <span style="font-size: 16px;" v-if="new Date(item.han_su_dung) < new Date()"
-                                        class="">
-                                        Hết hạn</span>
-                                    <span v-else-if="isSapHetHan(item.han_su_dung)" style="font-size: 16px;"
-                                        class="text-dark">Sắp hết
-                                        hạn</span>
 
-                                </td>
-
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="table table-responsive">
+                <table class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên kho</th>
+                            <th>Tên thuốc</th>
+                            <th>Giá nhập</th>
+                            <th>Giá bán hiện tại</th>
+                            <th>Số lượng tồn</th>
+                            <th>Hạn sử dụng</th>
+                            <th>Ngày nhập</th>
+                            <th>Tình trạng</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in list_ton_kho" :key="index" :class="{
+                            'table-danger': new Date(item.han_su_dung) < new Date(),
+                            'table-warning': isSapHetHan(item.han_su_dung)
+                        }">
+                            <td>{{ index + 1 }}</td>
+                            <td>{{ item.ten_kho || '[N/A]' }}</td>
+                            <td>{{ item.ten_thuoc || '[N/A]' }}</td>
+                            <td>{{ item.gia_nhap.toLocaleString() }} VND</td>
+                            <td> {{ item.gia_ban ? item.gia_ban.toLocaleString() + ' VND' : '[N/A]' }} </td>
+                            <td>{{ item.so_luong_ton_kho }}</td>
+                            <td>{{ item.han_su_dung }}</td>
+                            <td>{{ item.ngay_nhap }}</td>
+                            <td>
+                                <span style="font-size: 16px;" v-if="new Date(item.han_su_dung) < new Date()" class="">
+                                    Hết hạn</span>
+                                <span v-else-if="isSapHetHan(item.han_su_dung)" style="font-size: 16px;"
+                                    class="text-dark">Sắp hết
+                                    hạn</span>
+                            </td>
+                            <td><i class="fa-solid fa-trash-can fa-2x" v-on:click="Object.assign(xoa_thuoc, item)"
+                                    data-bs-toggle="modal" data-bs-target="#xoakho" style="color: #fe2a2a;"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="xoakho" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger">
+                            <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">THÔNG BÁO!</h1>
+                        </div>
+                        <div class="modal-body">
+                            <h5>Bạn có chắc chắn muốn xóa dòng thuốc này trong kho không?</h5>
+                        </div>
+                        <div class="modal-footer">
+                            <button v-on:click="xoa()" type="button" class="btn btn-danger"
+                                data-bs-dismiss="modal">Xóa</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
 </template>
 <script>
 import axios from 'axios'
@@ -102,6 +121,7 @@ export default {
         return {
             list_ton_kho: [],
             list_kho: [],
+            xoa_thuoc:{},
             tim_kiem: {
                 noi_dung: ''
             },
@@ -116,8 +136,22 @@ export default {
         this.loadTonKho();
     },
     methods: {
+        xoa() {
+            axios
+                .post("http://127.0.0.1:8000/api/thuoc-kho/del", this.xoa_thuoc)
+                .then((res) => {
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message);
+                        this.loadTonKho();
+                    } else {
+                        toaster.error("Xóa thuốc thất bại!")
+                    }
+
+                });
+        },
         loaddataKho() {
-            return axios.get("http://127.0.0.1:8000/api/kho/load")
+            return axios
+            .get("http://127.0.0.1:8000/api/kho/load")
                 .then((res) => {
                     this.list_kho = res.data.data;
                     console.log('Danh sách kho:', this.list_kho);

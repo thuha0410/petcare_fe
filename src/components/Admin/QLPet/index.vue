@@ -69,8 +69,8 @@
                     <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">NHẬP THÔNG TIN</h1>
                 </div>
                 <div class="modal-body">
-                    <label for="">ID khách hàng</label>
-                    <input v-model="pet.id_kh" class="form-control mb-2" type="text">
+                    <label for="">Tên khách hàng</label>
+                    <input v-model="pet.ho_va_ten" class="form-control mb-2" type="text">
                     <label for="">Tên pet</label>
                     <input v-model="pet.ten_pet" class="form-control mb-2" type="text">
                     <label for="">Chủng loại</label>
@@ -129,8 +129,8 @@
                     <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">CẬP NHẬT THÔNG TIN</h1>
                 </div>
                 <div class="modal-body">
-                    <label for="">Ten khách hàng</label>
-                    <input v-model="sua_pet.id_kh" class="form-control mb-2" type="text">
+                    <label for="">Tên khách hàng</label>
+                    <input v-model="sua_pet.ho_va_ten" class="form-control mb-2" type="text">
                     <label for="">Tên pet</label>
                     <input v-model="sua_pet.ten_pet" class="form-control mb-2" type="text">
                     <label for="">Chủng loại</label>
