@@ -1,25 +1,21 @@
-import axios from "axios";
-import { createToaster } from "@meforma/vue-toaster";
+import axios from 'axios';
+import { createToaster } from '@meforma/vue-toaster';
 
-const toaster = createToaster({ position: 'top-right' });
+const toaster = createToaster({ position: 'top-left' });
 
-export const kiemTraQuyen = async (idChucNang) => {
-    try {
-        const url = 'http://127.0.0.1:8000/api/NhanVien/kiem-tra-quyen/' + idChucNang;
-        const response = await axios.get(url, {
-            headers: {
-                Authorization: 'Bearer ' + localStorage.getItem("token_admin")
-            }
-        });
-        
-        if (response.data.status) {
-            return true;
-        } else {
-            toaster.error("Bạn không có quyền truy cập chức năng này!");
-            return false;
-        }
-    } catch (error) {
-        toaster.error("Có lỗi xảy ra khi kiểm tra quyền!");
-        return false;
-    }
-}; 
+export function kiemTraQuyen(idChucNang) {
+  return async (to, from, next) => {
+
+      const token = localStorage.getItem('token_admin');
+      const res = await axios.get(
+        `http://127.0.0.1:8000/api/phan-quyen/kiem-tra-quyen/${idChucNang}`,
+        { headers: { Authorization: 'Bearer ' + token } }
+      );
+      if (res.data.status === 1) {
+        return next();
+      }else{
+        toaster.error(res.data.message);
+        return next(false);
+      }
+  };
+}

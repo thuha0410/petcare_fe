@@ -56,18 +56,50 @@ export default {
         }
     },
     methods: {
-        dangNhap() {
-            axios
-                .post('http://127.0.0.1:8000/api/nhan-vien/dang-nhap', this.nhan_vien)
-                .then((res) => {
-                    if (res.data.status == 1) {
-                        toaster.success(res.data.message);
-                        localStorage.setItem("token_admin", res.data.token);
-                        this.$router.push('/admin/nhap-thuoc');
-                    } else {
-                        toaster.error(res.data.message);
-                    }
-                })
+        async dangNhap() {
+            try {
+        const { data } = await axios.post(
+            'http://127.0.0.1:8000/api/nhan-vien/dang-nhap',
+            this.nhan_vien
+        );
+        if (data.status === 1) {
+            toaster.success(data.message);
+            localStorage.setItem('token_admin', data.token);
+
+            const permissions = data.permissions || [];
+
+            // Map permission IDs to routes
+            const routeMap = {
+                1: '/admin/nhap-thuoc',
+                2: '/admin/ql-ton-kho',
+                3: '/admin/ql-lich-hen',
+                4: '/admin/ql-dich-vu',
+                5: '/admin/ql-nhan-vien',
+                6: '/admin/ql-khach-hang',
+                7: '/admin/ql-pet',
+                8: '/admin/ql-thuoc',
+                9: '/admin/ql-nha-cung-cap',
+                10: '/admin/ql-luong',
+                11: '/admin/ql-danh-gia',
+                12: '/admin/ql-kho',
+                13: '/admin/hoa-don',
+                14: '/admin/doanh-thu',
+                15: '/admin/ql-chuc-vu',
+                16: '/admin/phan-quyen',
+            };
+
+            // Tìm quyền đầu tiên mà user có
+            const firstAllowed = permissions.find(id => routeMap[parseInt(id)]);
+
+            // Redirect tới route tương ứng hoặc về home '/'
+            this.$router.push(firstAllowed ? routeMap[parseInt(firstAllowed)] : '/');
+        } else {
+            toaster.error(data.message);
+        }
+    } catch (error) {
+        console.error(error);
+        toaster.error('Đã có lỗi xảy ra!');
+    }
         }
     },
 }
