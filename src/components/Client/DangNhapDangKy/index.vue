@@ -1,22 +1,17 @@
 <template>
   <div class="container">
     <video autoplay loop muted playsinline class="video-background">
-      <source
-        src="https://res.cloudinary.com/prettylitter/video/upload/v1708552338/videos/PL_2024_1920x1080_V2.mp4"
-        type="video/mp4"
-      />
+      <source src="https://res.cloudinary.com/prettylitter/video/upload/v1708552338/videos/PL_2024_1920x1080_V2.mp4"
+        type="video/mp4" />
     </video>
     <div class="content">
-      <div
-        class="logo text-center"
-        style="
+      <div class="logo text-center" style="
           font-size: 25px;
           font-weight: bold;
           font-family: 'Fredoka', sans-serif;
           color: #0099ff;
           text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        "
-      >
+        ">
         PETCARE
       </div>
       <div class="tabs">
@@ -26,117 +21,61 @@
 
       <div id="login-form">
         <div class="input-group flex-nowrap mb-3">
-          <span class="input-group-text" id="addon-wrapping"
-            ><i class="fa-solid fa-square-envelope"></i
-          ></span>
-          <input
-            v-model="khach_hang.email"
-            type="email"
-            class="form-control"
-            placeholder="Email của bạn"
-            aria-label="Email"
-            aria-describedby="basic-addon1"
-          />
+          <span class="input-group-text" id="addon-wrapping"><i class="fa-solid fa-square-envelope"></i></span>
+          <input v-model="khach_hang.email" type="email" class="form-control" placeholder="Email của bạn"
+            aria-label="Email" aria-describedby="basic-addon1" />
         </div>
         <div class="input-group flex-nowrap mt-3">
           <span class="input-group-text" id="addon-wrapping">
             <i class="fa-solid fa-key"></i>
           </span>
-          <input
-            v-model="khach_hang.pass"
-            class="form-control"
-            style=""
-            placeholder="Mật khẩu của bạn"
-            :type="showPassword ? 'text' : 'password'"
-            aria-label="Password"
-            aria-describedby="basic-addon1"
-          />
+          <input v-model="khach_hang.pass" class="form-control" style="" placeholder="Mật khẩu của bạn"
+            :type="showPassword ? 'text' : 'password'" aria-label="Password" aria-describedby="basic-addon1" />
         </div>
-        <router-link to="/client/doi-mat-khau">
+        <router-link to="/client/nhap-mail">
           <div class="text-end mt-2">
             <a href="#" class="link">Quên mật khẩu?</a>
           </div>
         </router-link>
-        <button
-          style="
+        <button style="
             font-size: 18px;
             font-weight: bold;
             font-family: 'Fredoka', sans-serif;
             color: white;
-          "
-          class="button mt-3"
-          v-on:click="dangNhap()"
-        >
+          " class="button mt-3" v-on:click="dangNhap()">
           ĐĂNG NHẬP
         </button>
       </div>
 
       <div id="signup-form" style="display: none">
         <div class="input-group flex-nowrap">
-          <span class="input-group-text" id="addon-wrapping"
-            ><i class="fa-solid fa-user"></i
-          ></span>
-          <input
-            v-model="khach_hang.ho_va_ten"
-            type="text"
-            class="form-control"
-            placeholder="Tên của bạn"
-          />
+          <span class="input-group-text" id="addon-wrapping"><i class="fa-solid fa-user"></i></span>
+          <input v-model="khach_hang.ho_va_ten" type="text" class="form-control" placeholder="Tên của bạn" />
         </div>
         <div class="input-group flex-nowrap mt-3">
-          <span class="input-group-text" id="addon-wrapping"
-            ><i class="fa-solid fa-square-envelope"></i
-          ></span>
-          <input
-            v-model="khach_hang.email"
-            type="email"
-            class="form-control"
-            placeholder="Email của bạn"
-          />
+          <span class="input-group-text" id="addon-wrapping"><i class="fa-solid fa-square-envelope"></i></span>
+          <input v-model="khach_hang.email" type="email" class="form-control" placeholder="Email của bạn" />
         </div>
         <div class="input-group flex-nowrap mt-3">
-          <span class="input-group-text" id="addon-wrapping"
-            ><i class="fa-solid fa-phone"></i
-          ></span>
-          <input
-            v-model="khach_hang.so_dien_thoai"
-            class="form-control"
-            type="tel"
-            placeholder="Số điện thoại của bạn"
-            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-          />
+          <span class="input-group-text" id="addon-wrapping"><i class="fa-solid fa-phone"></i></span>
+          <input v-model="khach_hang.so_dien_thoai" class="form-control" type="tel" placeholder="Số điện thoại của bạn"
+            oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
         </div>
         <div class="input-group flex-nowrap mt-3">
-          <span class="input-group-text" id="addon-wrapping"
-            ><i class="fa-solid fa-key"></i
-          ></span>
-          <input
-            v-model="khach_hang.password"
-            class="form-control"
-            placeholder="Mật khẩu của bạn"
-            :type="showPassword ? 'text' : 'password'"
-          />
+          <span class="input-group-text" id="addon-wrapping"><i class="fa-solid fa-key"></i></span>
+          <input v-model="khach_hang.password" class="form-control" placeholder="Mật khẩu của bạn"
+            :type="showPassword ? 'text' : 'password'" />
         </div>
         <div class="input-group flex-nowrap mt-3">
-          <span class="input-group-text" id="addon-wrapping"
-            ><i class="fa-regular fa-keyboard"></i
-          ></span>
-          <input
-            class="form-control"
-            placeholder="Nhập lại mật khẩu"
-            :type="showPassword ? 'text' : 'password'"
-          />
+          <span class="input-group-text" id="addon-wrapping"><i class="fa-regular fa-keyboard"></i></span>
+          <input class="form-control" placeholder="Nhập lại mật khẩu" :type="showPassword ? 'text' : 'password'" />
         </div>
-        <button
-          style="
+        <button style="
             font-size: 18px;
             font-weight: bold;
             font-family: 'Fredoka', sans-serif;
             color: white;
-          "
-          class="button mt-4"
-          v-on:click="dangKy()"
-        >
+          " class="button mt-4" v-on:click="dangKy()">
           Xác nhận
         </button>
       </div>
@@ -175,7 +114,7 @@ export default {
     dangKy() {
       axios
         .post(
-          "http://127.0.0.1:8000/api/khach-hang/dang-ky",this.khach_hang)
+          "http://127.0.0.1:8000/api/khach-hang/dang-ky", this.khach_hang)
         .then((res) => {
           toaster.success(res.data.message);
           this.khach_hang = {
@@ -203,7 +142,7 @@ export default {
   },
 };
 </script>
-<style scoped >
+<style scoped>
 body {
   font-family: Arial, sans-serif;
   display: flex;
@@ -212,6 +151,7 @@ body {
   height: 100vh;
   background-color: #f5f5f5;
 }
+
 .container {
   position: relative;
   width: 100vw;
@@ -220,11 +160,13 @@ body {
   justify-content: center;
   align-items: center;
 }
+
 .logo {
   font-size: 28px;
   font-weight: bold;
   color: #0099ff;
 }
+
 .tabs {
   display: flex;
   justify-content: space-around;
@@ -232,6 +174,7 @@ body {
   position: relative;
   margin-bottom: 20px;
 }
+
 .tab {
   padding: 10px;
   cursor: pointer;
@@ -239,9 +182,11 @@ body {
   text-align: center;
   flex: 1;
 }
+
 .active {
   border-bottom: 4px solid black;
 }
+
 .button {
   background: #003366;
   color: white;
@@ -251,10 +196,12 @@ body {
   cursor: pointer;
   font-size: 16px;
 }
+
 .link {
   color: #0099ff;
   font-size: 14px;
 }
+
 .video-background {
   position: fixed;
   top: 0;
@@ -264,6 +211,7 @@ body {
   object-fit: cover;
   z-index: -1;
 }
+
 .content {
   position: relative;
   z-index: 1;
@@ -273,6 +221,7 @@ body {
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
   width: 450px;
 }
+
 .input-group:focus-within .show-password-icon {
   display: none;
 }
