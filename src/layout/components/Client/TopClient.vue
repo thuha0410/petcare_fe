@@ -81,6 +81,14 @@
               <a v-on:click="dangXuatAll()" class="dropdown-item" href="javascript:;"><i
                   class="bx bx-log-out-circle"></i><span>Đăng Xuất Tất Cả</span></a>
             </li>
+            <li>
+              <a
+                class="dropdown-item"
+                href="javascript:;"
+                ><i class="bx bx-log-out-circle"></i
+                ><router-link to="/client/thong-tin-ca-nhan/">Thông tin cá nhân</router-link></a
+              >
+            </li>
           </ul>
         </template>
         <template v-else>
