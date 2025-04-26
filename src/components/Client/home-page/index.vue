@@ -342,7 +342,7 @@ export default {
 //   }
 
 </script>
-<style>
+<style scoped>
 .custom-btn:hover {
     background-color: #dc3545 !important;
     /* Đổi thành màu đỏ */
