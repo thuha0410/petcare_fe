@@ -70,7 +70,11 @@
                 </div>
                 <div class="modal-body">
                     <label for="">Tên khách hàng</label>
-                    <input v-model="pet.ho_va_ten" class="form-control mb-2" type="text">
+                    <select v-model="pet.id_kh" class="form-control">
+                        <template v-for="(value, index) in list_khach_hang" :key="index">
+                            <option v-bind:value="value.id">{{ value.ho_va_ten }}</option>
+                        </template>
+                    </select>
                     <label for="">Tên pet</label>
                     <input v-model="pet.ten_pet" class="form-control mb-2" type="text">
                     <label for="">Chủng loại</label>
@@ -78,7 +82,6 @@
                         <option value="0">Mèo</option>
                         <option value="1">Chó</option>
                     </select>
-                    <!-- <input v-model="pet.chung_loai" class="form-control mb-2" type="text"> -->
                     <label for="">Giới tính</label>
                     <select v-model="pet.gioi_tinh" class="form-control mb-2" name="" id="">
                         <option value="0">Đực</option>
@@ -253,7 +256,6 @@ export default {
                 })
                 .then((res) => {
                     this.list_khach_hang = res.data.data
-                    console.log(this.list_khach_hang);
                 });
         },
         doitt(x) {
