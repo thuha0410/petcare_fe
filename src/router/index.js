@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router"; 
 import kiemTraAdmin from './kiemTraAdmin';
+import { kiemTraQuyen } from '../utils/kiemTraQuyen';
 
 const routes = [
     {
@@ -12,9 +13,17 @@ const routes = [
         component: ()=>import('../components/Admin/QLDichVu/index.vue'),
         meta: {
             layout:'admin',
-            permission: 4  // ID chức năng Quản lý dịch vụ
         },
-        beforeEnter: kiemTraAdmin
+        beforeEnter: [
+            kiemTraAdmin,
+            async (to, from, next) => {
+                if (await kiemTraQuyen(4)) {
+                    next();
+                } else {
+                    next('/');
+                }
+            }
+        ]
     },
     {
         path : '/admin/ql-loai-dich-vu',

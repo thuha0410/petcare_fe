@@ -62,13 +62,10 @@ export default {
                 .then((res) => {
                     if (res.data.status == 1) {
                         toaster.success(res.data.message);
-                        localStorage.setItem('token_admin', res.data.token);
-                        localStorage.setItem('name_admin', res.data.name);   
-                        localStorage.setItem('email_admin', res.data.email);
+                        localStorage.setItem("token_admin", res.data.token);
                         this.$router.push('/admin/nhap-thuoc');
                     } else {
                         toaster.error(res.data.message);
-
                     }
                 })
         }
