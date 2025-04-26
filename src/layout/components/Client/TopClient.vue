@@ -67,12 +67,10 @@
             </div>
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
-            <router-link to="client/thong-tin-ca-nhan">
-              <li>
-                <a class="dropdown-item" href="javascript:;"><i class="bx bx-log-out-circle"></i><span>Thông tin cá
-                    nhân</span></a>
-              </li>
-            </router-link>
+            <li>
+              <a class="dropdown-item" href="javascript:;"><i class="bx bx-log-out-circle"></i><router-link
+                  to="/client/thong-tin-ca-nhan/">Thông tin cá nhân</router-link></a>
+            </li>
             <li>
               <a v-on:click="dangXuat()" class="dropdown-item" href="javascript:;"><i
                   class="bx bx-log-out-circle"></i><span>Đăng Xuất</span></a>
@@ -81,14 +79,7 @@
               <a v-on:click="dangXuatAll()" class="dropdown-item" href="javascript:;"><i
                   class="bx bx-log-out-circle"></i><span>Đăng Xuất Tất Cả</span></a>
             </li>
-            <li>
-              <a
-                class="dropdown-item"
-                href="javascript:;"
-                ><i class="bx bx-log-out-circle"></i
-                ><router-link to="/client/thong-tin-ca-nhan/">Thông tin cá nhân</router-link></a
-              >
-            </li>
+
           </ul>
         </template>
         <template v-else>
