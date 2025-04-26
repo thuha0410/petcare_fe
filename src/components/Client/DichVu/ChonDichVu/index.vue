@@ -77,12 +77,12 @@
                 </div>
                 <div class="card-body d-flex flex-wrap justify-content-center">
                     <button v-for="(value,index) in availableTimes" :key="index" class="btn btn-outline-primary m-2"
-                        @click="selectTime(value.khung_gio), Object.assign(id_lich, value.id)">
+                        @click="selectTime(value.khung_gio)">
                         {{ value.khung_gio }}
                     </button>
                 </div>
                 <div class="text-center mb-3">
-                    <button class="btn btn-success mt-2" @click="xacNhanLichHen(id_lich)" :disabled="!selectedTime">
+                    <button class="btn btn-success mt-2" @click="xacNhanLichHen()" :disabled="!selectedTime">
                         Xác nhận lịch hẹn
                     </button>
                 </div>
@@ -123,8 +123,6 @@ export default {
     mounted() {
         this.loadDichVu();
         this.loadLich();
-        
-        
     },
     methods: {
         loadLich() {
@@ -163,15 +161,19 @@ export default {
             if (!this.selectedDate || !this.selectedTime) return;
 
             const data = {
-                ten_dv: this.list_dv.ten_dv,
-                id_lich: id,
-                id_nv: this.list_dv.id,
-                id_pet: this.list_dv.id_pet,
+                id_lich: this.id_lich,
+                id_dv: this.list_dv.id,
                 ngay: this.selectedDate,
                 gio: this.selectedTime,
             };
             axios
-                .post('http://127.0.0.1:8000/api/lich-hen/them', data)
+                .post('http://127.0.0.1:8000/api/lich-hen/them', data ,
+                {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_client')
+                        }
+                    }
+                )
                 .then((res) => {
                     alert("Đặt lịch thành công!");
                     this.toggleCalendar();
