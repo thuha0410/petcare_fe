@@ -18,23 +18,25 @@
                             nhân</h3>
                         <div class="row">
                             <div style="font-size: 16px; margin-bottom: 12px;">
-                                <strong>Họ và Tên:</strong> Beyouncé
+                                <strong>Họ và Tên:</strong> {{ user.ho_va_ten }}
                             </div>
                             <div style="font-size: 16px; margin-bottom: 12px;">
-                                <strong>Email:</strong> Beyonce@gmail.com
+                                <strong>Email:</strong> {{ user.email }}
                             </div>
                             <div style="font-size: 16px; margin-bottom: 12px;">
-                                <strong>Số điện thoại:</strong> 123123123
+                                <strong>Số điện thoại:</strong> {{ user.so_dien_thoai }}
                             </div>
                             <div style="font-size: 16px; margin-bottom: 12px;">
-                                <strong>Ngày sinh:</strong> 12/12/2021
+                                <strong>Ngày sinh:</strong> {{ user.ngay_sinh }}
                             </div>
+
                         </div>
                         <div class="d-flex justify-content-between align-items-center mt-3" style="width: 100%;">
                             <p class="text-success m-0">
                                 <i class="fa-solid fa-shield-cat"></i> PetCare
                             </p>
-                            <button data-bs-toggle="modal" data-bs-target="#capnhatttcn" class="btn text-nowrap"
+                            <button @click="sua_kh = { ...user }" data-bs-toggle="modal" data-bs-target="#capnhatttcn"
+                                class="btn text-nowrap"
                                 style="margin-left: auto; background-color: white; color: #2c4b85; padding: 6px 24px; border-radius: 6px;">
                                 Cập nhật thông tin
                             </button>
@@ -53,24 +55,26 @@
             <div class="row">
                 <div class="col-lg-2"></div>
                 <div class="col-lg-8">
-                    <div class="card shadow" style="border-radius: 16px; background-color: #e6f2ff;">
+                    <div v-for="(value, index) in danh_sach_pet" :key="index" class="card shadow"
+                        style="border-radius: 16px; background-color: #e6f2ff;">
                         <div class="text-end " style="background-color: white;">
-                            <button data-bs-toggle="modal" data-bs-target="#xoa" class="btn "><i class="fa-solid fa-circle-xmark  " style="color: #ff0000; font-size: 25px;"></i></button>
+                            <button data-bs-toggle="modal" data-bs-target="#xoa" class="btn "><i
+                                    class="fa-solid fa-circle-xmark  "
+                                    style="color: #ff0000; font-size: 25px;"></i></button>
                         </div>
                         <div class="card-header bg-white d-flex justify-content-center border-0 pt-4">
-                            <img src="https://th.bing.com/th/id/OIP.NpI3mBvnVzWC3RNI3qGT8gHaE8?rs=1&pid=ImgDetMain"
-                                class="img-fluid rounded-circle shadow-sm"
+                            <img :src="value.hinh_anh" class="img-fluid rounded-circle shadow-sm"
                                 style="width: 120px; height: 120px; object-fit: cover;">
                         </div>
                         <div class="card-body text-center text-dark">
-                            <h4 class="mb-3 text-primary">Butin</h4>
+                            <h4 class="mb-3 text-primary">{{ value.ten_pet }}</h4>
                             <div class="d-flex justify-content-around px-4 mb-2">
-                                <span><strong>Chủng loại:</strong> Chó</span>
-                                <span><strong>Giới tính:</strong> Đực</span>
+                                <span><strong>Chủng loại:</strong> {{ chuyenChungLoai(value.chung_loai) }}</span>
+                                <span><strong>Giới tính:</strong> {{ chuyenGioiTinh(value.gioi_tinh) }}</span>
                             </div>
                             <div class="d-flex justify-content-around px-4">
-                                <span><strong>Tuổi:</strong> 2 tuổi</span>
-                                <span><strong>Cân nặng:</strong> 3kg</span>
+                                <span><strong>Tuổi:</strong>{{ value.tuoi }}</span>
+                                <span><strong>Cân nặng:</strong>{{ value.can_nang }}</span>
                             </div>
                         </div>
                         <div class="card-footer bg-transparent text-center border-0 pb-4">
@@ -79,14 +83,16 @@
                         </div>
                     </div>
                     <div class="text-center">
-                        <button data-bs-toggle="modal" data-bs-target="#them" style="background-color: #2c4b85; color: white;" class="btn px-4 rounded-pill ">+ Thêm pet</button>
+                        <button data-bs-toggle="modal" data-bs-target="#them"
+                            style="background-color: #2c4b85; color: white;" class="btn px-4 rounded-pill ">+ Thêm
+                            pet</button>
                     </div>
                 </div>
                 <div class="col-lg-2"></div>
             </div>
         </div>
         <div class="col-lg-2">
-       
+
         </div>
     </div>
     <!-- Modal cập nhật -->
@@ -151,19 +157,17 @@
                 </div>
                 <div class="modal-body">
                     <label>Họ và Tên</label>
-                    <input class="form-control mb-2" type="text" />
+                    <input v-model="sua_kh.ho_va_ten" class="form-control mb-2" type="text" />
                     <label>Email</label>
-                    <input class="form-control mb-2" type="text" />
-                    <label>Password</label>
-                    <input class="form-control mb-2" type="text" />
+                    <input v-model="sua_kh.email" class="form-control mb-2" type="text" />
                     <label>Số điện thoại</label>
-                    <input class="form-control mb-2" type="text" />
+                    <input v-model="sua_kh.so_dien_thoai" class="form-control mb-2" type="text" />
                     <label>Ngày sinh</label>
-                    <input class="form-control mb-2" type="text" />
+                    <input v-model="sua_kh.ngay_sinh" class="form-control mb-2" type="date" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn" style="background-color: #2c4b85; color: white;"
-                        data-bs-dismiss="modal">Cập nhật</button>
+                        data-bs-dismiss="modal" v-on:click="sua()">Cập nhật</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
@@ -208,8 +212,97 @@
 </template>
 
 <script>
+import { createToaster } from "@meforma/vue-toaster";
+import axios from "axios";
+const toaster = createToaster({ position: "top-right" });
 
 export default {
-
+    data() {
+        return {
+            user: {
+                ho_va_ten: '',
+                email: '',
+                so_dien_thoai: '',
+                ngay_sinh: ''
+            },
+            sua_kh: {
+            },
+            danh_sach_pet: []
+        };
+    },
+    mounted() {
+        this.getUserInfo();
+    },
+    methods: {
+        getUserInfo() {
+            const token = localStorage.getItem("token_client");
+            if (!token) {
+                console.warn("Không tìm thấy token.");
+                return;
+            }
+            axios
+                .get("http://127.0.0.1:8000/api/user/info", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+                .then((res) => {
+                    const user = res.data;
+                    this.user = {
+                        id: user.id,
+                        ho_va_ten: user.ho_va_ten,
+                        email: user.email,
+                        so_dien_thoai: user.so_dien_thoai,
+                        ngay_sinh: user.ngay_sinh
+                    };
+                    this.getPets(user.id);
+                })
+                .catch((err) => {
+                    console.error("Lỗi khi lấy thông tin người dùng:", err);
+                });
+        },
+        getPets(id_kh) {
+            const token = localStorage.getItem("token_client");
+            if (!token) {
+                console.warn("Không tìm thấy token.");
+                return;
+            }
+            axios
+                .get(`http://127.0.0.1:8000/api/pets/${id_kh}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+                .then((res) => {
+                    this.danh_sach_pet = res.data.pets; // Lưu danh sách thú cưng vào data
+                })
+                .catch((err) => {
+                    console.error("Lỗi khi lấy danh sách thú cưng:", err);
+                });
+        },
+        sua() {
+            axios
+                .post('http://127.0.0.1:8000/api/khach-hang/sua', this.sua_kh,
+                    // {
+                    //     headers: {
+                    //         Authorization: 'Bearer ' + localStorage.getItem('token_client')
+                    //     }
+                    // }
+                )
+                .then(
+                    (res) => {
+                        if (res.data.status == 1)
+                            toaster.success(res.data.message)
+                        this.getUserInfo();
+                    }
+                )
+        },
+        chuyenGioiTinh(gt) {
+            return gt == 0 ? 'Đực' : 'Cái';
+        },
+        chuyenChungLoai(cl) {
+            return cl == 0 ? 'Chó' : 'Mèo';
+        }
+    }
 };
 </script>

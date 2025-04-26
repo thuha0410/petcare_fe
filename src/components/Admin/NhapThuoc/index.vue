@@ -1,33 +1,33 @@
 <template>
-    <div class="container-fluid">
-        <!-- PHIẾU NHẬP THUỐC -->
-        <div class="card mb-4">
-            <div class="card-header text-white d-flex justify-content-between" style="background-color: darkblue;">
-                <h5 class="mb-0 text-white fw-bold">PHIẾU NHẬP THUỐC</h5>
-            </div>
-            <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label class="form-label">Tên kho</label>
-                        <select v-model="phieuNhap.id_kho" class="form-select"
-                            :class="{ 'is-invalid': highlightWarning && !phieuNhap.id_kho }">
-                            <option disabled value="">-- Chọn kho --</option>
-                            <option v-for="kho in listKho" :key="kho.id" :value="kho.id">{{ kho.ten_kho }}</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Tên nhà cung cấp</label>
-                        <select v-model="phieuNhap.id_ncc" class="form-select"
-                            :class="{ 'is-invalid': highlightWarning && !phieuNhap.id_ncc }">
-                            <option disabled value="">-- Chọn nhà cung cấp --</option>
-                            <option v-for="ncc in listNCC" :key="ncc.id" :value="ncc.id">{{ ncc.ten_ncc }}</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Ngày nhập</label>
-                        <input type="date" v-model="phieuNhap.ngay_nhap" class="form-control" />
-                    </div>
-                </div>
+  <div class="container-fluid">
+    <!-- PHIẾU NHẬP THUỐC -->
+    <div class="card mb-4">
+      <div class="card-header text-white d-flex justify-content-between" style="background-color: darkblue;">
+        <h5 class="mb-0 text-white fw-bold">PHIẾU NHẬP THUỐC</h5>
+      </div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label class="form-label">Tên kho</label>
+            <select v-model="phieuNhap.id_kho" class="form-select"
+              :class="{ 'is-invalid': highlightWarning && !phieuNhap.id_kho }">
+              <option disabled value="">-- Chọn kho --</option>
+              <option v-for="kho in listKho" :key="kho.id" :value="kho.id">{{ kho.ten_kho }}</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Tên nhà cung cấp</label>
+            <select v-model="phieuNhap.id_ncc" class="form-select"
+              :class="{ 'is-invalid': highlightWarning && !phieuNhap.id_ncc }">
+              <option disabled value="">-- Chọn nhà cung cấp --</option>
+              <option v-for="ncc in listNCC" :key="ncc.id" :value="ncc.id">{{ ncc.ten_ncc }}</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Ngày nhập</label>
+            <input type="date" v-model="phieuNhap.ngay_nhap" class="form-control" />
+          </div>
+        </div>
 
         <table class="table table-bordered">
           <thead class="text-center">
@@ -35,30 +35,28 @@
               <th>Thuốc</th>
               <th>Số lượng</th>
               <th>Giá nhập</th>
+              <th>Giá bán</th>
               <th>Hạn sử dụng</th>
               <th>Thành tiền</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="(item, index) in chiTiet"
-              :key="index"
-              class="text-center"
-            >
+            <tr v-for="(item, index) in chiTiet" :key="index" class="text-center">
               <td>{{ getTenThuoc(item.id_thuoc) }}</td>
               <td>{{ item.so_luong }}</td>
               <td>{{ item.gia_nhap }}</td>
+              <td>{{ item.gia_ban }}</td>
               <td>{{ item.han_su_dung }}</td>
               <td>{{ (item.so_luong * item.gia_nhap).toLocaleString() }}</td>
               <td>
-                <button class="btn btn-sm btn-danger" @click="xoaDong(index)">
+                <button class="btn btn-sm btn-danger" v-on:click="xoaDong(index)">
                   Xóa
                 </button>
               </td>
             </tr>
             <tr>
-              <td colspan="4" class="text-end fw-bold">Tổng tiền:</td>
+              <td colspan="5" class="text-end fw-bold">Tổng tiền:</td>
               <td class="fw-bold text-danger">
                 {{ tinhTongTien().toLocaleString() }} VND
               </td>
@@ -80,22 +78,14 @@
 
     <!-- DANH SÁCH PHIẾU NHẬP -->
     <div class="card">
-      <div
-        class="card-header bg-secondary text-white d-flex justify-content-between"
-      >
+      <div class="card-header bg-secondary text-white d-flex justify-content-between">
         <h5 class="mb-0 text-white">DANH SÁCH PHIẾU NHẬP</h5>
       </div>
-      <div
-        class="d-flex justify-content-between align-items-center my-3 flex-wrap gap-2"
-      >
+      <div class="d-flex justify-content-between align-items-center my-3 flex-wrap gap-2">
         <!-- TÌM KIẾM -->
         <div class="input-group ms-3" style="max-width: 350px">
-          <input
-            v-model="tim_kiem.noi_dung"
-            type="text"
-            class="form-control"
-            placeholder="Nhập tên kho hoặc nhà cung cấp..."
-          />
+          <input v-model="tim_kiem.noi_dung" type="text" class="form-control"
+            placeholder="Nhập tên kho hoặc nhà cung cấp..." />
           <button v-on:click="timkiem()" class="btn btn-outline-secondary">
             <i class="fa-solid fa-magnifying-glass"></i>
           </button>
@@ -104,26 +94,15 @@
         <!-- LỌC NGÀY -->
         <div class="d-flex align-items-center gap-2">
           <label class="me-1 mb-0">Từ:</label>
-          <input
-            v-model="loc_ngay.tu_ngay"
-            type="date"
-            class="form-control form-control-sm"
-          />
+          <input v-model="loc_ngay.tu_ngay" type="date" class="form-control form-control-sm" />
           <label class="me-1 mb-0 ms-2">Đến:</label>
-          <input
-            v-model="loc_ngay.den_ngay"
-            type="date"
-            class="form-control form-control-sm"
-          />
+          <input v-model="loc_ngay.den_ngay" type="date" class="form-control form-control-sm" />
           <button class="btn btn-sm btn-dark me-2" v-on:click="locTheoNgay()">
             <i class="fa-solid fa-filter"></i>
           </button>
 
           <div class="text-nowrap me-2">
-            <button
-              class="btn btn-outline-secondary btn-sm"
-              v-on:click="xoaBoLoc()"
-            >
+            <button class="btn btn-outline-secondary btn-sm" v-on:click="xoaBoLoc()">
               Xoá bộ lọc
             </button>
           </div>
@@ -138,7 +117,9 @@
               <th>Nhà cung cấp</th>
               <th>Ngày nhập</th>
               <th>Tổng tiền</th>
+              <th>Chi tiết</th>
               <th>Hành động</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -149,27 +130,29 @@
               <td>{{ phieu.ngay_nhap }}</td>
               <td>{{ tinhTong(phieu.chi_tiet).toLocaleString() }} VND</td>
               <td>
-                <button
-                  class="btn btn-info btn-sm"
-                  v-on:click="xemChiTiet(phieu)"
-                >
-                  Chi tiết
-                </button>
-                <button
-                  class="btn btn-warning btn-sm ms-2"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modalSuaPhieu"
-                  v-on:click="Object.assign(update_phieu, phieu)"
-                >
-                  Sửa
-                </button>
-                <button
-                  v-on:click="Object.assign(del_phieu, phieu)"
-                  class="btn btn-danger btn-sm ms-2"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modalXacNhanXoa"
-                >
-                  Xóa
+                <a v-on:click="xemChiTiet(phieu)">
+                  <i class="fa-solid fa-circle-info fa-2x"></i>
+                </a>
+              </td>
+              <td>
+                <!-- nút sửa -->
+                <a v-if="!phieu.da_nhap_kho" class=" ms-2" data-bs-toggle="modal" data-bs-target="#modalSuaPhieu"
+                  v-on:click=Object.assign(update_phieu,phieu)>
+                  <i class="fa-solid fa-pen-to-square fa-2x"></i>
+                </a>
+                <!-- nút xóa -->
+                <a v-if="!phieu.da_nhap_kho" v-on:click="Object.assign(del_phieu, phieu)" class=" ms-2"
+                  data-bs-toggle="modal" data-bs-target="#modalXacNhanXoa">
+                  <i class="fa-solid fa-trash fa-2x" style="color: #f33551;"></i>
+                </a>
+
+              </td>
+              <td>
+                <div v-if="phieu.da_nhap_kho" class="text-black fw-bold">
+                  Đã nhập kho
+                </div>
+                <button v-if="!phieu.da_nhap_kho" class="btn btn-success btn-sm ms-2" v-on:click="nhapKho(phieu)">
+                  <span class="fw-bold" data-bs-toggle="modal" data-bs-target="#nhapkho">NHẬP KHO</span>
                 </button>
               </td>
             </tr>
@@ -177,216 +160,159 @@
         </table>
       </div>
     </div>
-    <!-- modal chi tiet -->
-    <div class="modal fade" id="modalChiTiet" tabindex="-1" ref="modalChiTiet">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header bg-info text-white">
-            <h5 class="modal-title">Chi tiết phiếu nhập</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>Thuốc</th>
-                  <th>Số lượng</th>
-                  <th>Giá nhập</th>
-                  <th>Hạn sử dụng</th>
-                  <th>Thành tiền</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(thuoc, index) in chiTietDangXem" :key="index">
-                  <td>{{ getTenThuoc(thuoc.id_thuoc) }}</td>
-                  <td>{{ thuoc.so_luong }}</td>
-                  <td>{{ thuoc.gia_nhap }}</td>
-                  <td>{{ thuoc.han_su_dung }}</td>
-                  <td>
-                    {{ (thuoc.so_luong * thuoc.gia_nhap).toLocaleString() }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+    <!-- modal nhập kho -->
+  </div>
+  <!-- modal chi tiet -->
+  <div class="modal fade" id="modalChiTiet" tabindex="-1" ref="modalChiTiet">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Chi tiết phiếu nhập</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Thuốc</th>
+                <th>Số lượng</th>
+                <th>Giá nhập</th>
+                <th>Giá bán</th>
+                <th>Hạn sử dụng</th>
+                <th>Thành tiền</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(thuoc, index) in chiTietDangXem" :key="index">
+                <td>{{ getTenThuoc(thuoc.id_thuoc) }}</td>
+                <td>{{ thuoc.so_luong }}</td>
+                <td>{{ thuoc.gia_nhap }}</td>
+                <td>{{ thuoc.gia_ban }}</td>
+                <td>{{ thuoc.han_su_dung }}</td>
+                <td>
+                  {{ (thuoc.so_luong * thuoc.gia_nhap).toLocaleString() }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
-    <!-- MODAL THÊM THUỐC -->
-    <div class="modal fade" id="themThuocModal" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header bg-primary text-white">
-            <h5 class="modal-title">Thêm thuốc</h5>
-            <button class="btn-close" data-bs-dismiss="modal"></button>
+  </div>
+  <!-- MODAL THÊM THUỐC -->
+  <div class="modal fade" id="themThuocModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Thêm thuốc</h5>
+          <button class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label>Thuốc</label>
+            <select v-model="thuocNhap.id_thuoc" class="form-select">
+              <option disabled value="">-- Chọn thuốc --</option>
+              <option v-for="thuoc in listThuoc" :key="thuoc.id" :value="thuoc.id">
+                {{ thuoc.ten_thuoc }}
+              </option>
+            </select>
           </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label>Thuốc</label>
-              <select v-model="thuocNhap.id_thuoc" class="form-select">
-                <option disabled value="">-- Chọn thuốc --</option>
-                <option
-                  v-for="thuoc in listThuoc"
-                  :key="thuoc.id"
-                  :value="thuoc.id"
-                >
-                  {{ thuoc.ten_thuoc }}
-                </option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label>Số lượng</label>
-              <input
-                type="number"
-                v-model.number="thuocNhap.so_luong"
-                class="form-control"
-                min="1"
-              />
-            </div>
-            <div class="mb-3">
-              <label>Giá nhập</label>
-              <input
-                type="number"
-                v-model.number="thuocNhap.gia_nhap"
-                class="form-control"
-                min="1"
-              />
-            </div>
-            <div class="mb-3">
-              <label>Hạn sử dụng</label>
-              <input
-                type="date"
-                v-model="thuocNhap.han_su_dung"
-                class="form-control"
-              />
-            </div>
+          <div class="mb-3">
+            <label>Số lượng</label>
+            <input type="number" v-model.number="thuocNhap.so_luong" class="form-control" min="1" />
           </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" data-bs-dismiss="modal">
-              Đóng
-            </button>
-            <button
-              class="btn btn-primary"
-              @click="xacNhanThemThuoc"
-              data-bs-dismiss="modal"
-            >
-              Thêm
-            </button>
+          <div class="mb-3">
+            <label>Giá nhập</label>
+            <input type="number" v-model.number="thuocNhap.gia_nhap" class="form-control" min="1" />
           </div>
+          <div class="mb-3">
+            <label>Giá bán</label>
+            <input type="number" v-model.number="thuocNhap.gia_ban" class="form-control" min="1" />
+          </div>
+          <div class="mb-3">
+            <label>Hạn sử dụng</label>
+            <input type="date" v-model="thuocNhap.han_su_dung" class="form-control" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">
+            Đóng
+          </button>
+          <button class="btn btn-primary" v-on:click="xacNhanThemThuoc()" data-bs-dismiss="modal">
+            Thêm
+          </button>
         </div>
       </div>
     </div>
     <!-- modal xoa phieu nhap -->
-    <div
-      class="modal fade"
-      id="modalXacNhanXoa"
-      tabindex="-1"
-      aria-hidden="true"
-      ref="modalXacNhanXoa"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header bg-danger text-white">
-            <h5 class="modal-title">Xác nhận xoá</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <p>Bạn có chắc chắn muốn xoá phiếu nhập này không?</p>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" data-bs-dismiss="modal">
-              Huỷ
-            </button>
-            <button
-              class="btn btn-danger"
-              v-on:click="xoa()"
-              data-bs-dismiss="modal"
-            >
-              Xoá
-            </button>
-          </div>
+
+  </div>
+  <div class="modal fade" id="modalXacNhanXoa" tabindex="-1" aria-hidden="true" ref="modalXacNhanXoa">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title">Xác nhận xoá</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>Bạn có chắc chắn muốn xoá phiếu nhập này không?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">
+            Huỷ
+          </button>
+          <button class="btn btn-danger" v-on:click="xoa()" data-bs-dismiss="modal">
+            Xoá
+          </button>
         </div>
       </div>
     </div>
-    <!-- modal sua phieu -->
-    <!-- Modal sửa chi tiết thuốc -->
-    <div
-      class="modal fade"
-      id="modalSuaPhieu"
-      tabindex="-1"
-      ref="modalSuaChiTiet"
-    >
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header bg-warning text-white">
-            <h5 class="modal-title">Sửa danh sách thuốc</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <table class="table table-bordered text-center">
-              <thead>
-                <tr>
-                  <th>Thuốc</th>
-                  <th>Số lượng</th>
-                  <th>Giá nhập</th>
-                  <th>Hạn sử dụng</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="(value, index) in update_phieu.chi_tiet"
-                  :key="index"
-                >
-                  <td>{{ getTenThuoc(value.id_thuoc) }}</td>
-                  <td>
-                    <input
-                      type="number"
-                      class="form-control"
-                      v-model.number="value.so_luong"
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="number"
-                      class="form-control"
-                      v-model.number="value.gia_nhap"
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="date"
-                      class="form-control"
-                      v-model="value.han_su_dung"
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" data-bs-dismiss="modal">
-              Đóng
-            </button>
-            <button
-              class="btn btn-warning"
-              v-on:click="capNhat()"
-              data-bs-dismiss="modal"
-            >
-              Cập nhật
-            </button>
-          </div>
+  </div>
+  <!-- Modal sửa chi tiết thuốc -->
+  <div class="modal fade" id="modalSuaPhieu" tabindex="-1" ref="modalSuaChiTiet">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-warning text-white">
+          <h5 class="modal-title">Sửa danh sách thuốc</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered text-center">
+            <thead>
+              <tr>
+                <th>Thuốc</th>
+                <th>Số lượng</th>
+                <th>Giá nhập</th>
+                <th>Giá bán</th>
+                <th>Hạn sử dụng</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(value, index) in update_phieu.chi_tiet" :key="index">
+                <td>{{ getTenThuoc(value.id_thuoc) }}</td>
+                <td>
+                  <input type="number" class="form-control" v-model.number="value.so_luong" />
+                </td>
+                <td>
+                  <input type="number" class="form-control" v-model.number="value.gia_nhap" />
+                </td>
+                <td>
+                  <input type="number" class="form-control" v-model.number="value.gia_ban" />
+                </td>
+                <td>
+                  <input type="date" class="form-control" v-model="value.han_su_dung" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">
+            Đóng
+          </button>
+          <button class="btn btn-warning" v-on:click="capNhat()" data-bs-dismiss="modal">
+            Cập nhật
+          </button>
         </div>
       </div>
     </div>
@@ -410,6 +336,7 @@ export default {
         id_thuoc: "",
         so_luong: "",
         gia_nhap: "",
+        gia_ban: "",
         han_su_dung: "",
       },
       chiTiet: [],
@@ -422,6 +349,7 @@ export default {
         id_thuoc: "",
         so_luong: "",
         gia_nhap: "",
+        gia_ban: "",
         han_su_dung: "",
       },
       tim_kiem: {
@@ -470,7 +398,17 @@ export default {
           this.danhSachPhieu = res.data.data;
         });
     },
-
+    nhapKho(phieu) {
+      axios.post("http://127.0.0.1:8000/api/phieu-nhap/nhap-kho", { id: phieu.id })
+        .then((res) => {
+          if (res.data.status) {
+            toaster.success(res.data.message);
+            this.loadPhieu(); // Cập nhật danh sách sau khi nhập
+          } else {
+            toaster.error(res.data.message);
+          }
+        });
+    },
     xoa() {
       axios
         .post("http://127.0.0.1:8000/api/phieu-nhap/xoa", this.del_phieu)
@@ -494,14 +432,26 @@ export default {
       }
       new bootstrap.Modal(document.getElementById("themThuocModal")).show();
     },
+    moModalSua(phieu) {
+      Object.assign(this.update_phieu, phieu);
+
+      // Nếu chi_tiet không tồn tại thì đảm bảo là mảng rỗng để tránh lỗi
+      if (!this.update_phieu.chi_tiet) {
+        this.update_phieu.chi_tiet = [];
+      }
+
+      // Mở modal thủ công (không rely vào data-bs-toggle)
+      const modal = new bootstrap.Modal(document.getElementById("modalSuaPhieu"));
+      modal.show();
+    },
     xacNhanThemThuoc() {
-      const { id_thuoc, so_luong, gia_nhap, han_su_dung } = this.thuocNhap;
+      const { id_thuoc, so_luong, gia_nhap, gia_ban, han_su_dung } = this.thuocNhap;
       const today = new Date().toISOString().slice(0, 10);
 
       if (
         !id_thuoc ||
         so_luong <= 0 ||
-        gia_nhap <= 0 ||
+        gia_nhap <= 0 || gia_ban <= 0 ||
         !han_su_dung ||
         han_su_dung <= today
       ) {
@@ -516,7 +466,8 @@ export default {
       this.thuocNhap = {
         id_thuoc: "",
         so_luong: 1,
-        gia_nhap: 1000,
+        gia_nhap: 1,
+        gia_ban: 1,
         han_su_dung: "",
       };
       toaster.success("Đã thêm thuốc vào danh sách!");
