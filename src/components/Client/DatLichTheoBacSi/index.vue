@@ -55,7 +55,8 @@
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" placeholder="Tìm kiếm bác sĩ"
                         aria-label="Recipient's username" aria-describedby="button-addon2">
-                    <button v-on:click="timkiem()" class="btn btn-outline-primary" type="button" id="button-addon2">Tìm kiếm</button>
+                    <button v-on:click="timkiem()" class="btn btn-outline-primary" type="button" id="button-addon2">Tìm
+                        kiếm</button>
                 </div>
                 <br>
                 <template v-for="(value, index) in list_nhan_vien" :key="index">
@@ -63,13 +64,17 @@
                         <div class="row align-items-center">
                             <!-- Cột hình ảnh -->
                             <div class="col-lg-4 d-flex justify-content-center">
-                                <img :src="value.hinh_anh" alt="" 
-                                    class="img-fluid rounded" style="width: 70%; max-width: 150px;">
+                                <router-link :to="`/client/xem-bs/${value.id}`">
+                                    <img :src="value.hinh_anh" alt="" class="img-fluid rounded"
+                                        style="width: 70%; max-width: 150px; cursor: pointer;">
+                                </router-link>
                             </div>
 
                             <!-- Cột nội dung -->
                             <div class="col-lg-8">
-                                <h5 class="card-title text-primary mt-3">BS. {{ value.ten_nv }}</h5>
+                                <router-link :to="`/client/xem-bs/${value.id}`">
+                                    <h5 class="card-title text-primary mt-3">BS. {{ value.ten_nv }}</h5>
+                                </router-link>
 
                                 <!-- Thông tin bác sĩ -->
                                 <div class="row mt-2">
@@ -78,7 +83,7 @@
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-md-3 fw-bold">Giá khám:</div>
-                                    <div class="col-md-9 text-danger"><strong>{{ value.tien_kham}}</strong> VND</div>
+                                    <div class="col-md-9 text-danger"><strong>{{ value.tien_kham }}</strong> VND</div>
                                 </div>
 
                                 <!-- Icon + Button -->
@@ -86,7 +91,12 @@
                                     <p class="text-success m-0">
                                         <i class="fa-solid fa-shield-cat"></i> PetCare
                                     </p>
-                                    <button class="btn btn-info text-white ">Đặt khám ngay</button>
+                                    <router-link to="/client/chon-dich-vu/" class="text-decoration-none">
+                                        <div class="text-end ">
+                                            <button class="btn btn-info text-white ">Đặt khám ngay</button>
+                                        </div>
+                                    </router-link>
+
                                 </div>
                             </div>
                         </div>
@@ -112,6 +122,7 @@ export default {
     },
     mounted() {
         this.load()
+        window.scrollTo(0, 0);
     },
 
     methods: {

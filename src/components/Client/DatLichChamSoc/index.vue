@@ -1,8 +1,7 @@
 <template>
     <div>
         <div class="row">
-            <div class="col-lg-6">
-
+            <div class="col-lg-6 ">
                 <span style="width:100%; ">
                     <img style="margin-top: 5%;  width: 100px; height: 150px;" class=""
                         src="https://res.cloudinary.com/dd1p908gm/image/upload/v1743239937/step3-dogimg_oqzgd5.avif"
@@ -82,7 +81,7 @@
                                 <p class="text-success m-0">
                                     <i class="fa-solid fa-shield-cat"></i> PetCare
                                 </p>
-                                <router-link :to="/client/chon-dich-vu/ + value.id">
+                                <router-link :to="`/client/chon-dich-vu/${value.id}`">
                                     <button class="btn btn-info text-white ">Đặt ngay</button>
                                 </router-link>
                             </div>
@@ -110,6 +109,7 @@ export default {
     },
     mounted() {
         this.load()
+        window.scrollTo(0, 0);
     },
 
     methods: {
