@@ -32,7 +32,7 @@
           <input v-model="khach_hang.pass" class="form-control" style="" placeholder="Mật khẩu của bạn"
             :type="showPassword ? 'text' : 'password'" aria-label="Password" aria-describedby="basic-addon1" />
         </div>
-        <router-link to="/client/nhap-mail">
+        <router-link to="/client/send-mail">
           <div class="text-end mt-2">
             <a href="#" class="link">Quên mật khẩu?</a>
           </div>
@@ -68,7 +68,7 @@
         </div>
         <div class="input-group flex-nowrap mt-3">
           <span class="input-group-text" id="addon-wrapping"><i class="fa-regular fa-keyboard"></i></span>
-          <input class="form-control" placeholder="Nhập lại mật khẩu" :type="showPassword ? 'text' : 'password'" />
+          <input v-model="khach_hang.password_confirmation" class="form-control" placeholder="Nhập lại mật khẩu" :type="showPassword ? 'text' : 'password'" />
         </div>
         <button style="
             font-size: 18px;
@@ -94,6 +94,8 @@ export default {
         pass: "",
         ho_va_ten: "",
         so_dien_thoai: "",
+        password: "",
+        password_confirmation: "",
       },
     };
   },
@@ -112,7 +114,11 @@ export default {
         });
     },
     dangKy() {
-      axios
+      if (this.khach_hang.password !== this.khach_hang.password_confirmation) {
+        toaster.error("Mật khẩu không khớp");
+        return;
+      }else{
+        axios
         .post(
           "http://127.0.0.1:8000/api/khach-hang/dang-ky", this.khach_hang)
         .then((res) => {
@@ -122,10 +128,12 @@ export default {
             password: "",
             ho_va_ten: "",
             so_dien_thoai: "",
+            password_confirmation: "",
           };
           this.showLogin();
           this.loaddata();
         });
+      }
     },
     showLogin() {
       document.getElementById("login-form").style.display = "block";

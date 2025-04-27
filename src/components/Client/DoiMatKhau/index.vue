@@ -1,75 +1,84 @@
 <template>
-    <div class="container-fluid">
-      <video autoplay loop muted playsinline class="video-background">
-        <source
-          src="https://res.cloudinary.com/prettylitter/video/upload/v1708552338/videos/PL_2024_1920x1080_V2.mp4"
-          type="video/mp4" />
-      </video>
-  
-      <div class="content">
-        <div class="logo text-center">
-          PETCARE
-        </div>
-  
-        <div class="text-center mt-4 mb-4">
-          <h4 style="color: white; font-family: 'Fredoka', sans-serif;">Tạo mật khẩu mới</h4>
-          <p style="color: #ddd">Vui lòng nhập mật khẩu mới của bạn bên dưới.</p>
-        </div>
-  
-        <div class="input-group flex-nowrap mt-3">
-          <span class="input-group-text">
-            <i class="fa-solid fa-lock"></i>
-          </span>
-          <input v-model="newPassword" type="password" class="form-control" placeholder="Mật khẩu mới" required />
-        </div>
-  
-        <div class="input-group flex-nowrap mt-3">
-          <span class="input-group-text">
-            <i class="fa-solid fa-lock"></i>
-          </span>
-          <input v-model="confirmPassword" type="password" class="form-control" placeholder="Nhập lại mật khẩu" required />
-        </div>
-  
-        <button class="button mt-4" @click="datLaiMatKhau">
-          Đặt lại mật khẩu
-        </button>
-  
-        <router-link to="/client/dang-nhap-dang-ky">
-          <div class="text-center mt-3">
-            <a href="#" class="link">Quay lại đăng nhập</a>
-          </div>
-        </router-link>
+  <div class="container-fluid">
+    <video autoplay loop muted playsinline class="video-background">
+      <source src="https://res.cloudinary.com/prettylitter/video/upload/v1708552338/videos/PL_2024_1920x1080_V2.mp4"
+        type="video/mp4" />
+    </video>
+
+    <div class="content">
+      <div class="logo text-center">
+        PETCARE
       </div>
+
+      <div class="text-center mt-4 mb-4">
+        <h4 style="color: white; font-family: 'Fredoka', sans-serif;">Tạo mật khẩu mới</h4>
+        <p style="color: #ddd">Vui lòng nhập mật khẩu mới của bạn bên dưới.</p>
+      </div>
+
+      <div class="input-group flex-nowrap mt-3">
+        <span class="input-group-text">
+          <i class="fa-solid fa-lock"></i>
+        </span>
+        <input v-model="mat_khau.pass"  :type="showPassword ? 'text' : 'password'" class="form-control" placeholder="Mật khẩu mới" />
+      </div>
+
+      <div class="input-group flex-nowrap mt-3">
+        <span class="input-group-text">
+          <i class="fa-solid fa-lock"></i>
+        </span>
+        <input :type="showPassword ? 'text' : 'password'" class="form-control" placeholder="Nhập lại mật khẩu" />
+      </div>
+
+      <button class="button mt-4" @click="doiMatKhau()">
+        Đặt lại mật khẩu
+      </button>
+
+      <router-link to="/client/dang-nhap-dang-ky">
+        <div class="text-center mt-3">
+          <a href="#" class="link">Quay lại đăng nhập</a>
+        </div>
+      </router-link>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        newPassword: '',
-        confirmPassword: ''
-      };
-    },
-    methods: {
-      datLaiMatKhau() {
-        if (!this.newPassword || !this.confirmPassword) {
-          alert("Vui lòng nhập đầy đủ thông tin.");
-          return;
-        }
-        if (this.newPassword !== this.confirmPassword) {
-          alert("Mật khẩu không khớp.");
-          return;
-        }
-        // TODO: Gửi API đổi mật khẩu
-        console.log("Mật khẩu mới:", this.newPassword);
-        alert("Mật khẩu của bạn đã được cập nhật.");
+  </div>
+</template>
+
+<script>
+export default {
+  props: ["ma_doi"],
+  data() {
+    return {
+      mat_khau: {
+        ma: this.$route.params.ma_doi,
+        pass: "",
+      },
+    };
+  },
+  methods: {
+    doiMatKhau() {
+      var payload={
+        ma: this.$route.params.ma_doi,
+        pass: this.mat_khau.pass,
       }
-    }
-  };
-  </script>
-  
-  <style scoped>
+        axios
+        .post(
+          "http://127.0.0.1:8000/api/khach-hang/doi-mat-khau",
+          payload
+        )
+        .then((res) => {
+          if ((res.data.status == 1)) {
+            toaster.success(res.data.message);
+            this.$router.push("/client/dang-nhap-dang-ky");
+          } else {
+            toaster.error(res.data.message);
+          }
+        });
+      }
+    },
+  }
+
+</script>
+
+<style scoped>
 .container {
   position: relative;
   width: 100vw;
@@ -128,5 +137,3 @@
   display: inline-block;
 }
 </style>
-
-  

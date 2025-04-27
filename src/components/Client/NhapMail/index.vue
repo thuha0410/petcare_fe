@@ -1,8 +1,7 @@
 <template>
   <div class="container">
     <video autoplay loop muted playsinline class="video-background">
-      <source
-        src="https://res.cloudinary.com/prettylitter/video/upload/v1708552338/videos/PL_2024_1920x1080_V2.mp4"
+      <source src="https://res.cloudinary.com/prettylitter/video/upload/v1708552338/videos/PL_2024_1920x1080_V2.mp4"
         type="video/mp4" />
     </video>
 
@@ -19,15 +18,10 @@
           <span class="input-group-text" id="addon-wrapping">
             <i class="fa-solid fa-square-envelope"></i>
           </span>
-          <input
-            v-model="khach_hang.email"
-            type="email"
-            class="form-control"
-            placeholder="Email của bạn"
-          />
+          <input v-model="mail.email" type="email" class="form-control" placeholder="Email của bạn" />
         </div>
 
-        <button class="button mt-3" @click="sendMail()">
+        <button class="button mt-3" @click="sendMail(value)">
           Gửi email ngay
         </button>
 
@@ -49,7 +43,9 @@ const toaster = createToaster({ position: 'top-left' });
 export default {
   data() {
     return {
-      khach_hang: { email: '' },
+      mail: {
+        email: ''
+      },
       activated: false,
       waitingForVerify: false,
     };
@@ -59,13 +55,13 @@ export default {
     if (isActivated === 'true') this.activated = true;
   },
   methods: {
-    sendMail(x){
-            axios
-            .post("http://127.0.0.1:8000/api/khach-hang/quen-mat-khau",this.mail)
-            .then((res)=>{
-                toaster.success(res.data.message)
-            })
-        }
+    sendMail(x) {
+      axios
+        .post("http://127.0.0.1:8000/api/khach-hang/send-mail", this.mail)
+        .then((res) => {
+          toaster.success(res.data.message)
+        })
+    }
   },
 };
 </script>

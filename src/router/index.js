@@ -116,14 +116,15 @@ const routes = [
         meta: {layout:'client'},
     },
     {
-        path : '/client/nhap-mail',
+        path : '/client/send-mail',
         component: ()=>import('../components/Client/NhapMail/index.vue'),
         meta: {layout:"dangNhap"}
     },
     {
-        path : '/client/doi-mat-khau',
+        path : '/client/doi-mat-khau/:ma_doi',
         component: ()=>import('../components/Client/DoiMatKhau/index.vue'),
-        meta: {layout:"dangNhap"}
+        meta: {layout:"dangNhap"},
+        props: true
     },
     {
         path : '/client/:id_khach_hang',
