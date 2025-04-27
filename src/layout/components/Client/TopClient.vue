@@ -68,16 +68,16 @@
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
             <li>
-              <a class="dropdown-item" href="javascript:;"><i class="bx bx-log-out-circle"></i><router-link
-                  to="/client/thong-tin-ca-nhan/">Thông tin cá nhân</router-link></a>
+              <a class="dropdown-item" href="javascript:;"><i class="fa-solid fa-pen-nib"></i><router-link
+                  to="/client/thong-tin-ca-nhan/"><span style="color: black;">Thông tin cá nhân</span></router-link></a>
             </li>
             <li>
               <a v-on:click="dangXuat()" class="dropdown-item" href="javascript:;"><i
-                  class="bx bx-log-out-circle"></i><span>Đăng Xuất</span></a>
+                  class="bx bx-log-out-circle " ></i><span style="color: black;">Đăng Xuất</span></a>
             </li>
             <li>
               <a v-on:click="dangXuatAll()" class="dropdown-item" href="javascript:;"><i
-                  class="bx bx-log-out-circle"></i><span>Đăng Xuất Tất Cả</span></a>
+                  class="bx bx-log-out-circle"></i><span style="color: black;">Đăng Xuất Tất Cả</span></a>
             </li>
 
           </ul>
@@ -212,5 +212,33 @@ export default {
 
 .btn-search:hover {
   background-color: #0055aa;
+}
+.dropdown-menu {
+  font-size: 16px; /* Tăng kích thước chữ */
+  padding: 10px 0; /* Tăng khoảng cách trên dưới */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.dropdown-menu .dropdown-item:hover {
+  background-color: #f0f8ff; /* xanh nhạt nhẹ nhàng */
+  color: #003366; /* chữ xanh đậm */
+  border-radius: 5px; /* bo nhẹ góc */
+}
+.dropdown-menu {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  visibility: hidden;
+}
+
+/* Khi mở */
+.dropdown-menu.show {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+.dropdown-menu .dropdown-item {
+  font-size: 16px; /* Tăng chữ trong từng dòng */
+  padding: 12px 20px; /* Dễ bấm hơn */
 }
 </style>

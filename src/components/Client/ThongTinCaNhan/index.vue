@@ -9,13 +9,32 @@
                         style="background-color: #2c4b85; padding: 20px 0; border-radius: 16px;">
                         <img class="img-fluid rounded-circle border border-white border-4 mb-3"
                             style="height: 180px; width: 180px; object-fit: cover;"
-                            src="https://th.bing.com/th/id/OIP.NyRkmREmV5XyFnRoE-t7JgHaFj?rs=1&pid=ImgDetMain" />
+                            src="https://png.pngtree.com/png-vector/20220527/ourlarge/pngtree-unknown-person-icon-avatar-question-png-image_4760937.png" />
                     </div>
 
                     <!-- Thông tin cá nhân -->
-                    <div class="col-lg-8 d-flex flex-column justify-content-start align-items-start">
-                        <h3 style="margin-top: 0; font-weight: bold; margin-bottom: 20px; color: white;">Thông tin cá
-                            nhân</h3>
+                    <div class="col-lg-8 flex-column justify-content-start align-items-start">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <h3 style="margin-top: 0; font-weight: bold; margin-bottom: 20px; color: white;">Thông
+                                    tin cá
+                                    nhân</h3>
+                            </div>
+                            <div class="col-lg-6 text-end">
+                                <button @click="sua_kh = { ...user }" data-bs-toggle="modal"
+                                    data-bs-target="#capnhatttcn" title="Cập nhật thông tin cá nhân"
+                                    class="btn text-nowrap"
+                                    style="margin-left: auto; background-color: white; color: #2c4b85; padding: 6px 24px; border-radius: 6px;">
+                                    <i class="fa-solid fa-user-pen"></i>
+                                </button>
+                                <button data-bs-toggle="modal" title="Đổi mật khẩu" data-bs-target="#doimatkhau"
+                                    class="ms-2 btn text-nowrap"
+                                    style="margin-left: auto; background-color: white; color: #2c4b85; padding: 6px 24px; border-radius: 6px;">
+                                    <i class="fa-solid fa-key"></i>
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="row">
                             <div style="font-size: 16px; margin-bottom: 12px;">
                                 <strong>Họ và Tên:</strong> {{ user.ho_va_ten }}
@@ -35,11 +54,8 @@
                             <p class="text-success m-0">
                                 <i class="fa-solid fa-shield-cat"></i> PetCare
                             </p>
-                            <button @click="sua_kh = { ...user }" data-bs-toggle="modal" data-bs-target="#capnhatttcn"
-                                class="btn text-nowrap"
-                                style="margin-left: auto; background-color: white; color: #2c4b85; padding: 6px 24px; border-radius: 6px;">
-                                Cập nhật thông tin
-                            </button>
+
+
                         </div>
                     </div>
                 </div>
@@ -95,7 +111,34 @@
 
         </div>
     </div>
-    <!-- Modal cập nhật -->
+
+    <!-- Modal đổi mật khẩu -->
+    <div class="modal fade" id="doimatkhau" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #2c4b85;">
+                    <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">ĐỔI MẬT KHẨU</h1>
+                </div>
+                <div class="modal-body">
+                    <label>Mật khẩu cũ</label>
+                    <input v-model="matkhau.mat_khau_cu" class="form-control mb-2" type="password" />
+
+                    <label>Mật khẩu mới</label>
+                    <input v-model="matkhau.mat_khau_moi" class="form-control mb-2" type="password" />
+
+                    <label>Xác nhận mật khẩu mới</label>
+                    <input v-model="matkhau.xac_nhan_mat_khau" class="form-control mb-2" type="password" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" style="background-color: #2c4b85; color: white;"
+                        data-bs-dismiss="modal" v-on:click="doiMatKhau()">Đổi mật khẩu</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modalxoa -->
     <div class="modal fade" id="xoa" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -113,6 +156,7 @@
             </div>
         </div>
     </div>
+    <!-- modal them pet -->
     <div class="modal fade" id="them" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -132,23 +176,24 @@
                     <label>Giới tính:</label>
                     <select class="form-control" name="" id="">
                         <option value="0">Đực</option>
-                        <option value="0">Cái</option>
+                        <option value="1">Cái</option>
                     </select>
 
                     <label>Tuổi:</label>
-                    <input class="form-control mb-2" type="text" />
+                    <input class="form-control mb-2" type="number" />
 
                     <label>Cân nặng:</label>
-                    <input class="form-control mb-2" type="text" />
+                    <input class="form-control mb-2" type="number" />
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn" style="background-color: #2c4b85; color: white;"
+                    <button v-on:click="thempet()" type="button" class="btn" style="background-color: #2c4b85; color: white;"
                         data-bs-dismiss="modal">Thêm</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
         </div>
     </div>
+    <!-- modal update client -->
     <div class="modal fade" id="capnhatttcn" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -159,7 +204,9 @@
                     <label>Họ và Tên</label>
                     <input v-model="sua_kh.ho_va_ten" class="form-control mb-2" type="text" />
                     <label>Email</label>
-                    <input v-model="sua_kh.email" class="form-control mb-2" type="text" />
+                    <input v-model="sua_kh.email" class="form-control mb-2" type="text" readonly
+                        style="background-color: #f8f9fa;" />
+
                     <label>Số điện thoại</label>
                     <input v-model="sua_kh.so_dien_thoai" class="form-control mb-2" type="text" />
                     <label>Ngày sinh</label>
@@ -173,6 +220,7 @@
             </div>
         </div>
     </div>
+    <!-- modal update pet -->
     <div class="modal fade" id="capnhatttp" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -227,13 +275,54 @@ export default {
             },
             sua_kh: {
             },
-            danh_sach_pet: []
+            pet:{
+
+            },
+            danh_sach_pet: [],
+            matkhau: {
+                mat_khau_cu: '',
+                mat_khau_moi: '',
+                xac_nhan_mat_khau: ''
+            },
         };
     },
     mounted() {
         this.getUserInfo();
     },
     methods: {
+        doiMatKhau() {
+
+            axios.post('http://127.0.0.1:8000/api/khach-hang/doi-mat-khau-tcn', this.matkhau, {
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem("token_client")
+                }
+            })
+                .then(res => {
+                    if (res.data.status == 1) {
+                        toaster.success(res.data.message);
+                        this.matkhau.mat_khau_cu = '';
+                        this.matkhau.mat_khau_moi = '';
+                        this.matkhau.xac_nhan_mat_khau = '';
+
+                        localStorage.removeItem('token_client');
+
+                        setTimeout(() => {
+                            this.$router.push('/client/dang-nhap-dang-ky');
+                        }, 1000); //1000ms =1s
+                    } else {
+                        toaster.error(res.data.message);
+                    }
+                })
+                .catch(err => {
+                    if (err.response && err.response.data && err.response.data.message) {
+                        // Có response + có data + có message
+                        toaster.error(err.response.data.message);
+                    } else {
+                        // Không có thì báo lỗi mặc định
+                        toaster.error('Đã xảy ra lỗi. Vui lòng thử lại.');
+                    }
+                });
+        },
         getUserInfo() {
             const token = localStorage.getItem("token_client");
             if (!token) {
