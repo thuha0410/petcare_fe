@@ -9,7 +9,7 @@
                         style="background-color: #2c4b85; padding: 20px 0; border-radius: 16px;">
                         <img class="img-fluid rounded-circle border border-white border-4 mb-3"
                             style="height: 180px; width: 180px; object-fit: cover;"
-                            src="https://th.bing.com/th/id/OIP.NyRkmREmV5XyFnRoE-t7JgHaFj?rs=1&pid=ImgDetMain" />
+                            src="https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg" />
                     </div>
 
                     <!-- Thông tin cá nhân -->
