@@ -136,6 +136,9 @@ export default {
         this.loadPet();
 
 
+        window.scrollTo(0, 0);
+        
+        
     },
     methods: {
         loadLich() {

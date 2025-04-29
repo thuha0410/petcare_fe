@@ -1,4 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router"; 
+import kiemTraAdmin from './kiemTraAdmin';
+import { kiemTraQuyen } from '../utils/kiemTraQuyen';
+import api from '@/services/api';
 
 const routes = [
     {
@@ -10,16 +13,19 @@ const routes = [
         path : '/admin/ql-dich-vu',
         component: ()=>import('../components/Admin/QLDichVu/index.vue'),
         meta: {layout:'admin'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(4) ]
     },
     {
         path : '/admin/ql-loai-dich-vu',
         component: ()=>import('../components/Admin/LoaiDichVu/index.vue'),
         meta: {layout:'admin'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(4) ]
     },
     {
         path : '/admin/nhap-thuoc',
         component: ()=>import('../components/Admin/NhapThuoc/index.vue'),
         meta: {layout:'admin'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(1) ]
     },
     {
         path : '/admin/ql-ton-kho',
@@ -30,21 +36,25 @@ const routes = [
         path : '/admin/ql-thuoc',
         component: ()=>import('../components/Admin/Thuoc/index.vue'),
         meta: {layout:'admin'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(8) ]
     },
     {
         path : '/admin/ql-danh-gia',
         component: ()=>import('../components/Admin/QLDanhGia/index.vue'),
         meta: {layout:'admin'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(11) ]
     },
     {
         path : '/admin/phan-quyen',
         component: ()=>import('../components/Admin/PhanQuyen/index.vue'),
         meta: {layout:'admin'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(16) ]
     },
     {
         path : '/admin/ql-kho',
         component: ()=>import('../components/Admin/QLKho/index.vue'),
         meta: {layout:'admin'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(12) ]
     },
     {
         path : '/admin/doanh-thu',
@@ -55,11 +65,13 @@ const routes = [
         path : '/admin/ql-pet',
         component: ()=>import('../components/Admin/QLPet/index.vue'),
         meta: {layout:'admin'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(7) ]
     },
     {
         path : '/admin/ql-khach-hang',
         component: ()=>import('../components/Admin/QLKhachHang/index.vue'),
         meta: {layout:'admin'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(6) ]
     },
     {
         path : '/admin/ql-lich-hen',
@@ -67,14 +79,10 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
-        path : '/admin/ql-khach-hang',
-        component: ()=>import('../components/Admin/QLKhachHang/index.vue'),
-        meta: {layout:'admin'},
-    },
-    {
         path : '/admin/ql-nha-cung-cap',
         component: ()=>import('../components/Admin/QLNhaCungCap/index.vue'),
         meta: {layout:'admin'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(9) ]
     },
     {
         path : '/admin/ql-kho',
@@ -90,6 +98,7 @@ const routes = [
         path : '/admin/ql-nhan-vien',
         component: ()=>import('../components/Admin/QLNhanVien/index.vue'),
         meta: {layout:'admin'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(5) ]
     },
     {
         path : '/nhan-vien/dang-nhap',
@@ -107,14 +116,15 @@ const routes = [
         meta: {layout:'client'},
     },
     {
-        path : '/client/nhap-mail',
+        path : '/client/send-mail',
         component: ()=>import('../components/Client/NhapMail/index.vue'),
         meta: {layout:"dangNhap"}
     },
     {
-        path : '/client/doi-mat-khau',
+        path : '/client/doi-mat-khau/:ma_doi',
         component: ()=>import('../components/Client/DoiMatKhau/index.vue'),
-        meta: {layout:"dangNhap"}
+        meta: {layout:"dangNhap"},
+        props: true
     },
     {
         path : '/client/:id_khach_hang',
@@ -212,17 +222,25 @@ const routes = [
     {
         path : '/doctor/xem-ho-so-benh-an',
         component: ()=>import('../components/Doctor/XemHoSo/index.vue'),
-        meta: {layout:'doctor'}
+        meta: {layout:'doctor'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(17) ] 
     },
     {
         path : '/doctor/xem-lich',
         component: ()=>import('../components/Doctor/XemLich/index.vue'),
-        meta: {layout:'doctor'}
+        meta: {layout:'doctor'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(17) ] 
     },
     {
         path : '/doctor/in-don-thuoc',
         component: ()=>import('../components/Doctor/InDonThuoc/index.vue'),
-        
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(17) ] 
+    },
+    {
+        path : '/doctor/ke-don-thuoc',
+        component: ()=>import('../components/Doctor/KeDonThuoc/index.vue'),
+        meta: {layout:'doctor'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(17) ] 
     },
     {
         path : '/client/pet',
@@ -233,11 +251,6 @@ const routes = [
         path : '/client/thanh-toan',
         component: ()=>import('../components/Client/ThanhToan/index.vue'),
         meta: {layout:'client'},
-    },
-    {
-        path : '/doctor/ke-don-thuoc',
-        component: ()=>import('../components/Doctor/KeDonThuoc/index.vue'),
-        meta: {layout:'doctor'}
     },
 ]
 
