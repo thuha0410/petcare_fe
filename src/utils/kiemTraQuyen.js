@@ -7,6 +7,11 @@ export function kiemTraQuyen(id_chuc_nang) {
   return async (to, from, next) => {
 try{
       const token = localStorage.getItem('token_admin');
+      if (!token) {
+        toaster.error('Vui lòng đăng nhập lại');
+        return next('/login');
+      }
+
       const res = await axios.get(
         `http://127.0.0.1:8000/api/phan-quyen/kiem-tra-quyen/${id_chuc_nang}`,
         { headers: { Authorization: 'Bearer ' + token } }
