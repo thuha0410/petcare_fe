@@ -3,19 +3,17 @@
         <div class="card">
             <div class="row g-0">
                 <div class="col-md-2 border-end">
-                    <img :src="list_nvct.hinh_anh" class="img-fluid rounded-4" alt="...">
+                    <img style="height: 450px; width: 650px;" :src="list_nvct.hinh_anh" class="img-fluid rounded-4" alt="...">
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">
                         <h1 style="color: darkblue;" class="card-title">Ths BS. {{ list_nvct.ten_nv }}</h1>
                         <dl style="font-size:20px;" class="row">
                             <dt class="col-sm-2">Chuyên khoa</dt>
-                            <dd class="col-sm-9">Phụ khoa</dd>
+                            <dd class="col-sm-9">Thú y</dd>
 
-                            <dt class="col-sm-2">Chuyên trị</dt>
-                            <dd class="col-sm-9">Kinh nghiệm khám, tư vấn và điều trị các bệnh lý Sản Phụ Khoa: - U xơ
-                                tử cung. - U nang buồng trứng. - Kinh nguyệt không đều. - Đau bụng kinh. - Tư vấn hiếm
-                                muộn. - Các biện pháp tránh thai, kế hoạch hóa gia đình. - Theo dõi thai kỳ v.v...</dd>
+                            <dt class="col-sm-2">Mô tả </dt>
+                            <dd class="col-sm-9">{{ list_nvct.mo_ta }}</dd>
 
                             <dt class="col-sm-2">Giá khám</dt>
                             <dd class="col-sm-9">{{ list_nvct.tien_kham }}</dd>
@@ -46,11 +44,16 @@
                 <div class="card w-100 h-100">
                     <div class="row g-0">
                         <div class="col-md-4">
-                            <img class="img-fluid" :src="value.hinh_anh" alt="">
+                            <router-link :to="`/client/xem-bs/${value.id}`">
+                                <img class="img-fluid" :src="value.hinh_anh" alt="">
+                            </router-link>
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">
-                                <h4 style="color: darkblue;" class="card-title">Ths BS {{ value.ten_nv }}</h4>
+                                <router-link :to="`/client/xem-bs/${value.id}`">
+                                    <h4 style="color: darkblue;" class="card-title">Ths BS {{ value.ten_nv }}</h4>
+                                </router-link>
+
                                 <hr>
                                 <div style="font-size:20px;" class="row">
                                     <div class="col-lg-5">
@@ -81,32 +84,38 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            id: this.$route.params.id,
             list_nv: [],
             list_nvct: {}
         }
     },
     mounted() {
-        this.loadChiTiet();
-        this.load();
+        this.loadData();
+    },
+    watch: {
+        '$route.params.id': {
+            immediate: true,
+            handler() {
+                this.loadData();
+                window.scrollTo(0, 0); // Cuộn về đầu trang khi đổi bác sĩ
+            }
+        }
     },
     methods: {
-        loadChiTiet() {
+        loadData() {
+            const id = this.$route.params.id;
             axios
-                .get("http://127.0.0.1:8000/api/nhan-vien/load-chi-tiet/" + this.id)
+                .get(`http://127.0.0.1:8000/api/nhan-vien/load-chi-tiet/${id}`)
                 .then((res) => {
                     this.list_nvct = res.data.data;
                 });
-        },
-        load() {
+
             axios
                 .get('http://127.0.0.1:8000/api/nhan-vien/load')
                 .then((res) => {
-                    this.list_nv = res.data.data.filter(nv => nv.id !== this.id);
-                })
-        },
-
-    },
+                    this.list_nv = res.data.data.filter(nv => nv.id != id && nv.id_chucvu === 1);
+                });
+        }
+    }
 }
 </script>
 <style></style>

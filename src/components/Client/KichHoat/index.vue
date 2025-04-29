@@ -1,5 +1,4 @@
 <template >
-hjadjasgdjgd
 </template>
 <script>
 import axios from 'axios';
@@ -22,11 +21,11 @@ export default {
                         toaster.success(res.data.message)
                         this.$router.push('/client/dang-nhap-dang-ky')
                     } else if (res.data.status == 2) {
-                        toaster.success(res.data.message)
+                        toaster.success(res.data.message) 
                         this.$router.push('/client/dang-nhap-dang-ky')
                     } else {
                         toaster.error(res.data.message)
-                        this.$router.push('/')
+                        this.$router.replalace('/')
                     }
                 })
         }
