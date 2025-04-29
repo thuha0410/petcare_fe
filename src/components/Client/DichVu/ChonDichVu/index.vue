@@ -17,7 +17,15 @@
                     </p>
                     <p class="ms-3" style="font-size: 15px;">{{ list_dv.ten_dv }}</p>
 
-                    <p class="fw-bold" style="font-size: 20px;"><i class="fa-solid fa-calendar-days"></i> Ngày:</p>
+                    <p class="fw-bold" style="font-size: 20px;"><i class="fa-solid fa-paw"></i> Tên pet
+                    </p>
+                    <select class="form-select form-control" v-model="id_pet" name="" id="">
+                        <option disabled value="">--Chọn pet cần khám--</option>
+                        <option v-for="(value, index) in list_pet" :key="index" v-bind:value="value.id">{{ value.ten_pet
+                            }}</option>
+                    </select>
+
+                    <p class="fw-bold mt-2" style="font-size: 20px;"><i class="fa-solid fa-calendar-days"></i> Ngày:</p>
                     <p class="ms-3" style="font-size: 15px;">{{ selectedDate || "Chưa chọn" }}</p>
 
                     <p class="fw-bold" style="font-size: 20px;"><i class="fa-solid fa-clock"></i> Giờ:</p>
@@ -76,7 +84,7 @@
                     <h3 class="text-white text-center">Chọn giờ</h3>
                 </div>
                 <div class="card-body d-flex flex-wrap justify-content-center">
-                    <button v-for="(value,index) in availableTimes" :key="index" class="btn btn-outline-primary m-2"
+                    <button v-for="(value, index) in availableTimes" :key="index" class="btn btn-outline-primary m-2"
                         @click="selectTime(value.khung_gio), Object.assign(id_lich, value.id)">
                         {{ value.khung_gio }}
                     </button>
@@ -117,14 +125,17 @@ export default {
                 height: 600,
                 contentHeight: 'auto',
                 dateClick: this.handleDateClick
-            }
+            },
+            list_pet: [],
+            id_pet: '',
         };
     },
     mounted() {
         this.loadDichVu();
         this.loadLich();
-        
-        
+        this.loadPet();
+
+
     },
     methods: {
         loadLich() {
@@ -132,7 +143,7 @@ export default {
                 .get("http://127.0.0.1:8000/api/lich/load")
                 .then((res) => {
                     this.availableTimes = res.data.data;
-                    
+
                 });
         },
         loadDichVu() {
@@ -159,6 +170,10 @@ export default {
             this.selectedTime = null;
         },
         xacNhanLichHen(id) {
+            if (!this.id_pet) {
+                toaster.error("Vui lòng chọn thú cưng cần khám để đặt lịch!");
+                return;
+            }
             console.log(this.availableTimes);
             if (!this.selectedDate || !this.selectedTime) return;
 
@@ -166,7 +181,7 @@ export default {
                 ten_dv: this.list_dv.ten_dv,
                 id_lich: id,
                 id_nv: this.list_dv.id,
-                id_pet: this.list_dv.id_pet,
+                id_pet: this.id_pet,
                 ngay: this.selectedDate,
                 gio: this.selectedTime,
             };
@@ -180,7 +195,35 @@ export default {
                     console.error(err);
                     alert("Có lỗi xảy ra khi đặt lịch.");
                 });
-        }
+
+        },
+        loadPet() {
+            const token = localStorage.getItem("token_client");
+            if (!token) {
+                console.warn("Không tìm thấy token khách hàng.");
+                return;
+            }
+            axios.get('http://127.0.0.1:8000/api/user/info', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+                .then((res) => {
+                    const id_kh = res.data.id;
+                    return axios.get(`http://127.0.0.1:8000/api/pets/${id_kh}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+                })
+                .then((res) => {
+                    this.list_pet = res.data.pets;
+                })
+                .catch(err => {
+                    console.error('Lỗi khi load pet:', err);
+                });
+        },
+
     }
 };
 </script>

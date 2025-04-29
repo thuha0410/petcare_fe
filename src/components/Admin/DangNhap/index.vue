@@ -1,10 +1,17 @@
 <template>
     <div class="container">
-        <video autoplay loop muted playsinline class="video-background">
-            <source
-                src="https://res.cloudinary.com/prettylitter/video/upload/v1708552338/videos/PL_2024_1920x1080_V2.mp4"
-                type="video/mp4" />
-        </video>
+        <div style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('https://cellphones.com.vn/sforum/wp-content/uploads/2023/04/hinh-anh-30-4-21.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        z-index: -1;
+    "></div>
         <div class="content">
             <div class="logo text-center" style="
           font-size: 25px;
@@ -63,7 +70,7 @@ export default {
                     if (res.data.status == 1) {
                         toaster.success(res.data.message);
                         localStorage.setItem('token_admin', res.data.token);
-                        localStorage.setItem('name_admin', res.data.name);   
+                        localStorage.setItem('name_admin', res.data.name);
                         localStorage.setItem('email_admin', res.data.email);
                         this.$router.push('/admin/nhap-thuoc');
                     } else {
