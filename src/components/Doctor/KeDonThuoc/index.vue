@@ -1,108 +1,76 @@
 <template>
-  <div class="container">
-    <div class="card">
-      <div class="card-header d-flex justify-content-between text-nowrap ">
-        <h3 class="" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif; color: darkblue;">KÊ
-          ĐƠN THUỐC
-        </h3>
-      </div>
-      <div class="card-body ">
-        <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Tìm kiếm" aria-label="Recipient's username"
-            aria-describedby="button-addon2">
-          <button class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i
-              class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
-        </div>
-        <div class="table table-responsive ">
-          <table class="table table-bordered table-striped table-hover">
-            <thead>
-              <tr class="text-center align-middle text-nowrap">
-                <th>#</th>
-                <th>ID Hồ Sơ Bệnh Án</th>
-                <th>Tên Bác Sĩ điều trị</th>
-                <th>Ngày khám</th>
-                <th>Chuẩn đoán</th>
-                <th>Thuốc kê đơn</th>
-                <th>Số lượng</th>
-                <th>Liều lượng</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="text-center align-middle text-nowrap">
-                <th>1</th>
-                <td>Hồ Sơ 01</td>
-                <td>Huỳnh Văn Đức</td>
-                <td>12/12/2022</td>
-                <td>Viêm hô hấp</td>
-                <td>Thuốc sổ</td>
-                <td>10</td>
-                <td>3 lần/ngày</td>
-                <td>
-                  <button data-bs-toggle="modal" data-bs-target="#kethuoc" class="btn btn-success me-2">Kê
-                    thuốc</button>
-                  <button data-bs-toggle="modal" data-bs-target="#indon" class="btn btn-primary">In đơn</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="modal fade" id="kethuoc" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header bg-success">
-          <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">KÊ ĐƠN THUỐC
-          </h1>
-        </div>
-        <div class="modal-body" style="max-height: 500px; overflow-y: auto;">
-          <div v-for="(thuoc, index) in danhSachThuoc" :key="index" class="thuoc-item mb-3">
-            <label>Thuốc</label>
-            <select v-model="thuocNhap.id_thuoc" class="form-select">
-              <option disabled value="">-- Chọn thuốc --</option>
-              <option v-for="thuoc in listThuoc" :key="thuoc.id" :value="thuoc.id">
-                {{ thuoc.ten_thuoc }}
-              </option>
-            </select>
-            <label>Số lượng</label>
-            <input class="form-control mb-2" type="number" v-model="thuoc.soluong" placeholder="Số lượng">
-            <label>Liều lượng</label>
-            <input class="form-control" type="text" v-model="thuoc.lieuluong" placeholder="Liều lượng">
-            <button class="btn btn-sm btn-danger mt-2" @click="xoaThuoc(index)"
-              v-if="danhSachThuoc.length > 1">Xoá</button>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Kê đơn thuốc</h3>
           </div>
-          <button class="btn btn-outline-success btn-sm mt-2" @click="themThuoc">+ Thêm thuốc</button>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success" data-bs-dismiss="modal">Kê đơn</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="modal fade" id="indon" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog ">
-      <div class="modal-content">
-        <div class="modal-header bg-primary">
-          <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">THÔNG BÁO!
-          </h1>
-        </div>
-        <div class="modal-body">
-          <span style="font-size: 18px; color: #000000;">Bạn có muốn in đơn thuốc này không ?</span>
-        </div>
-        <div class="modal-footer">
-          <a
-    :href="$router.resolve('/doctor/in-don-thuoc').href"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-      In
-    </button>
-  </a>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <div class="card-body">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label>Khách hàng</label>
+                <select v-model="don_thuoc.id_khach_hang" class="form-control">
+                  <option v-for="kh in khach_hang" :key="kh.id" :value="kh.id">
+                    {{ kh.ho_va_ten }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label>Bác sĩ</label>
+                <select v-model="don_thuoc.id_nhan_vien" class="form-control">
+                  <option v-for="nv in nhan_vien" :key="nv.id" :value="nv.id">
+                    {{ nv.ten_nv }} - {{ nv.chuc_vu?.ten_chuc_vu }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Thuốc</th>
+                    <th>Số lượng</th>
+                    <th>Cách dùng</th>
+                    <th>Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in chi_tiet" :key="index">
+                    <td>
+                      <select v-model="item.id_thuoc" class="form-control">
+                        <option v-for="thuoc in thuocs" :key="thuoc.id" :value="thuoc.id">
+                          {{ thuoc.ten_thuoc }}
+                        </option>
+                      </select>
+                    </td>
+                    <td>
+                      <input type="number" v-model="item.so_luong" class="form-control" min="1">
+                    </td>
+                    <td>
+                      <input type="text" v-model="item.cach_dung" class="form-control" placeholder="Cách dùng">
+                    </td>
+                    <td>
+                      <button class="btn btn-danger" @click="xoaChiTiet(index)">
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <button class="btn btn-primary mt-3" @click="themChiTiet">
+              <i class="fa-solid fa-plus"></i> Thêm thuốc
+            </button>
+
+            <div class="text-right mt-3">
+              <button class="btn btn-success" @click="luuDonThuoc">
+                <i class="fa-solid fa-save"></i> Lưu đơn thuốc
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -111,42 +79,160 @@
 
 <script>
 import axios from 'axios';
+import { createToaster } from "@meforma/vue-toaster";
+const toaster = createToaster({ position: "top-right" });
 
 export default {
-  name: "KeDonThuocModal",
   data() {
     return {
-      danhSachThuoc: [
-        { ten: "", soluong: "", lieuluong: "" }
-      ],
-      listThuoc: [],
-      tim_kiem: {
-        noi_dung: ''
+      don_thuoc: {
+        id_khach_hang: '',
+        id_nhan_vien: '',
       },
-      thuocNhap: {
-
-      }
+      chi_tiet: [],
+      thuocs: [],
+      khach_hang: [],
+      nhan_vien: []
     };
-
   },
-  mounted() {
-    this.loaddataThuoc();
+  created() {
+    this.loadThuoc();
+    this.loadKhachHang();
+    this.loadNhanVien();
   },
   methods: {
-    themThuoc() {
-      this.danhSachThuoc.push({ ten: "", soluong: "", lieuluong: "" });
+    async loadThuoc() {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/don-thuoc/load-thuoc');
+        this.thuocs = response.data.thuoc;
+      } catch (error) {
+        console.error('Error loading thuoc:', error);
+        toaster.error('Lỗi khi tải danh sách thuốc');
+      }
     },
-    xoaThuoc(index) {
-      this.danhSachThuoc.splice(index, 1);
+    async loadKhachHang() {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/khach-hang/load');
+        this.khach_hang = response.data.data;
+      } catch (error) {
+        console.error('Error loading khach hang:', error);
+        toaster.error('Lỗi khi tải danh sách khách hàng');
+      }
     },
-    loaddataThuoc() {
-      axios
-        .get('http://127.0.0.1:8000/api/don-thuoc/load-thuoc')
-        .then(res => {
-          this.listThuoc = res.data.thuoc;
+    async loadNhanVien() {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/nhan-vien/load-bac-si');
+        console.log('Response from loadBacSi:', response.data);
+        if (response.data.status) {
+          this.nhan_vien = response.data.data;
+        } else {
+          toaster.error(response.data.message || 'Lỗi khi tải danh sách bác sĩ');
+        }
+      } catch (error) {
+        console.error('Error loading nhan vien:', error);
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.error('Error response data:', error.response.data);
+          console.error('Error response status:', error.response.status);
+          console.error('Error response headers:', error.response.headers);
+          
+          if (error.response.status === 401) {
+            toaster.error('Bạn cần đăng nhập để truy cập chức năng này');
+          } else if (error.response.status === 403) {
+            toaster.error('Bạn không có quyền truy cập chức năng này');
+          } else {
+            toaster.error(error.response.data?.message || 'Lỗi khi tải danh sách bác sĩ');
+          }
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error('Error request:', error.request);
+          toaster.error('Không thể kết nối đến máy chủ');
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.error('Error message:', error.message);
+          toaster.error('Lỗi khi tải danh sách bác sĩ: ' + error.message);
+        }
+      }
+    },
+    themChiTiet() {
+      this.chi_tiet.push({
+        id_thuoc: '',
+        so_luong: 1,
+        cach_dung: ''
+      });
+    },
+    xoaChiTiet(index) {
+      this.chi_tiet.splice(index, 1);
+    },
+    async luuDonThuoc() {
+      try {
+        if (!this.don_thuoc.id_khach_hang || !this.don_thuoc.id_nhan_vien) {
+          toaster.error('Vui lòng chọn khách hàng và bác sĩ');
+          return;
+        }
+
+        if (this.chi_tiet.length === 0) {
+          toaster.error('Vui lòng thêm ít nhất một loại thuốc');
+          return;
+        }
+
+        const response = await axios.post('http://127.0.0.1:8000/api/don-thuoc/them', {
+          ...this.don_thuoc,
+          chi_tiet: this.chi_tiet
         });
+
+        if (response.data.status === 1) {
+          toaster.success(response.data.message);
+          this.resetForm();
+        } else {
+          toaster.error(response.data.message);
+        }
+      } catch (error) {
+        console.error('Error saving don thuoc:', error);
+        toaster.error('Lỗi khi lưu đơn thuốc');
+      }
     },
+    resetForm() {
+      this.don_thuoc = {
+        id_khach_hang: '',
+        id_nhan_vien: '',
+      };
+      this.chi_tiet = [];
+    }
   }
 };
 </script>
-<style></style>
+
+<style scoped>
+.card {
+  margin-top: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.card-title {
+  margin: 0;
+  color: #333;
+}
+
+.table th {
+  background-color: #f8f9fa;
+}
+
+.btn {
+  margin-right: 5px;
+}
+
+.form-control {
+  border-radius: 4px;
+}
+
+select.form-control {
+  cursor: pointer;
+}
+</style>

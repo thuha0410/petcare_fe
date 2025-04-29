@@ -19,10 +19,10 @@ export default {
                 .then((res) => {                  
                     if (res.data.status == 1) {
                         toaster.success(res.data.message)
-                        this.$router.replalace('/client/dang-nhap-dang-ky')
+                        this.$router.push('/client/dang-nhap-dang-ky')
                     } else if (res.data.status == 2) {
-                        toaster.success(res.data.message)
-                        this.$router.replalace('/client/dang-nhap-dang-ky')
+                        toaster.success(res.data.message) 
+                        this.$router.push('/client/dang-nhap-dang-ky')
                     } else {
                         toaster.error(res.data.message)
                         this.$router.replalace('/')

@@ -222,17 +222,25 @@ const routes = [
     {
         path : '/doctor/xem-ho-so-benh-an',
         component: ()=>import('../components/Doctor/XemHoSo/index.vue'),
-        meta: {layout:'doctor'}
+        meta: {layout:'doctor'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(17) ] 
     },
     {
         path : '/doctor/xem-lich',
         component: ()=>import('../components/Doctor/XemLich/index.vue'),
-        meta: {layout:'doctor'}
+        meta: {layout:'doctor'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(17) ] 
     },
     {
         path : '/doctor/in-don-thuoc',
         component: ()=>import('../components/Doctor/InDonThuoc/index.vue'),
-        
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(17) ] 
+    },
+    {
+        path : '/doctor/ke-don-thuoc',
+        component: ()=>import('../components/Doctor/KeDonThuoc/index.vue'),
+        meta: {layout:'doctor'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(17) ] 
     },
     {
         path : '/client/pet',
@@ -243,11 +251,6 @@ const routes = [
         path : '/client/thanh-toan',
         component: ()=>import('../components/Client/ThanhToan/index.vue'),
         meta: {layout:'client'},
-    },
-    {
-        path : '/doctor/ke-don-thuoc',
-        component: ()=>import('../components/Doctor/KeDonThuoc/index.vue'),
-        meta: {layout:'doctor'}
     },
 ]
 

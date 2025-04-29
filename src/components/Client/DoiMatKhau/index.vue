@@ -19,67 +19,72 @@
         <span class="input-group-text">
           <i class="fa-solid fa-lock"></i>
         </span>
-        <input v-model="mat_khau.pass"  :type="showPassword ? 'text' : 'password'" class="form-control" placeholder="Mật khẩu mới" />
+        <input v-model="mat_khau.pass" :type="showPassword ? 'text' : 'password'" class="form-control" placeholder="Mật khẩu mới" />
       </div>
 
       <div class="input-group flex-nowrap mt-3">
         <span class="input-group-text">
           <i class="fa-solid fa-lock"></i>
         </span>
-        <input :type="showPassword ? 'text' : 'password'" class="form-control" placeholder="Nhập lại mật khẩu" />
+        <input v-model="confirmPassword" :type="showPassword ? 'text' : 'password'" class="form-control" placeholder="Nhập lại mật khẩu" />
+      </div>
+
+      <div class="form-check mt-2">
+        <input class="form-check-input" type="checkbox" v-model="showPassword" id="showPassword">
+        <label class="form-check-label text-white" for="showPassword">
+          Hiển thị mật khẩu
+        </label>
       </div>
 
       <button class="button mt-4" @click="doiMatKhau()">
         Đặt lại mật khẩu
       </button>
 
-      <router-link to="/client/dang-nhap-dang-ky">
-        <div class="text-center mt-3">
-          <a href="#" class="link">Quay lại đăng nhập</a>
-        </div>
-      </router-link>
+      <div class="text-center mt-3">
+        <router-link to="/client/dang-nhap-dang-ky" class="link">Quay lại đăng nhập</router-link>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+import { createToaster } from "@meforma/vue-toaster";
+const toaster = createToaster({ position: 'top-left' });
 export default {
   props: ["ma_doi"],
   data() {
     return {
       mat_khau: {
-        ma: this.$route.params.ma_doi,
+        ma: this.ma_doi,
         pass: "",
       },
+      confirmPassword: "",
+      showPassword: false
     };
   },
   methods: {
     doiMatKhau() {
-      var payload={
-        ma: this.$route.params.ma_doi,
-        pass: this.mat_khau.pass,
-      }
-        axios
+      axios
         .post(
           "http://127.0.0.1:8000/api/khach-hang/doi-mat-khau",
-          payload
+          this.mat_khau
         )
         .then((res) => {
-          if ((res.data.status == 1)) {
+          if (res.data.status == 1) {
             toaster.success(res.data.message);
             this.$router.push("/client/dang-nhap-dang-ky");
           } else {
             toaster.error(res.data.message);
           }
-        });
-      }
-    },
+        })
+    }
   }
-
+}
 </script>
 
 <style scoped>
-.container {
+.container-fluid {
   position: relative;
   width: 100vw;
   height: 100vh;
@@ -128,6 +133,11 @@ export default {
   padding: 12px;
   border-radius: 10px;
   width: 100%;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #0088ee;
 }
 
 .link {
@@ -135,5 +145,17 @@ export default {
   text-decoration: underline;
   font-size: 14px;
   display: inline-block;
+}
+
+.link:hover {
+  color: #00aaff;
+}
+
+.form-check-label {
+  font-size: 14px;
+}
+
+.form-check-input {
+  cursor: pointer;
 }
 </style>
