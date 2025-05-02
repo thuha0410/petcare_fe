@@ -26,7 +26,7 @@
                   </p>
                   <br />
                   <div class="text-center">
-                    <button class="btn btn-white " data-bs-toggle="modal" data-bs-target="#xemchitiet">Xem chi
+                    <button class="btn btn-outline-light " data-bs-toggle="modal" data-bs-target="#xemchitiet">Xem chi
                       tiết</button>
                   </div>
                 </div>

@@ -5,11 +5,36 @@
                 SÁCH LỊCH HẸN</h3>
         </div>
         <div class="card-body">
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Tìm kiếm" aria-label="Recipient's username"
-                    aria-describedby="button-addon2">
-                <button class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i
-                        class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Tìm kiếm" aria-label="Recipient's username"
+                            aria-describedby="button-addon2">
+                        <button class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i
+                                class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <!-- Lọc ngày -->
+                    <div class="input-group">
+                        <input type="date" class="form-control" />
+                        <button class="btn btn-dark">Lọc</button>
+
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <!-- lọc trạng thái -->
+                     <div class="input-group">  
+                        <select class="form-select">
+                                <option value="">-- Tất cả trạng thái --</option>
+                                <option value="2">Đã xác nhận</option>
+                                <option value="1">Chưa xác nhận</option>
+                                <option value="0">Đã hủy</option>
+
+                        </select>
+                        <button class="btn btn-dark">Lọc</button>
+                     </div>
+                </div>
             </div>
             <div class="table table-resposive">
                 <table class="table table-bordered">
@@ -41,10 +66,10 @@
                                 </td>
                                 <td>
                                     <button v-on:click="Object.assign(update_lich, value)" data-bs-toggle="modal"
-                                    data-bs-target="#capnhat" style="width:100px;"
-                                        class="btn btn-primary me-2">Cập nhật</button>
-                                    <button v-on:click="Object.assign(del_lich, value)" data-bs-toggle="modal" data-bs-target="#xoa" style="width:100px;"
-                                        class="btn btn-danger ">Xóa</button>
+                                        data-bs-target="#capnhat" style="width:100px;" class="btn btn-primary me-2">Cập
+                                        nhật</button>
+                                    <button v-on:click="Object.assign(del_lich, value)" data-bs-toggle="modal"
+                                        data-bs-target="#xoa" style="width:100px;" class="btn btn-danger ">Xóa</button>
                                 </td>
                             </tr>
                         </template>
@@ -146,7 +171,7 @@ export default {
                     console.log(this.pet);
                 });
         },
-        
+
 
     },
 }
