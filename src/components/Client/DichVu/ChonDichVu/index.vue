@@ -90,7 +90,7 @@
                     </button>
                 </div>
                 <div class="text-center mb-3">
-                    <button class="btn btn-success mt-2" @click="xacNhanLichHen(id_lich)" :disabled="!selectedTime">
+                    <button class="btn btn-success mt-2" @click="xacNhanLichHen()" :disabled="!selectedTime">
                         Xác nhận lịch hẹn
                     </button>
                 </div>
@@ -189,7 +189,13 @@ export default {
                 gio: this.selectedTime,
             };
             axios
-                .post('http://127.0.0.1:8000/api/lich-hen/them', data)
+                .post('http://127.0.0.1:8000/api/lich-hen/them', data ,
+                {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_client')
+                        }
+                    }
+                )
                 .then((res) => {
                     alert("Đặt lịch thành công!");
                     this.toggleCalendar();
