@@ -1,15 +1,16 @@
 <template>
+    <hr>
     <div class="container mt-5">
         <div class="card p-4 shadow-sm" style="background-color: #e9f0fc; border-radius: 16px; border: none;">
             <!-- Tiêu đề -->
-            <h3 class="mb-4 fw-bold text-primary d-flex align-items-center">
+            <h4 style="color: #1F365E;" class="mb-4 fw-bold d-flex align-items-center">
                 <i class="fa-solid fa-comment-dots me-2"></i>
                 Đánh giá dịch vụ ngay
-            </h3>
+            </h4>
 
             <!-- Thông tin người dùng -->
             <div class="d-flex align-items-center mb-3">
-                <i class="fa-solid fa-circle-user fa-2x me-3 text-primary"></i>
+                <i style="color: #1F365E;" class="fa-solid fa-circle-user fa-2x me-3"></i>
                 <label class="mb-0 fs-5 text-dark">Tên người dùng</label>
             </div>
 
@@ -89,6 +90,7 @@
 
     </div>
 </template>
+
 <script>
 export default {
     data() {

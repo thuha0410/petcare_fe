@@ -46,7 +46,7 @@
               ">
               PET CARE
             </p>
-            <template v-if="user.check==1">
+            <template v-if="user.check==true">
               <p class="designattion mb-0" style="
                 font-size: 13px;
                 font-weight: bold;
@@ -67,7 +67,8 @@
             </router-link>
           </li>
           <li>
-            <a class="dropdown-item" href="javascript:;"><i class="bx bx-log-out-circle"></i><span>Logout</span></a>
+            
+            <a v-on:click="dangXuat()" class="dropdown-item" href="javascript:;"><i class="bx bx-log-out-circle"></i><span>Đăng xuất</span></a>
           </li>
         </ul>
       </div>
@@ -91,6 +92,27 @@ export default {
       check: localStorage.getItem("token_admin") ? true : false,
     }
     console.log(this.user);
+  },
+  methods: {
+    dangXuat() {
+      axios
+        .get("http://127.0.0.1:8000/api/nhan-vien/dang-xuat", {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token_admin"),
+          },
+        })
+        .then((res) => {
+          if (res.data.status) {
+            toaster.success(res.data.message);
+            localStorage.removeItem("token_admin");
+            localStorage.removeItem("name_admin");
+            localStorage.removeItem("email_admin");
+            this.$router.push("/nhan-vien/dang-nhap");
+          } else {
+            toaster.error(res.data.message);
+          }
+        });
+    }
   },
 };
 </script>

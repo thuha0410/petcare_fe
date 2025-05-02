@@ -132,8 +132,8 @@
                     <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">CẬP NHẬT THÔNG TIN</h1>
                 </div>
                 <div class="modal-body">
-                    <label for="">Ten khách hàng</label>
-                    <input v-model="sua_pet.id_kh" class="form-control mb-2" type="text">
+                    <label for="">Tên khách hàng</label>
+                    <input v-model="sua_pet.ho_va_ten" class="form-control mb-2" type="text">
                     <label for="">Tên pet</label>
                     <input v-model="sua_pet.ten_pet" class="form-control mb-2" type="text">
                     <label for="">Chủng loại</label>
@@ -155,8 +155,8 @@
                     <input v-model="sua_pet.can_nang" class="form-control mb-2" type="text">
                     <label for="">Tình trạng</label>
                     <select class="form-control mb-2" name="" id="">
-                        <option value="0">Đã khám</option>
-                        <option value="1">Chưa khám</option>
+                        <option value="1">Đã khám</option>
+                        <option value="0">Chưa khám</option>
                     </select>
                 </div>
                 <div class="modal-footer">

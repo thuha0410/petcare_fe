@@ -123,6 +123,9 @@ export default {
     mounted() {
         this.loadDichVu();
         this.loadLich();
+        window.scrollTo(0, 0);
+        
+        
     },
     methods: {
         loadLich() {

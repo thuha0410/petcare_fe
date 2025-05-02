@@ -22,6 +22,11 @@
                     <input v-model="loai_luong.ngay_thanh_toan" class="form-control" type="date">
                     <label for="">Tiền thưởng</label>
                     <input v-model="loai_luong.tien_thuong" class="form-control" type="text">
+                    <label for="">Tình trạng</label>
+                    <select v-model="loai_luong.tinh_trang" class="form-control">
+                        <option value="0">Chưa thanh toán</option>
+                        <option value="1">Đã thanh toán</option>
+                    </select>
                 </div>
                 <div class="card-footer text-end">
                     <button v-on:click="them()" class="btn btn-outline-primary">Hoàn tất</button>
@@ -52,6 +57,7 @@
                                     <th class="text-center align-middle">Ngày thanh toán</th>
                                     <th class="text-center align-middle">Tiền thưởng</th>
                                     <th class="text-center align-middle">Tình trạng</th>
+                                    <th class="text-center align-middle">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -69,6 +75,14 @@
                                             <button v-on:click="doitt(value)" v-if="value.tinh_trang == 0"
                                                 class="btn btn-warning">Chưa thanh toán</button>
                                         </td>
+                                        <td class="text-center align-middle">
+                                            <button v-on:click="Object.assign(sua_luongNV, value)"
+                                                data-bs-toggle="modal" data-bs-target="#sua" style="width:100px ;"
+                                                class="btn btn-primary me-2">Sửa</button>
+                                            <button v-on:click="Object.assign(xoa_luongNV, value)"
+                                                data-bs-toggle="modal" data-bs-target="#xoa" style="width:100px ;"
+                                                class="btn btn-danger">Xóa</button>
+                                        </td>
                                     </tr>
                                 </template>
                             </tbody>
@@ -78,6 +92,56 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="sua" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">SỬA THÔNG TIN LƯƠNG</h1>
+                </div>
+                <div class="modal-body">
+                    <label for="">Mã lương</label>
+                    <input v-model="sua_luongNV.id_luong" class="form-control" type="text">
+                    <label for="">Tên nhân viên</label>
+                    <select v-model="sua_luongNV.id_nv" class="form-control">
+                        <template v-for="(value, index) in nhan_vien" :key="index">
+                            <option v-bind:value="value.id">{{ value.ten_nv }}</option>
+                        </template>
+                    </select>
+                    <label for="">Tiền lương</label>
+                    <input v-model="sua_luongNV.tien_luong" class="form-control" type="text">
+                    <label for="">Ngày thanh toán</label>
+                    <input v-model="sua_luongNV.ngay_thanh_toan" class="form-control" type="date">
+                    <label for="">Tiền thưởng</label>
+                    <input v-model="sua_luongNV.tien_thuong" class="form-control" type="text">
+
+                </div>
+                <div class="modal-footer">
+                    <button v-on:click="sua()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cập
+                        nhật</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="xoa" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xlg">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">THÔNG BÁO!</h1>
+                </div>
+                <div class="modal-body">
+                    <h5>Bạn có muốn xóa lương của <span class="text-danger">{{ xoa_luongNV.ten_nv }}</span> không?</h5>
+                </div>
+                <div class="modal-footer">
+                    <button v-on:click="xoa()" type="button" class="btn btn-danger" data-bs-dismiss="modal">Xóa</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </template>
 <script>
 import { createToaster } from "@meforma/vue-toaster";
@@ -86,9 +150,7 @@ const toaster = createToaster({ position: "top-right" });
 export default {
     data() {
         return {
-            ds_luong: [
-
-            ],
+            ds_luong: [],
             nhan_vien: [],
             loai_luong: {
                 'id_luong': "",
@@ -98,6 +160,8 @@ export default {
                 'tinh_trang': 0,
                 'tien_thuong': "",
             },
+            sua_luongNV: {},
+            xoa_luongNV: {},
             tim_kiem: {
                 noi_dung: ''
             }
@@ -124,6 +188,32 @@ export default {
                         this.loadData();
                     }
                 )
+        },
+        xoa() {
+            axios
+                .post('http://127.0.0.1:8000/api/xoa-luong', this.xoa_luongNV)
+                .then((res) => {
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message)
+                        this.load()
+                    } else {
+                        toaster.error('Xóa thất bại')
+                    }
+                })
+        },
+        sua() {
+            axios
+                .post('http://127.0.0.1:8000/api/sua-luong', this.sua_luongNV)
+                .then((res) => {
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message)
+                        this.load()
+                    } else {
+                        toaster.error('Cập nhật không thành công')
+                    }
+
+                })
+
         },
         loadData() {
             axios
