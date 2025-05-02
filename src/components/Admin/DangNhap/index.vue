@@ -73,6 +73,8 @@ export default {
                 if (data.status === 1) {
                     toaster.success(data.message);
                     localStorage.setItem('token_admin', data.token);
+                    localStorage.setItem('name_admin', data.name);
+                    localStorage.setItem('email_admin', data.email);
                     
                     // Get permissions from the response
                     const permissions = data.permissions || [];

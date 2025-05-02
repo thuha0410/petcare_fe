@@ -71,57 +71,37 @@
             <div class="row">
                 <div class="col-lg-2"></div>
                 <div class="col-lg-8">
-                    <div v-for="(value, index) in danh_sach_pet" :key="index" class="card shadow-sm rounded-4 p-3 mb-4"
-                        style="background: linear-gradient(145deg, #e0eaff, #f0f8ff); position: relative;">
-
-                        <!-- Nút Xoá -->
-                        <button data-bs-toggle="modal" data-bs-target="#xoa"
-                            class="btn btn-sm btn-primary position-absolute top-0 end-0 m-2 text-center"
-                            v-on:click="Object.assign(xoa_pet, value)">
-                            X
-                        </button>
-
-                        <!-- Hình ảnh -->
-                        <div class="d-flex justify-content-center mt-3">
-                            <img :src="value.hinh_anh" class="img-fluid rounded-circle shadow-sm border border-white"
-                                style="width: 120px; height: 120px; object-fit: cover; background: white; padding: 4px;">
+                    <div v-for="(value, index) in danh_sach_pet" :key="index" class="card shadow"
+                        style="border-radius: 16px; background-color: #e6f2ff;">
+                        <div class="text-end " style="background-color: white;">
+                            <button data-bs-toggle="modal" data-bs-target="#xoa" class="btn "><i
+                                    class="fa-solid fa-circle-xmark  "
+                                    style="color: #ff0000; font-size: 25px;"></i></button>
                         </div>
-
-                        <!-- Tên pet -->
-                        <h4 class="text-primary fw-bold text-center mt-3">{{ value.ten_pet }}</h4>
-
-                        <!-- Thông tin -->
-                        <div class="row text-center mt-3 px-3">
-                            <div class="col-6 mb-2">
-                                <strong>Chủng loại:</strong> {{ chuyenChungLoai(value.chung_loai) }}
+                        <div class="card-header bg-white d-flex justify-content-center border-0 pt-4">
+                            <img :src="value.hinh_anh" class="img-fluid rounded-circle shadow-sm"
+                                style="width: 120px; height: 120px; object-fit: cover;">
+                        </div>
+                        <div class="card-body text-center text-dark">
+                            <h4 class="mb-3 text-primary">{{ value.ten_pet }}</h4>
+                            <div class="d-flex justify-content-around px-4 mb-2">
+                                <span><strong>Chủng loại:</strong> {{ chuyenChungLoai(value.chung_loai) }}</span>
+                                <span><strong>Giới tính:</strong> {{ chuyenGioiTinh(value.gioi_tinh) }}</span>
                             </div>
-                            <div class="col-6 mb-2">
-                                <strong>Giới tính:</strong> {{ chuyenGioiTinh(value.gioi_tinh) }}
-                            </div>
-                            <div class="col-6 mb-2">
-                                <strong>Tuổi:</strong> {{ value.tuoi }}
-                            </div>
-                            <div class="col-6 mb-2">
-                                <strong>Cân nặng:</strong> {{ value.can_nang }} kg
+                            <div class="d-flex justify-content-around px-4">
+                                <span><strong>Tuổi:</strong>{{ value.tuoi }}</span>
+                                <span><strong>Cân nặng:</strong>{{ value.can_nang }}</span>
                             </div>
                         </div>
-
-                        <!-- Nút Cập nhật -->
-                        <div class="mt-4 text-center">
+                        <div class="card-footer bg-transparent text-center border-0 pb-4">
                             <button data-bs-toggle="modal" data-bs-target="#capnhatttp"
-                                class="btn btn-primary rounded-pill px-4 shadow-sm"
-                                v-on:click="Object.assign(update_pet, value)">
-                                <i class="fa-solid fa-pen-to-square me-1"></i> Cập nhật
-                            </button>
+                                class="btn btn-outline-primary px-4 rounded-pill">Cập nhật</button>
                         </div>
                     </div>
-
-                    <div class="text-center mt-4">
+                    <div class="text-center">
                         <button data-bs-toggle="modal" data-bs-target="#them"
-                            style="background-color: #2c4b85; color: white; font-weight: bold; padding: 10px 24px;"
-                            class="btn rounded-pill shadow-sm">
-                            <i class="fa-solid fa-plus me-2"></i> Thêm thú cưng mới
-                        </button>
+                            style="background-color: #2c4b85; color: white;" class="btn px-4 rounded-pill ">+ Thêm
+                            pet</button>
                     </div>
                 </div>
                 <div class="col-lg-2"></div>
@@ -166,10 +146,10 @@
                     <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Thông báo!!</h1>
                 </div>
                 <div class="modal-body text-dark">
-                    Bạn có chắc chắn muốn xóa <b>{{ xoa_pet.ten_pet }}</b> không?
+                    Bạn có chắc chắn muốn xóa không?
                 </div>
                 <div class="modal-footer">
-                    <button v-on:click="xoapet()" type="button" class="btn" style="background-color: red; color: white;"
+                    <button type="button" class="btn" style="background-color: red; color: white;"
                         data-bs-dismiss="modal">Xóa</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
@@ -181,73 +161,34 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header" style="background-color: #2c4b85;">
-                    <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">
-                        <i class="fa-solid fa-paw me-2"></i>THÊM THÚ CƯNG MỚI
-                    </h1>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+                    <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">NHẬP THÔNG TIN PET</h1>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Tên thú cưng: <span class="text-danger">*</span></label>
-                                <input v-model="pet.ten_pet" class="form-control" type="text"
-                                    placeholder="Nhập tên thú cưng" required />
-                                <small class="text-muted">Tên gọi của thú cưng của bạn</small>
-                            </div>
+                    <label>Tên pet:</label>
+                    <input v-model="pet.ten_pet" class="form-control mb-2" type="text" />
 
-                            <div class="mb-3">
-                                <label class="form-label">Chủng loại: <span class="text-danger">*</span></label>
-                                <select v-model="pet.chung_loai" class="form-select">
-                                    <option value="">-- Chọn loại thú cưng --</option>
-                                    <option value="0">Chó</option>
-                                    <option value="1">Mèo</option>
-                                </select>
-                                <small class="text-muted">Loại thú cưng của bạn</small>
-                            </div>
+                    <label>Hình ảnh:</label>
+                    <input v-model="pet.hinh_anh" class="form-control mb-2" type="text" />
 
-                            <div class="mb-3">
-                                <label class="form-label">Giới tính: <span class="text-danger">*</span></label>
-                                <select v-model="pet.gioi_tinh" class="form-select">
-                                    <option value="">-- Chọn giới tính --</option>
-                                    <option value="0">Đực</option>
-                                    <option value="1">Cái</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Hình ảnh:</label>
-                                <input v-model="pet.hinh_anh" class="form-control" type="text"
-                                    placeholder="Nhập URL hình ảnh" />
-                                <small class="text-muted">Đường dẫn URL đến hình ảnh thú cưng</small>
-                            </div>
+                    <label>Chủng loại:</label>
+                    <input v-model="pet.chung_loai" class="form-control mb-2" type="text" />
 
-                            <div class="mb-3">
-                                <label class="form-label">Tuổi: <span class="text-danger">*</span></label>
-                                <input v-model="pet.tuoi" class="form-control" type="number" min="0"
-                                    placeholder="Nhập tuổi" required />
-                                <small class="text-muted">Tuổi của thú cưng (tính theo năm)</small>
-                            </div>
+                    <label>Giới tính:</label>
+                    <select v-model="pet.gioi_tinh" class="form-control" name="" id="">
+                        <option value="0">Đực</option>
+                        <option value="1">Cái</option>
+                    </select>
 
-                            <div class="mb-3">
-                                <label class="form-label">Cân nặng (kg): <span class="text-danger">*</span></label>
-                                <input v-model="pet.can_nang" class="form-control" type="number" min="0" step="0.1"
-                                    placeholder="Nhập cân nặng" required />
-                                <small class="text-muted">Cân nặng của thú cưng tính bằng kg</small>
-                            </div>
-                        </div>
-                    </div>
+                    <label>Tuổi:</label>
+                    <input v-model="pet.tuoi" class="form-control mb-2" type="number" />
+
+                    <label>Cân nặng:</label>
+                    <input v-model="pet.can_nang" class="form-control mb-2" type="number" />
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fa-solid fa-times me-1"></i> Hủy
-                    </button>
                     <button v-on:click="thempet()" type="button" class="btn"
-                        style="background-color: #2c4b85; color: white;" data-bs-dismiss="modal">
-                        <i class="fa-solid fa-plus me-1"></i> Thêm thú cưng
-                    </button>
+                        style="background-color: #2c4b85; color: white;" data-bs-dismiss="modal">Thêm</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
         </div>
@@ -288,32 +229,29 @@
                 </div>
                 <div class="modal-body">
                     <label>Tên pet:</label>
-                    <input v-model="update_pet.ten_pet" class="form-control mb-2" type="text" />
+                    <input class="form-control mb-2" type="text" />
 
                     <label>Hình ảnh:</label>
-                    <input v-model="update_pet.hinh_anh" class="form-control mb-2" type="text" />
+                    <input class="form-control mb-2" type="text" />
 
                     <label>Chủng loại:</label>
-                    <select v-model="update_pet.chung_loai" class="form-control mb-2 form-select">
-                        <option value="0">Chó</option>
-                        <option value="1">Mèo</option>
-                    </select>
+                    <input class="form-control mb-2" type="text" />
 
                     <label>Giới tính:</label>
-                    <select v-model="update_pet.gioi_tinh" class="form-control form-select" name="" id="">
+                    <select class="form-control" name="" id="">
                         <option value="0">Đực</option>
-                        <option value="1">Cái</option>
+                        <option value="0">Cái</option>
                     </select>
 
                     <label>Tuổi:</label>
-                    <input v-model="update_pet.tuoi" class="form-control mb-2" type="text" />
+                    <input class="form-control mb-2" type="text" />
 
                     <label>Cân nặng:</label>
-                    <input v-model="update_pet.can_nang" class="form-control mb-2" type="text" />
+                    <input class="form-control mb-2" type="text" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn" style="background-color: #2c4b85; color: white;"
-                        data-bs-dismiss="modal" v-on:click="updatepet()">Cập nhật</button>
+                        data-bs-dismiss="modal">Cập nhật</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
@@ -344,9 +282,8 @@ export default {
                 tuoi: '',
                 hinh_anh: '',
                 can_nang: ''
+
             },
-            update_pet: {},
-            xoa_pet: {},
             danh_sach_pet: [],
             matkhau: {
                 mat_khau_cu: '',
@@ -419,55 +356,9 @@ export default {
                     console.error("Lỗi khi lấy thông tin người dùng:", err);
                 });
         },
-        updatepet() {
-            axios
-                .post('http://127.0.0.1:8000/api/khach-hang/update-pet', this.update_pet, {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.getItem("token_client")
-                    }
-                }
-                )
-                .then(res => {
-                    if (res.data.status == 1) {
-                        toaster.success(res.data.message);
-                        this.getPets(this.user.id);  // Sau khi cập nhật thì load lại danh sách pet
-                    } else {
-                        toaster.error(res.data.message);
-                    }
-                })
-                .catch(err => {
-                    console.error("Lỗi cập nhật pet:", err);
-                    toaster.error('Đã xảy ra lỗi khi cập nhật pet.');
-                });
-        },
-        xoapet() {
-            if (!this.xoa_pet || !this.xoa_pet.id) {
-                toaster.error('Không tìm thấy thú cưng cần xoá.');
-                return;
-            }
-            axios
-                .post('http://127.0.0.1:8000/api/khach-hang/xoa-pet', this.xoa_pet, {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.getItem("token_client")
-                    }
-                }
-                )
-                .then(res => {
-                    if (res.data.status == 1) {
-                        toaster.success(res.data.message);
-                        this.getPets(this.user.id);
-                    } else {
-                        toaster.error(res.data.message);
-                    }
-                })
-                .catch(err => {
-                    console.error("Lỗi xóa pet:", err);
-                    toaster.error('Đã xảy ra lỗi khi xóa pet.');
-                });
-        },
         thempet() {
             axios
-                .post('http://127.0.0.1:8000/api/khach-hang/them-pet', this.pet, {
+                .post('http://127.0.0.1:8000/api/them-pet', this.pet, {
                     headers: {
                         Authorization: 'Bearer ' + localStorage.getItem("token_client")
                     }
@@ -477,14 +368,7 @@ export default {
                     if (res.data.status == 1) {
                         toaster.success(res.data.message);
                         this.getPets(this.user.id);  // Sau khi thêm thì load lại danh sách pet
-                        this.pet = {
-                            ten_pet: '',
-                            chung_loai: '',
-                            gioi_tinh: '',
-                            tuoi: '',
-                            hinh_anh: '',
-                            can_nang: ''
-                        }; // Reset form thêm
+                        this.pet = {}; // Reset form thêm
                     } else {
                         toaster.error(res.data.message);
                     }
