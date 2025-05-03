@@ -71,57 +71,37 @@
             <div class="row">
                 <div class="col-lg-2"></div>
                 <div class="col-lg-8">
-                    <div v-for="(value, index) in danh_sach_pet" :key="index" class="card shadow-sm rounded-4 p-3 mb-4"
-                        style="background: linear-gradient(145deg, #e0eaff, #f0f8ff); position: relative;">
-
-                        <!-- Nút Xoá -->
-                        <button data-bs-toggle="modal" data-bs-target="#xoa"
-                            class="btn btn-sm btn-primary position-absolute top-0 end-0 m-2 text-center"
-                            v-on:click="Object.assign(xoa_pet, value)">
-                            X
-                        </button>
-
-                        <!-- Hình ảnh -->
-                        <div class="d-flex justify-content-center mt-3">
-                            <img :src="value.hinh_anh" class="img-fluid rounded-circle shadow-sm border border-white"
-                                style="width: 120px; height: 120px; object-fit: cover; background: white; padding: 4px;">
+                    <div v-for="(value, index) in danh_sach_pet" :key="index" class="card shadow"
+                        style="border-radius: 16px; background-color: #e6f2ff;">
+                        <div class="text-end " style="background-color: white;">
+                            <button v-on:click="Object.assign(xoa_pet, value)" data-bs-toggle="modal" data-bs-target="#xoa" class="btn "><i
+                                    class="fa-solid fa-circle-xmark  "
+                                    style="color: #ff0000; font-size: 25px;"></i></button>
                         </div>
-
-                        <!-- Tên pet -->
-                        <h4 class="text-primary fw-bold text-center mt-3">{{ value.ten_pet }}</h4>
-
-                        <!-- Thông tin -->
-                        <div class="row text-center mt-3 px-3">
-                            <div class="col-6 mb-2">
-                                <strong>Chủng loại:</strong> {{ chuyenChungLoai(value.chung_loai) }}
+                        <div class="card-header bg-white d-flex justify-content-center border-0 pt-4">
+                            <img :src="value.hinh_anh" class="img-fluid rounded-circle shadow-sm"
+                                style="width: 120px; height: 120px; object-fit: cover;">
+                        </div>
+                        <div class="card-body text-center text-dark">
+                            <h4 class="mb-3 text-primary">{{ value.ten_pet }}</h4>
+                            <div class="d-flex justify-content-around px-4 mb-2">
+                                <span><strong>Chủng loại:</strong> {{ chuyenChungLoai(value.chung_loai) }}</span>
+                                <span><strong>Giới tính:</strong> {{ chuyenGioiTinh(value.gioi_tinh) }}</span>
                             </div>
-                            <div class="col-6 mb-2">
-                                <strong>Giới tính:</strong> {{ chuyenGioiTinh(value.gioi_tinh) }}
-                            </div>
-                            <div class="col-6 mb-2">
-                                <strong>Tuổi:</strong> {{ value.tuoi }}
-                            </div>
-                            <div class="col-6 mb-2">
-                                <strong>Cân nặng:</strong> {{ value.can_nang }} kg
+                            <div class="d-flex justify-content-around px-4">
+                                <span><strong>Tuổi:</strong>{{ value.tuoi }}</span>
+                                <span><strong>Cân nặng:</strong>{{ value.can_nang }}</span>
                             </div>
                         </div>
-
-                        <!-- Nút Cập nhật -->
-                        <div class="mt-4 text-center">
-                            <button data-bs-toggle="modal" data-bs-target="#capnhatttp"
-                                class="btn btn-primary rounded-pill px-4 shadow-sm"
-                                v-on:click="Object.assign(update_pet, value)">
-                                <i class="fa-solid fa-pen-to-square me-1"></i> Cập nhật
-                            </button>
+                        <div class="card-footer bg-transparent text-center border-0 pb-4">
+                            <button v-on:click="Object.assign(update_pet, value)" data-bs-toggle="modal" data-bs-target="#capnhatttp"
+                                class="btn btn-outline-primary px-4 rounded-pill">Cập nhật</button>
                         </div>
                     </div>
-
-                    <div class="text-center mt-4">
+                    <div class="text-center">
                         <button data-bs-toggle="modal" data-bs-target="#them"
-                            style="background-color: #2c4b85; color: white; font-weight: bold; padding: 10px 24px;"
-                            class="btn rounded-pill shadow-sm">
-                            <i class="fa-solid fa-plus me-2"></i> Thêm thú cưng mới
-                        </button>
+                            style="background-color: #2c4b85; color: white;" class="btn px-4 rounded-pill ">+ Thêm
+                            pet</button>
                     </div>
                 </div>
                 <div class="col-lg-2"></div>
@@ -323,20 +303,24 @@
 
 <script>
 import { createToaster } from "@meforma/vue-toaster";
-import axios from "axios";
+import apiClient from "@/services/apiClient";
 const toaster = createToaster({ position: "top-right" });
 
 export default {
     data() {
         return {
+            loading: true,
             user: {
                 ho_va_ten: '',
                 email: '',
                 so_dien_thoai: '',
-                ngay_sinh: ''
+                ngay_sinh: '',
+                tinh_trang: '',
+                hinh_anh: '',
+                created_at: '',
+                updated_at: ''
             },
-            sua_kh: {
-            },
+            sua_kh: {},
             pet: {
                 ten_pet: '',
                 chung_loai: '',
@@ -344,6 +328,7 @@ export default {
                 tuoi: '',
                 hinh_anh: '',
                 can_nang: ''
+
             },
             update_pet: {},
             xoa_pet: {},
@@ -360,34 +345,25 @@ export default {
     },
     methods: {
         doiMatKhau() {
-
-            axios.post('http://127.0.0.1:8000/api/khach-hang/doi-mat-khau-tcn', this.matkhau, {
-                headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem("token_client")
-                }
-            })
+            apiClient.post('/api/khach-hang/doi-mat-khau-tcn', this.matkhau)
                 .then(res => {
                     if (res.data.status == 1) {
                         toaster.success(res.data.message);
                         this.matkhau.mat_khau_cu = '';
                         this.matkhau.mat_khau_moi = '';
                         this.matkhau.xac_nhan_mat_khau = '';
-
                         localStorage.removeItem('token_client');
-
                         setTimeout(() => {
                             this.$router.push('/client/dang-nhap-dang-ky');
-                        }, 1000); //1000ms =1s
+                        }, 1000);
                     } else {
                         toaster.error(res.data.message);
                     }
                 })
                 .catch(err => {
                     if (err.response && err.response.data && err.response.data.message) {
-                        // Có response + có data + có message
                         toaster.error(err.response.data.message);
                     } else {
-                        // Không có thì báo lỗi mặc định
                         toaster.error('Đã xảy ra lỗi. Vui lòng thử lại.');
                     }
                 });
@@ -395,63 +371,44 @@ export default {
         getUserInfo() {
             const token = localStorage.getItem("token_client");
             if (!token) {
-                console.warn("Không tìm thấy token.");
+                this.loading = false;
+                this.$router.push("/client/dang-nhap-dang-ky");
                 return;
             }
-            axios
-                .get("http://127.0.0.1:8000/api/user/info", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
+            apiClient.get("/api/khach-hang/lay-du-lieu")
                 .then((res) => {
-                    const user = res.data;
-                    this.user = {
-                        id: user.id,
-                        ho_va_ten: user.ho_va_ten,
-                        email: user.email,
-                        so_dien_thoai: user.so_dien_thoai,
-                        ngay_sinh: user.ngay_sinh
-                    };
-                    this.getPets(user.id);
-                })
-                .catch((err) => {
-                    console.error("Lỗi khi lấy thông tin người dùng:", err);
-                });
-        },
-        updatepet() {
-            axios
-                .post('http://127.0.0.1:8000/api/khach-hang/update-pet', this.update_pet, {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.getItem("token_client")
-                    }
-                }
-                )
-                .then(res => {
-                    if (res.data.status == 1) {
-                        toaster.success(res.data.message);
-                        this.getPets(this.user.id);  // Sau khi cập nhật thì load lại danh sách pet
+                    if (res.data.status === 1) {
+                        const user = res.data.data;
+                        this.user = {
+                            id: user.id,
+                            ho_va_ten: user.ho_va_ten,
+                            email: user.email,
+                            so_dien_thoai: user.so_dien_thoai,
+                            ngay_sinh: user.ngay_sinh,
+                            tinh_trang: user.tinh_trang,
+                            hinh_anh: user.hinh_anh,
+                            created_at: user.created_at,
+                            updated_at: user.updated_at
+                        };
+                        this.getPets(user.id);
                     } else {
                         toaster.error(res.data.message);
                     }
                 })
-                .catch(err => {
-                    console.error("Lỗi cập nhật pet:", err);
-                    toaster.error('Đã xảy ra lỗi khi cập nhật pet.');
+                .catch((error) => {
+                    if (error.response && error.response.status === 401) {
+                        localStorage.removeItem("token_client");
+                        this.$router.push("/client/dang-nhap-dang-ky");
+                    } else {
+                        toaster.error("Có lỗi xảy ra khi lấy thông tin người dùng");
+                    }
+                })
+                .finally(() => {
+                    this.loading = false;
                 });
         },
-        xoapet() {
-            if (!this.xoa_pet || !this.xoa_pet.id) {
-                toaster.error('Không tìm thấy thú cưng cần xoá.');
-                return;
-            }
-            axios
-                .post('http://127.0.0.1:8000/api/khach-hang/xoa-pet', this.xoa_pet, {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.getItem("token_client")
-                    }
-                }
-                )
+        updatepet() {
+            apiClient.post('/api/khach-hang/update-pet', this.update_pet)
                 .then(res => {
                     if (res.data.status == 1) {
                         toaster.success(res.data.message);
@@ -460,23 +417,34 @@ export default {
                         toaster.error(res.data.message);
                     }
                 })
-                .catch(err => {
-                    console.error("Lỗi xóa pet:", err);
+                .catch(() => {
+                    toaster.error('Đã xảy ra lỗi khi cập nhật pet.');
+                });
+        },
+        xoapet() {
+            if (!this.xoa_pet || !this.xoa_pet.id) {
+                toaster.error('Không tìm thấy thú cưng cần xoá.');
+                return;
+            }
+            apiClient.post('/api/khach-hang/xoa-pet', this.xoa_pet)
+                .then(res => {
+                    if (res.data.status == 1) {
+                        toaster.success(res.data.message);
+                        this.getPets(this.user.id);
+                    } else {
+                        toaster.error(res.data.message);
+                    }
+                })
+                .catch(() => {
                     toaster.error('Đã xảy ra lỗi khi xóa pet.');
                 });
         },
         thempet() {
-            axios
-                .post('http://127.0.0.1:8000/api/khach-hang/them-pet', this.pet, {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.getItem("token_client")
-                    }
-                }
-                )
+            apiClient.post('/api/khach-hang/them-pet', this.pet)
                 .then(res => {
                     if (res.data.status == 1) {
                         toaster.success(res.data.message);
-                        this.getPets(this.user.id);  // Sau khi thêm thì load lại danh sách pet
+                        this.getPets(this.user.id);
                         this.pet = {
                             ten_pet: '',
                             chung_loai: '',
@@ -484,51 +452,45 @@ export default {
                             tuoi: '',
                             hinh_anh: '',
                             can_nang: ''
-                        }; // Reset form thêm
+                        };
                     } else {
                         toaster.error(res.data.message);
                     }
                 })
-                .catch(err => {
-                    console.error("Lỗi thêm pet:", err);
+                .catch(() => {
                     toaster.error('Đã xảy ra lỗi khi thêm pet.');
                 });
         },
         getPets(id_kh) {
             const token = localStorage.getItem("token_client");
             if (!token) {
-                console.warn("Không tìm thấy token.");
+                this.$router.push("/client/dang-nhap-dang-ky");
                 return;
             }
-            axios
-                .get(`http://127.0.0.1:8000/api/pets/${id_kh}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
+            apiClient.get(`/api/pets/${id_kh}`)
                 .then((res) => {
-                    this.danh_sach_pet = res.data.pets; // Lưu danh sách thú cưng vào data
+                    this.danh_sach_pet = res.data.pets;
                 })
-                .catch((err) => {
-                    console.error("Lỗi khi lấy danh sách thú cưng:", err);
+                .catch((error) => {
+                    if (error.response && error.response.status === 401) {
+                        localStorage.removeItem("token_client");
+                        this.$router.push("/client/dang-nhap-dang-ky");
+                    } else {
+                        toaster.error("Có lỗi xảy ra khi lấy danh sách thú cưng");
+                    }
                 });
         },
         sua() {
-            axios
-                .post('http://127.0.0.1:8000/api/khach-hang/sua', this.sua_kh,
-                    // {
-                    //     headers: {
-                    //         Authorization: 'Bearer ' + localStorage.getItem('token_client')
-                    //     }
-                    // }
-                )
-                .then(
-                    (res) => {
-                        if (res.data.status == 1)
-                            toaster.success(res.data.message)
+            apiClient.post('/api/khach-hang/sua', this.sua_kh)
+                .then((res) => {
+                    if (res.data.status == 1) {
+                        toaster.success(res.data.message);
                         this.getUserInfo();
                     }
-                )
+                })
+                .catch(() => {
+                    toaster.error('Đã xảy ra lỗi khi cập nhật thông tin.');
+                });
         },
         chuyenGioiTinh(gt) {
             return gt == 0 ? 'Đực' : 'Cái';

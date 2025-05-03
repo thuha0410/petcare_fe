@@ -17,7 +17,15 @@
                     </p>
                     <p class="ms-3" style="font-size: 15px;">{{ list_dv.ten_dv }}</p>
 
-                    <p class="fw-bold" style="font-size: 20px;"><i class="fa-solid fa-calendar-days"></i> Ngày:</p>
+                    <p class="fw-bold" style="font-size: 20px;"><i class="fa-solid fa-paw"></i> Tên pet
+                    </p>
+                    <select class="form-select form-control" v-model="id_pet" name="" id="">
+                        <option disabled value="">--Chọn pet cần khám--</option>
+                        <option v-for="(value, index) in list_pet" :key="index" v-bind:value="value.id">{{ value.ten_pet
+                            }}</option>
+                    </select>
+
+                    <p class="fw-bold mt-2" style="font-size: 20px;"><i class="fa-solid fa-calendar-days"></i> Ngày:</p>
                     <p class="ms-3" style="font-size: 15px;">{{ selectedDate || "Chưa chọn" }}</p>
 
                     <p class="fw-bold" style="font-size: 20px;"><i class="fa-solid fa-clock"></i> Giờ:</p>
@@ -118,13 +126,20 @@ export default {
                 height: 600,
                 contentHeight: 'auto',
                 dateClick: this.handleDateClick
-            }
+            },
+            list_pet: [],
+            id_pet: '',
         };
     },
     mounted() {
         this.loadDichVu();
         this.loadLich();
+        this.loadPet();
+
+
         window.scrollTo(0, 0);
+
+
 
 
     },
@@ -134,6 +149,7 @@ export default {
                 .get("http://127.0.0.1:8000/api/lich/load")
                 .then((res) => {
                     this.availableTimes = res.data.data;
+
 
                 });
         },
@@ -162,16 +178,24 @@ export default {
             this.selectedTime = null;
         },
         xacNhanLichHen(id) {
+            if (!this.id_pet) {
+                toaster.error("Vui lòng chọn thú cưng cần khám để đặt lịch!");
+                return;
+            }
             console.log(this.availableTimes);
             if (!this.selectedDate || !this.selectedTime) return;
 
             const data = {
-                id_lich: this.id_lich,
-                id_dv: this.list_dv.id,
+                ten_dv: this.list_dv.ten_dv,
+                id_lich: id,
+                id_nv: this.list_dv.id,
+                id_pet: this.id_pet,
                 ngay: this.selectedDate,
                 gio: this.selectedTime,
             };
             axios
+                .post('http://127.0.0.1:8000/api/lich-hen/them', data,
+                    {
                 .post('http://127.0.0.1:8000/api/lich-hen/them', data,
                     {
                         headers: {
@@ -187,8 +211,39 @@ export default {
                     console.error(err);
                     alert("Có lỗi xảy ra khi đặt lịch.");
                 });
+
+        },
+        loadPet() {
+            const token = localStorage.getItem("token_client");
+            if (!token) {
+                console.warn("Thiếu token đăng nhập.");
+                return;
+            }
+
+            // Gọi API /khach-hang/lay-du-lieu để lấy id khách hàng
+            axios.get("http://127.0.0.1:8000/api/khach-hang/lay-du-lieu", {
+                headers: {
+                    Authorization: "Bearer " + token
+                }
+            }).then(res => {
+                const id_kh = res.data.data.id;
+                // lưu lại vào localStorage để sử dụng sau nếu cần
+                localStorage.setItem("id_khach_hang", id_kh);
+
+                // Gọi tiếp API lấy thú cưng theo id_kh
+                return axios.get(`http://127.0.0.1:8000/api/pets/${id_kh}`, {
+                    headers: {
+                        Authorization: "Bearer " + token
+                    }
+                });
+            }).then(res => {
+                this.list_pet = res.data.pets;
+            }).catch(err => {
+                console.error("Lỗi khi lấy danh sách thú cưng:", err);
+            });
+
         }
-    }
+    },
 };
 </script>
 

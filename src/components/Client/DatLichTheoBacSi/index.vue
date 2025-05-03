@@ -79,7 +79,7 @@
                                 <!-- Thông tin bác sĩ -->
                                 <div class="row mt-2">
                                     <div class="col-md-3 fw-bold">Mô tả:</div>
-                                    <div class="col-md-9">Mô tả: <span>{{ value.mo_ta }}</span></div>
+                                    <div class="col-md-9"><span>{{ value.mo_ta }}</span></div>
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-md-3 fw-bold">Giá khám:</div>
