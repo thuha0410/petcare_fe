@@ -135,13 +135,7 @@ export default {
         this.loadDichVu();
         this.loadLich();
         this.loadPet();
-
-
         window.scrollTo(0, 0);
-
-
-
-
     },
     methods: {
         loadLich() {
@@ -149,8 +143,6 @@ export default {
                 .get("http://127.0.0.1:8000/api/lich/load")
                 .then((res) => {
                     this.availableTimes = res.data.data;
-
-
                 });
         },
         loadDichVu() {
@@ -182,20 +174,24 @@ export default {
                 toaster.error("Vui lòng chọn thú cưng cần khám để đặt lịch!");
                 return;
             }
+
             console.log(this.availableTimes);
             if (!this.selectedDate || !this.selectedTime) return;
-
+            const id_kh = localStorage.getItem("id_khach_hang");
+            if (!id_kh) {
+                alert("Không tìm thấy thông tin khách hàng. Vui lòng đăng nhập lại.");
+                return;
+            }
             const data = {
-                ten_dv: this.list_dv.ten_dv,
-                id_lich: id,
-                id_nv: this.list_dv.id,
+                id_lich: this.id_lich,
+                id_kh: id_kh,
+                id_dv: this.list_dv.id,
                 id_pet: this.id_pet,
+                tinh_trang: 0,
                 ngay: this.selectedDate,
                 gio: this.selectedTime,
             };
             axios
-                .post('http://127.0.0.1:8000/api/lich-hen/them', data,
-                    {
                 .post('http://127.0.0.1:8000/api/lich-hen/them', data,
                     {
                         headers: {
