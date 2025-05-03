@@ -227,7 +227,8 @@ export default {
                 localStorage.setItem("id_khach_hang", id_kh);
 
                 // Gọi tiếp API lấy thú cưng theo id_kh
-                return axios.get(`http://127.0.0.1:8000/api/pets/${id_kh}`, {
+                return axios
+                .get(`http://127.0.0.1:8000/api/pets/${id_kh}`, {
                     headers: {
                         Authorization: "Bearer " + token
                     }

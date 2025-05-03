@@ -57,8 +57,8 @@
                             <tr class="text-center align-middle">
                                 <th>{{ index + 1 }}</th>
                                 <td>{{ value.id_lich }}</td>
-                                <td>{{ value.id_kh }}</td>
-                                <td>{{ value.id_pet }}</td>
+                                <td>{{ value.ho_va_ten }}</td>
+                                <td>{{ value.ten_pet }}</td>
                                 <td>{{ value.ngay }}</td>
                                 <td>{{ value.gio }}</td>
                                 <td>{{ value.ten_nv }}</td>
