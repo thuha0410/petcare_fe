@@ -146,10 +146,10 @@
                     <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Thông báo!!</h1>
                 </div>
                 <div class="modal-body text-dark">
-                    Bạn có chắc chắn muốn xóa không?
+                    Bạn có chắc chắn muốn xóa <b>{{ xoa_pet.ten_pet }}</b> không?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn" style="background-color: red; color: white;"
+                    <button v-on:click="xoapet()" type="button" class="btn" style="background-color: red; color: white;"
                         data-bs-dismiss="modal">Xóa</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
@@ -161,34 +161,73 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header" style="background-color: #2c4b85;">
-                    <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">NHẬP THÔNG TIN PET</h1>
+                    <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">
+                        <i class="fa-solid fa-paw me-2"></i>THÊM THÚ CƯNG MỚI
+                    </h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <label>Tên pet:</label>
-                    <input v-model="pet.ten_pet" class="form-control mb-2" type="text" />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Tên thú cưng: <span class="text-danger">*</span></label>
+                                <input v-model="pet.ten_pet" class="form-control" type="text"
+                                    placeholder="Nhập tên thú cưng" required />
+                                <small class="text-muted">Tên gọi của thú cưng của bạn</small>
+                            </div>
 
-                    <label>Hình ảnh:</label>
-                    <input v-model="pet.hinh_anh" class="form-control mb-2" type="text" />
+                            <div class="mb-3">
+                                <label class="form-label">Chủng loại: <span class="text-danger">*</span></label>
+                                <select v-model="pet.chung_loai" class="form-select">
+                                    <option value="">-- Chọn loại thú cưng --</option>
+                                    <option value="0">Chó</option>
+                                    <option value="1">Mèo</option>
+                                </select>
+                                <small class="text-muted">Loại thú cưng của bạn</small>
+                            </div>
 
-                    <label>Chủng loại:</label>
-                    <input v-model="pet.chung_loai" class="form-control mb-2" type="text" />
+                            <div class="mb-3">
+                                <label class="form-label">Giới tính: <span class="text-danger">*</span></label>
+                                <select v-model="pet.gioi_tinh" class="form-select">
+                                    <option value="">-- Chọn giới tính --</option>
+                                    <option value="0">Đực</option>
+                                    <option value="1">Cái</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Hình ảnh:</label>
+                                <input v-model="pet.hinh_anh" class="form-control" type="text"
+                                    placeholder="Nhập URL hình ảnh" />
+                                <small class="text-muted">Đường dẫn URL đến hình ảnh thú cưng</small>
+                            </div>
 
-                    <label>Giới tính:</label>
-                    <select v-model="pet.gioi_tinh" class="form-control" name="" id="">
-                        <option value="0">Đực</option>
-                        <option value="1">Cái</option>
-                    </select>
+                            <div class="mb-3">
+                                <label class="form-label">Tuổi: <span class="text-danger">*</span></label>
+                                <input v-model="pet.tuoi" class="form-control" type="number" min="0"
+                                    placeholder="Nhập tuổi" required />
+                                <small class="text-muted">Tuổi của thú cưng (tính theo năm)</small>
+                            </div>
 
-                    <label>Tuổi:</label>
-                    <input v-model="pet.tuoi" class="form-control mb-2" type="number" />
-
-                    <label>Cân nặng:</label>
-                    <input v-model="pet.can_nang" class="form-control mb-2" type="number" />
+                            <div class="mb-3">
+                                <label class="form-label">Cân nặng (kg): <span class="text-danger">*</span></label>
+                                <input v-model="pet.can_nang" class="form-control" type="number" min="0" step="0.1"
+                                    placeholder="Nhập cân nặng" required />
+                                <small class="text-muted">Cân nặng của thú cưng tính bằng kg</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fa-solid fa-times me-1"></i> Hủy
+                    </button>
                     <button v-on:click="thempet()" type="button" class="btn"
-                        style="background-color: #2c4b85; color: white;" data-bs-dismiss="modal">Thêm</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        style="background-color: #2c4b85; color: white;" data-bs-dismiss="modal">
+                        <i class="fa-solid fa-plus me-1"></i> Thêm thú cưng
+                    </button>
                 </div>
             </div>
         </div>
@@ -229,29 +268,32 @@
                 </div>
                 <div class="modal-body">
                     <label>Tên pet:</label>
-                    <input class="form-control mb-2" type="text" />
+                    <input v-model="update_pet.ten_pet" class="form-control mb-2" type="text" />
 
                     <label>Hình ảnh:</label>
-                    <input class="form-control mb-2" type="text" />
+                    <input v-model="update_pet.hinh_anh" class="form-control mb-2" type="text" />
 
                     <label>Chủng loại:</label>
-                    <input class="form-control mb-2" type="text" />
+                    <select v-model="update_pet.chung_loai" class="form-control mb-2 form-select">
+                        <option value="0">Chó</option>
+                        <option value="1">Mèo</option>
+                    </select>
 
                     <label>Giới tính:</label>
-                    <select class="form-control" name="" id="">
+                    <select v-model="update_pet.gioi_tinh" class="form-control form-select" name="" id="">
                         <option value="0">Đực</option>
-                        <option value="0">Cái</option>
+                        <option value="1">Cái</option>
                     </select>
 
                     <label>Tuổi:</label>
-                    <input class="form-control mb-2" type="text" />
+                    <input v-model="update_pet.tuoi" class="form-control mb-2" type="text" />
 
                     <label>Cân nặng:</label>
-                    <input class="form-control mb-2" type="text" />
+                    <input v-model="update_pet.can_nang" class="form-control mb-2" type="text" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn" style="background-color: #2c4b85; color: white;"
-                        data-bs-dismiss="modal">Cập nhật</button>
+                        data-bs-dismiss="modal" v-on:click="updatepet()">Cập nhật</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
@@ -288,6 +330,8 @@ export default {
                 can_nang: ''
 
             },
+            update_pet: {},
+            xoa_pet: {},
             danh_sach_pet: [],
             matkhau: {
                 mat_khau_cu: '',
