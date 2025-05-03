@@ -107,6 +107,7 @@ export default {
           if (res.data.status == 1) {
             toaster.success(res.data.message);
             localStorage.setItem("token_client", res.data.token);
+            
             this.$router.push("/");
           } else {
             toaster.error(res.data.message);

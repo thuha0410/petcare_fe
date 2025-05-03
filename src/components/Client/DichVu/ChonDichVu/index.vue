@@ -137,8 +137,8 @@ export default {
 
 
         window.scrollTo(0, 0);
-        
-        
+
+
     },
     methods: {
         loadLich() {
@@ -189,8 +189,8 @@ export default {
                 gio: this.selectedTime,
             };
             axios
-                .post('http://127.0.0.1:8000/api/lich-hen/them', data ,
-                {
+                .post('http://127.0.0.1:8000/api/lich-hen/them', data,
+                    {
                         headers: {
                             Authorization: 'Bearer ' + localStorage.getItem('token_client')
                         }
@@ -209,31 +209,34 @@ export default {
         loadPet() {
             const token = localStorage.getItem("token_client");
             if (!token) {
-                console.warn("Không tìm thấy token khách hàng.");
+                console.warn("Thiếu token đăng nhập.");
                 return;
             }
-            axios.get('http://127.0.0.1:8000/api/user/info', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-                .then((res) => {
-                    const id_kh = res.data.id;
-                    return axios.get(`http://127.0.0.1:8000/api/pets/${id_kh}`, {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    });
-                })
-                .then((res) => {
-                    this.list_pet = res.data.pets;
-                })
-                .catch(err => {
-                    console.error('Lỗi khi load pet:', err);
-                });
-        },
 
-    }
+            // Gọi API /khach-hang/lay-du-lieu để lấy id khách hàng
+            axios.get("http://127.0.0.1:8000/api/khach-hang/lay-du-lieu", {
+                headers: {
+                    Authorization: "Bearer " + token
+                }
+            }).then(res => {
+                const id_kh = res.data.data.id;
+                // lưu lại vào localStorage để sử dụng sau nếu cần
+                localStorage.setItem("id_khach_hang", id_kh);
+
+                // Gọi tiếp API lấy thú cưng theo id_kh
+                return axios.get(`http://127.0.0.1:8000/api/pets/${id_kh}`, {
+                    headers: {
+                        Authorization: "Bearer " + token
+                    }
+                });
+            }).then(res => {
+                this.list_pet = res.data.pets;
+            }).catch(err => {
+                console.error("Lỗi khi lấy danh sách thú cưng:", err);
+            });
+
+        }
+    },
 };
 </script>
 
