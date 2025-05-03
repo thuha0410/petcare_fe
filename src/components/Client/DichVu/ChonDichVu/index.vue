@@ -105,6 +105,9 @@ import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import axios from 'axios';
+import apiClient from '../../../../services/apiClient';
+import { createToaster } from "@meforma/vue-toaster";
+const toaster = createToaster({ position: "top-right" });
 
 export default {
     components: { FullCalendar },
@@ -139,15 +142,15 @@ export default {
     },
     methods: {
         loadLich() {
-            axios
-                .get("http://127.0.0.1:8000/api/lich/load")
+            apiClient
+                .get("/api/lich/load")
                 .then((res) => {
                     this.availableTimes = res.data.data;
                 });
         },
         loadDichVu() {
-            axios
-                .get("http://127.0.0.1:8000/api/dich-vu/load-chi-tiet/" + this.id)
+            apiClient
+                .get("/api/dich-vu/load-chi-tiet/" + this.id)
                 .then((res) => {
                     this.list_dv = res.data.data;
                 });
@@ -191,8 +194,8 @@ export default {
                 ngay: this.selectedDate,
                 gio: this.selectedTime,
             };
-            axios
-                .post('http://127.0.0.1:8000/api/lich-hen/them', data,
+            apiClient
+                .post('/api/lich-hen/them', data,
                     {
                         headers: {
                             Authorization: 'Bearer ' + localStorage.getItem('token_client')
@@ -200,7 +203,7 @@ export default {
                     }
                 )
                 .then((res) => {
-                    alert("Đặt lịch thành công!");
+                    toaster.success("Đặt lịch thành công!");
                     this.toggleCalendar();
                 })
                 .catch((err) => {
@@ -217,7 +220,7 @@ export default {
             }
 
             // Gọi API /khach-hang/lay-du-lieu để lấy id khách hàng
-            axios.get("http://127.0.0.1:8000/api/khach-hang/lay-du-lieu", {
+            apiClient.get("/api/khach-hang/lay-du-lieu", {
                 headers: {
                     Authorization: "Bearer " + token
                 }
@@ -227,8 +230,7 @@ export default {
                 localStorage.setItem("id_khach_hang", id_kh);
 
                 // Gọi tiếp API lấy thú cưng theo id_kh
-                return axios
-                .get(`http://127.0.0.1:8000/api/pets/${id_kh}`, {
+                return apiClient.get(`/api/pets/${id_kh}`, {
                     headers: {
                         Authorization: "Bearer " + token
                     }
