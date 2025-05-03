@@ -42,10 +42,12 @@
                         <tr class="text-center align-middle">
                             <th>#</th>
                             <th>Mã lịch hẹn</th>
+                            <th>Tên khách hàng</th>
                             <th>Tên thú cưng</th>
-                            <th>Ngày giờ hẹn</th>
+                            <th>Ngày hẹn</th>
+                            <th>Giờ hẹn</th>
                             <th>Tên bác sĩ</th>
-                            <th>Tiền cọc </th>
+                            <th>Tiền cọc </th>  
                             <th>Tình trạng</th>
                             <th>Action</th>
                         </tr>
@@ -55,8 +57,10 @@
                             <tr class="text-center align-middle">
                                 <th>{{ index + 1 }}</th>
                                 <td>{{ value.id_lich }}</td>
-                                <td>{{ value.ten_pet }}</td>
-                                <td>{{ value.ngay_gio_hen }}</td>
+                                <td>{{ value.id_kh }}</td>
+                                <td>{{ value.id_pet }}</td>
+                                <td>{{ value.ngay }}</td>
+                                <td>{{ value.gio }}</td>
                                 <td>{{ value.ten_nv }}</td>
                                 <td>{{ value.tien_coc }}</td>
                                 <td>
@@ -136,13 +140,13 @@ export default {
             list_lich: [],
             update_lich: [],
             del_lich: [],
-            nhan_vien: [],
+            khach_hang: [],
             pet: [],
         }
     },
     mounted() {
         this.loadLichHen();
-        this.loadNhanVien();
+        this.loadKhachHang();
         this.loadPet();
     },
     methods: {
@@ -153,13 +157,13 @@ export default {
                     this.list_lich = res.data.data
                 })
         },
-        loadNhanVien() {
+        loadKhachHang() {
             axios
-                .get("http://127.0.0.1:8000/api/nhan-vien/load", {
+                .get("http://127.0.0.1:8000/api/khach-hang/load", {
                 })
                 .then((res) => {
-                    this.nhan_vien = res.data.data
-                    console.log(this.nhan_vien);
+                    this.khach_hang = res.data.data
+                    console.log(this.khach_hang);
                 });
         },
         loadPet() {
