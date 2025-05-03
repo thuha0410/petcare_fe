@@ -93,13 +93,12 @@
 </template>
 
 <script>
-import axios from "axios";
+import apiClient from "@/services/apiClient";
 import { createToaster } from "@meforma/vue-toaster";
 const toaster = createToaster({ position: 'top-left' });
 export default {
   data() {
     return {
-      user: {},
       isOpen: false,
       searchQuery: "",
       khach_hang: {},
@@ -107,55 +106,56 @@ export default {
   },
   mounted() {
     this.load();
-    console.log(this.user);
   },
   methods: {
     toggleNavbar() {
       this.isOpen = !this.isOpen;
     },
     load() {
-      axios
-        .get("http://127.0.0.1:8000/api/khach-hang/lay-du-lieu", {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token_client"),
-          },
-        })
+      const token = localStorage.getItem("token_client");
+      if (!token) {
+        this.khach_hang = {};
+        return;
+      }
+      apiClient.get("/api/khach-hang/lay-du-lieu")
         .then((res) => {
-          this.khach_hang = res.data.data;
+          if (res.data.status === 1) {
+            this.khach_hang = res.data.data;
+          } else {
+            this.khach_hang = {};
+          }
         });
     },
     dangXuat() {
-      axios
-        .get("http://127.0.0.1:8000/api/khach-hang/dang-xuat", {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token_client"),
-          },
-        })
+      apiClient.get("/api/khach-hang/dang-xuat")
         .then((res) => {
           if (res.data.status) {
             toaster.success(res.data.message);
             localStorage.removeItem("token_client");
-            this.khach_hang.ho_va_ten = null;
+            this.khach_hang = {};
+            this.$router.push("/client/dang-nhap-dang-ky");
           } else {
             toaster.error(res.data.message);
           }
+        })
+        .catch(() => {
+          toaster.error('Đã xảy ra lỗi khi đăng xuất');
         });
     },
     dangXuatAll() {
-      axios
-        .get("http://127.0.0.1:8000/api/khach-hang/dang-xuat-all", {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token_client"),
-          },
-        })
+      apiClient.get("/api/khach-hang/dang-xuat-all")
         .then((res) => {
           if (res.data.status) {
             toaster.success(res.data.message);
             localStorage.removeItem("token_client");
-            this.khach_hang.ho_va_ten = null;
+            this.khach_hang = {};
+            this.$router.push("/client/dang-nhap-dang-ky");
           } else {
             toaster.error(res.data.message);
           }
+        })
+        .catch(() => {
+          toaster.error('Đã xảy ra lỗi khi đăng xuất tất cả');
         });
     },
   },

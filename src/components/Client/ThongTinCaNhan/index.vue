@@ -261,20 +261,24 @@
 
 <script>
 import { createToaster } from "@meforma/vue-toaster";
-import axios from "axios";
+import apiClient from "@/services/apiClient";
 const toaster = createToaster({ position: "top-right" });
 
 export default {
     data() {
         return {
+            loading: true,
             user: {
                 ho_va_ten: '',
                 email: '',
                 so_dien_thoai: '',
-                ngay_sinh: ''
+                ngay_sinh: '',
+                tinh_trang: '',
+                hinh_anh: '',
+                created_at: '',
+                updated_at: ''
             },
-            sua_kh: {
-            },
+            sua_kh: {},
             pet: {
                 ten_pet: '',
                 chung_loai: '',
@@ -297,34 +301,25 @@ export default {
     },
     methods: {
         doiMatKhau() {
-
-            axios.post('http://127.0.0.1:8000/api/khach-hang/doi-mat-khau-tcn', this.matkhau, {
-                headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem("token_client")
-                }
-            })
+            apiClient.post('/api/khach-hang/doi-mat-khau-tcn', this.matkhau)
                 .then(res => {
                     if (res.data.status == 1) {
                         toaster.success(res.data.message);
                         this.matkhau.mat_khau_cu = '';
                         this.matkhau.mat_khau_moi = '';
                         this.matkhau.xac_nhan_mat_khau = '';
-
                         localStorage.removeItem('token_client');
-
                         setTimeout(() => {
                             this.$router.push('/client/dang-nhap-dang-ky');
-                        }, 1000); //1000ms =1s
+                        }, 1000);
                     } else {
                         toaster.error(res.data.message);
                     }
                 })
                 .catch(err => {
                     if (err.response && err.response.data && err.response.data.message) {
-                        // Có response + có data + có message
                         toaster.error(err.response.data.message);
                     } else {
-                        // Không có thì báo lỗi mặc định
                         toaster.error('Đã xảy ra lỗi. Vui lòng thử lại.');
                     }
                 });
@@ -332,87 +327,126 @@ export default {
         getUserInfo() {
             const token = localStorage.getItem("token_client");
             if (!token) {
-                console.warn("Không tìm thấy token.");
+                this.loading = false;
+                this.$router.push("/client/dang-nhap-dang-ky");
                 return;
             }
-            axios
-                .get("http://127.0.0.1:8000/api/user/info", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
+            apiClient.get("/api/khach-hang/lay-du-lieu")
                 .then((res) => {
-                    const user = res.data;
-                    this.user = {
-                        id: user.id,
-                        ho_va_ten: user.ho_va_ten,
-                        email: user.email,
-                        so_dien_thoai: user.so_dien_thoai,
-                        ngay_sinh: user.ngay_sinh
-                    };
-                    this.getPets(user.id);
-                })
-                .catch((err) => {
-                    console.error("Lỗi khi lấy thông tin người dùng:", err);
-                });
-        },
-        thempet() {
-            axios
-                .post('http://127.0.0.1:8000/api/them-pet', this.pet, {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.getItem("token_client")
-                    }
-                }
-                )
-                .then(res => {
-                    if (res.data.status == 1) {
-                        toaster.success(res.data.message);
-                        this.getPets(this.user.id);  // Sau khi thêm thì load lại danh sách pet
-                        this.pet = {}; // Reset form thêm
+                    if (res.data.status === 1) {
+                        const user = res.data.data;
+                        this.user = {
+                            id: user.id,
+                            ho_va_ten: user.ho_va_ten,
+                            email: user.email,
+                            so_dien_thoai: user.so_dien_thoai,
+                            ngay_sinh: user.ngay_sinh,
+                            tinh_trang: user.tinh_trang,
+                            hinh_anh: user.hinh_anh,
+                            created_at: user.created_at,
+                            updated_at: user.updated_at
+                        };
+                        this.getPets(user.id);
                     } else {
                         toaster.error(res.data.message);
                     }
                 })
-                .catch(err => {
-                    console.error("Lỗi thêm pet:", err);
+                .catch((error) => {
+                    if (error.response && error.response.status === 401) {
+                        localStorage.removeItem("token_client");
+                        this.$router.push("/client/dang-nhap-dang-ky");
+                    } else {
+                        toaster.error("Có lỗi xảy ra khi lấy thông tin người dùng");
+                    }
+                })
+                .finally(() => {
+                    this.loading = false;
+                });
+        },
+        updatepet() {
+            apiClient.post('/api/khach-hang/update-pet', this.update_pet)
+                .then(res => {
+                    if (res.data.status == 1) {
+                        toaster.success(res.data.message);
+                        this.getPets(this.user.id);
+                    } else {
+                        toaster.error(res.data.message);
+                    }
+                })
+                .catch(() => {
+                    toaster.error('Đã xảy ra lỗi khi cập nhật pet.');
+                });
+        },
+        xoapet() {
+            if (!this.xoa_pet || !this.xoa_pet.id) {
+                toaster.error('Không tìm thấy thú cưng cần xoá.');
+                return;
+            }
+            apiClient.post('/api/khach-hang/xoa-pet', this.xoa_pet)
+                .then(res => {
+                    if (res.data.status == 1) {
+                        toaster.success(res.data.message);
+                        this.getPets(this.user.id);
+                    } else {
+                        toaster.error(res.data.message);
+                    }
+                })
+                .catch(() => {
+                    toaster.error('Đã xảy ra lỗi khi xóa pet.');
+                });
+        },
+        thempet() {
+            apiClient.post('/api/khach-hang/them-pet', this.pet)
+                .then(res => {
+                    if (res.data.status == 1) {
+                        toaster.success(res.data.message);
+                        this.getPets(this.user.id);
+                        this.pet = {
+                            ten_pet: '',
+                            chung_loai: '',
+                            gioi_tinh: '',
+                            tuoi: '',
+                            hinh_anh: '',
+                            can_nang: ''
+                        };
+                    } else {
+                        toaster.error(res.data.message);
+                    }
+                })
+                .catch(() => {
                     toaster.error('Đã xảy ra lỗi khi thêm pet.');
                 });
         },
         getPets(id_kh) {
             const token = localStorage.getItem("token_client");
             if (!token) {
-                console.warn("Không tìm thấy token.");
+                this.$router.push("/client/dang-nhap-dang-ky");
                 return;
             }
-            axios
-                .get(`http://127.0.0.1:8000/api/pets/${id_kh}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
+            apiClient.get(`/api/pets/${id_kh}`)
                 .then((res) => {
-                    this.danh_sach_pet = res.data.pets; // Lưu danh sách thú cưng vào data
+                    this.danh_sach_pet = res.data.pets;
                 })
-                .catch((err) => {
-                    console.error("Lỗi khi lấy danh sách thú cưng:", err);
+                .catch((error) => {
+                    if (error.response && error.response.status === 401) {
+                        localStorage.removeItem("token_client");
+                        this.$router.push("/client/dang-nhap-dang-ky");
+                    } else {
+                        toaster.error("Có lỗi xảy ra khi lấy danh sách thú cưng");
+                    }
                 });
         },
         sua() {
-            axios
-                .post('http://127.0.0.1:8000/api/khach-hang/sua', this.sua_kh,
-                    // {
-                    //     headers: {
-                    //         Authorization: 'Bearer ' + localStorage.getItem('token_client')
-                    //     }
-                    // }
-                )
-                .then(
-                    (res) => {
-                        if (res.data.status == 1)
-                            toaster.success(res.data.message)
+            apiClient.post('/api/khach-hang/sua', this.sua_kh)
+                .then((res) => {
+                    if (res.data.status == 1) {
+                        toaster.success(res.data.message);
                         this.getUserInfo();
                     }
-                )
+                })
+                .catch(() => {
+                    toaster.error('Đã xảy ra lỗi khi cập nhật thông tin.');
+                });
         },
         chuyenGioiTinh(gt) {
             return gt == 0 ? 'Đực' : 'Cái';
