@@ -76,10 +76,11 @@
                     <h3 class="text-white text-center">Chọn giờ</h3>
                 </div>
                 <div class="card-body d-flex flex-wrap justify-content-center">
-                    <button v-for="(value,index) in availableTimes" :key="index" class="btn btn-outline-primary m-2"
-                        @click="selectTime(value.khung_gio)">
+                    <button v-for="(value, index) in availableTimes" :key="index" class="btn btn-outline-primary m-2"
+                        @click="selectTime(value)">
                         {{ value.khung_gio }}
                     </button>
+
                 </div>
                 <div class="text-center mb-3">
                     <button class="btn btn-success mt-2" @click="xacNhanLichHen()" :disabled="!selectedTime">
@@ -124,8 +125,8 @@ export default {
         this.loadDichVu();
         this.loadLich();
         window.scrollTo(0, 0);
-        
-        
+
+
     },
     methods: {
         loadLich() {
@@ -133,7 +134,7 @@ export default {
                 .get("http://127.0.0.1:8000/api/lich/load")
                 .then((res) => {
                     this.availableTimes = res.data.data;
-                    
+
                 });
         },
         loadDichVu() {
@@ -152,8 +153,9 @@ export default {
                 this.showCalendar = true;
             }
         },
-        selectTime(time) {
-            this.selectedTime = time;
+        selectTime(timeObj) {
+            this.selectedTime = timeObj.khung_gio;
+            this.id_lich = timeObj.id;
         },
         handleDateClick(info) {
             this.selectedDate = info.dateStr;
@@ -170,8 +172,8 @@ export default {
                 gio: this.selectedTime,
             };
             axios
-                .post('http://127.0.0.1:8000/api/lich-hen/them', data ,
-                {
+                .post('http://127.0.0.1:8000/api/lich-hen/them', data,
+                    {
                         headers: {
                             Authorization: 'Bearer ' + localStorage.getItem('token_client')
                         }
