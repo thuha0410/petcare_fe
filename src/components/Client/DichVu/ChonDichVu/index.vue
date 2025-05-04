@@ -191,6 +191,7 @@ export default {
                 id_dv: this.list_dv.id,
                 id_pet: this.id_pet,
                 tinh_trang: 0,
+                gia: this.list_dv.gia,
                 ngay: this.selectedDate,
                 gio: this.selectedTime,
             };
