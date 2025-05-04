@@ -46,7 +46,7 @@
               ">
               PET CARE
             </p>
-            <template v-if="user.check==true">
+            <template v-if="user.check == true">
               <p class="designattion mb-0" style="
                 font-size: 13px;
                 font-weight: bold;
@@ -54,21 +54,19 @@
                 color: #F8F9FA;
                 text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
               ">
-                {{user.name}}
+                {{ user.name }}
               </p>
               <p class="designattion mb-0">{{ user.email }}</p>
             </template>
           </div>
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
+
           <li>
-            <router-link to="/admin/profile">
-              <a class="dropdown-item" href="/admin/profile"><i class="bx bx-user"></i><span>Profile</span></a>
-            </router-link>
-          </li>
-          <li>
-            
-            <a v-on:click="dangXuat()" class="dropdown-item" href="javascript:;"><i class="bx bx-log-out-circle"></i><span>Đăng xuất</span></a>
+
+            <a v-on:click="dangXuat()" class="dropdown-item" href="javascript:;"><i
+                class="bx bx-log-out-circle"></i><span>Đăng
+                xuất</span></a>
           </li>
         </ul>
       </div>
@@ -86,34 +84,98 @@ export default {
     }
   },
   mounted() {
-    this.user = {
-      name: localStorage.getItem("name_admin"),
-      email: localStorage.getItem("email_admin"),
-      check: localStorage.getItem("token_admin") ? true : false,
+    if (localStorage.getItem("token_admin")) {
+      this.user = {
+        name: localStorage.getItem("name_admin"),
+        email: localStorage.getItem("email_admin"),
+        check: true,
+        role: 'Admin'
+      };
+    } else if (localStorage.getItem("token_doctor")) {
+      this.user = {
+        name: localStorage.getItem("name_doctor"),
+        email: localStorage.getItem("email_doctor"),
+        check: true,
+        role: 'Bác sĩ'
+      };
+    } else {
+      this.user = { check: false };
     }
     console.log(this.user);
   },
   methods: {
     dangXuat() {
+      let token = localStorage.getItem("token_admin") || localStorage.getItem("token_doctor");
+
       axios
         .get("http://127.0.0.1:8000/api/nhan-vien/dang-xuat", {
           headers: {
-            Authorization: "Bearer " + localStorage.getItem("token_admin"),
+            Authorization: "Bearer " + token,
           },
         })
         .then((res) => {
           if (res.data.status) {
             toaster.success(res.data.message);
-            localStorage.removeItem("token_admin");
-            localStorage.removeItem("name_admin");
-            localStorage.removeItem("email_admin");
+
+            // Xoá token và info tương ứng
+            if (localStorage.getItem("token_admin")) {
+              localStorage.removeItem("token_admin");
+              localStorage.removeItem("name_admin");
+              localStorage.removeItem("email_admin");
+            } else if (localStorage.getItem("token_doctor")) {
+              localStorage.removeItem("token_doctor");
+              localStorage.removeItem("name_doctor");
+              localStorage.removeItem("email_doctor");
+            }
+
             this.$router.push("/nhan-vien/dang-nhap");
           } else {
             toaster.error(res.data.message);
           }
         });
     }
+
   },
 };
 </script>
-<style></style>
+<style>
+.dropdown-menu .dropdown-item {
+  font-size: 16px;
+  /* Tăng chữ trong từng dòng */
+  padding: 12px 20px;
+  /* Dễ bấm hơn */
+}
+
+.dropdown-menu {
+  font-size: 16px;
+  /* Tăng kích thước chữ */
+  padding: 10px 0;
+  /* Tăng khoảng cách trên dưới */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-menu .dropdown-item:hover {
+  background-color: #f0f8ff;
+  /* xanh nhạt nhẹ nhàng */
+  color: #003366;
+  /* chữ xanh đậm */
+  border-radius: 5px;
+  /* bo nhẹ góc */
+}
+
+.dropdown-menu {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  visibility: hidden;
+}
+
+/* Khi mở */
+.dropdown-menu.show {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+</style>

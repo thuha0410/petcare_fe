@@ -72,38 +72,39 @@ export default {
                 );
                 if (data.status === 1) {
                     toaster.success(data.message);
-                    localStorage.setItem('token_admin', data.token);
-                    localStorage.setItem('name_admin', data.name);
-                    localStorage.setItem('email_admin', data.email);
-                    
-                    // Get permissions from the response
+
                     const permissions = data.permissions || [];
 
-                    // Map permission IDs to routes
-                    const routeMap = {
-                        1: '/admin/nhap-thuoc',
-                        2: '/admin/ql-ton-kho',
-                        3: '/admin/ql-lich-hen',
-                        4: '/admin/ql-dich-vu',
-                        5: '/admin/ql-nhan-vien',
-                        6: '/admin/ql-khach-hang',
-                        7: '/admin/ql-pet',
-                        8: '/admin/ql-thuoc',
-                        9: '/admin/ql-nha-cung-cap',
-                        10: '/admin/ql-luong',
-                        11: '/admin/ql-danh-gia',
-                        12: '/admin/ql-kho',
-                        13: '/admin/hoa-don',
-                        14: '/admin/doanh-thu',
-                        15: '/admin/ql-chuc-vu',
-                        16: '/admin/phan-quyen',
-                    };
-
-                    // Check if user has permission 17 (doctor)
+                    // Nếu là bác sĩ
                     if (permissions.includes(17) || permissions.includes('17')) {
+                        localStorage.setItem('token_doctor', data.token);
+                        localStorage.setItem('name_doctor', data.name);
+                        localStorage.setItem('email_doctor', data.email);
                         this.$router.push('/doctor');
                     } else {
-                        // Check for other valid permissions
+                        localStorage.setItem('token_admin', data.token);
+                        localStorage.setItem('name_admin', data.name);
+                        localStorage.setItem('email_admin', data.email);
+
+                        const routeMap = {
+                            1: '/admin/nhap-thuoc',
+                            2: '/admin/ql-ton-kho',
+                            3: '/admin/ql-lich-hen',
+                            4: '/admin/ql-dich-vu',
+                            5: '/admin/ql-nhan-vien',
+                            6: '/admin/ql-khach-hang',
+                            7: '/admin/ql-pet',
+                            8: '/admin/ql-thuoc',
+                            9: '/admin/ql-nha-cung-cap',
+                            10: '/admin/ql-luong',
+                            11: '/admin/ql-danh-gia',
+                            12: '/admin/ql-kho',
+                            13: '/admin/hoa-don',
+                            14: '/admin/doanh-thu',
+                            15: '/admin/ql-chuc-vu',
+                            16: '/admin/phan-quyen',
+                        };
+
                         const firstAllowed = permissions.find(id => routeMap[parseInt(id)]);
                         if (firstAllowed) {
                             this.$router.push(routeMap[parseInt(firstAllowed)]);
