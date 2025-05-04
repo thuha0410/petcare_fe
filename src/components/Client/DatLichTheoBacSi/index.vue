@@ -59,49 +59,41 @@
                         kiếm</button>
                 </div>
                 <br>
-                <template v-for="(value, index) in list_nhan_vien" :key="index">
-                    <div class="card p-3">
-                        <div class="row align-items-center">
-                            <!-- Cột hình ảnh -->
-                            <div class="col-lg-4 d-flex justify-content-center">
-                                <router-link :to="`/client/xem-bs/${value.id}`">
-                                    <img :src="value.hinh_anh" alt="" class="img-fluid rounded"
-                                        style="width: 70%; max-width: 150px; cursor: pointer;">
-                                </router-link>
+                <template v-for="(value, index) in list_dich_vu" :key="index">
+                <div class="card p-3">
+                    <div class="row align-items-center">
+                        <!-- Cột hình ảnh -->
+                        <div class="col-lg-4 text-center">
+                            <img :src="value.hinh_anh" alt="" class="rounded-circle p-1 bg-primary" width="250">
+                        </div>
+
+                        <!-- Cột nội dung -->
+                        <div class="col-lg-8">
+                            <h5 class="card-title text-primary mt-3">{{ value.ten_dv }}</h5>
+                            <div class="row mt-2">
+                                <p style="font-size: 20px;" class=" fw-bold">
+                                    Mô tả: <span>{{ value.mo_ta }}</span>
+                                </p>
+                            </div>
+                            <div class="row mt-2">
+                                <p style="font-size: 18px;" class="text-danger fw-bold">
+                                    Giá: <span>{{ value.gia }}</span> VND
+                                </p>
                             </div>
 
-                            <!-- Cột nội dung -->
-                            <div class="col-lg-8">
-                                <router-link :to="`/client/xem-bs/${value.id}`">
-                                    <h5 class="card-title text-primary mt-3">BS. {{ value.ten_nv }}</h5>
+                            <!-- Icon + Button -->
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <p class="text-success m-0">
+                                    <i class="fa-solid fa-shield-cat"></i> PetCare
+                                </p>
+                                <router-link :to="`/client/chon-dich-vu/` + value.id">
+                                    <button class="btn btn-info text-white ">Đặt ngay</button>
                                 </router-link>
-
-                                <!-- Thông tin bác sĩ -->
-                                <div class="row mt-2">
-                                    <div class="col-md-3 fw-bold">Mô tả:</div>
-                                    <div class="col-md-9"><span>{{ value.mo_ta }}</span></div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-md-3 fw-bold">Giá khám:</div>
-                                    <div class="col-md-9 text-danger"><strong>{{ value.tien_kham }}</strong> VND</div>
-                                </div>
-
-                                <!-- Icon + Button -->
-                                <div class="d-flex justify-content-between align-items-center mt-3">
-                                    <p class="text-success m-0">
-                                        <i class="fa-solid fa-shield-cat"></i> PetCare
-                                    </p>
-                                    <router-link to="/client/chon-dich-vu/" class="text-decoration-none">
-                                        <div class="text-end ">
-                                            <button class="btn btn-info text-white ">Đặt khám ngay</button>
-                                        </div>
-                                    </router-link>
-
-                                </div>
                             </div>
                         </div>
                     </div>
-                </template>
+                </div>
+            </template>
             </div>
             <div class="col-lg-2"></div>
         </div>
@@ -113,31 +105,46 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            list_nhan_vien: [],
+            list_dich_vu: [],
             tim_kiem: {
                 noi_dung: ''
-            }
+            },
+            danh_sach_pet: [],
         };
 
     },
     mounted() {
         this.load()
-        window.scrollTo(0, 0);
     },
 
     methods: {
+        chonDichVu(id_dv) {
+            const token = localStorage.getItem('token_client');
+            if (!token) {
+                this.$router.push('/client/dang-nhap-dang-ky');
+                return;
+            }
+
+            if (this.danh_sach_pet.length === 0) {
+                alert('Bạn cần thêm thú cưng trước khi đặt lịch.');
+                this.$router.push('/client/thong-tin-ca-nhan');
+                return;
+            }
+
+            this.$router.push(`/client/chon-dich-vu/${id_dv}`);
+        },
         load() {
             axios
-                .get('http://127.0.0.1:8000/api/dich-vu/load-bac-si')
+                .get('http://127.0.0.1:8000/api/dich-vu/load-kham-benh')
                 .then((res) => {
-                    this.list_nhan_vien = res.data.data
+                    this.list_dich_vu = res.data.data
                 })
         },
         timkiem() {
             axios
                 .post('http://127.0.0.1:8000/api/dich-vu/tim-kiem', this.tim_kiem)
                 .then((res) => {
-                    this.list_nhan_vien = res.data.data
+                    this.list_dich_vu = res.data.data
                 })
         },
     },
