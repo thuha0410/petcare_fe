@@ -63,10 +63,10 @@
                                 <td>{{ value.gio }}</td>
                                 <td>{{ getTenNV(value.id_nv) }}</td>
                                 <td>{{ value.tien_coc }}</td>
-                                <td>
-                                    <button v-on:click="doiTT(value)" v-if="value.tinh_trang == 0"
-                                        class="btn btn-warning">Chờ duyệt</button>
-                                    <button v-on:click="doiTT(value)" v-else class="btn btn-success">Đã duyệt</button>
+                                <td class="text-center align-middle">
+                                    <button v-if="value.tinh_trang == 1" v-on:click="doi_trang_thai(value)"
+                                        class="btn btn-success me-2">Đã duyệt</button>
+                                    <button v-else class="btn btn-warning " v-on:click="doi_trang_thai(value)">Chờ duyệt</button>
                                 </td>
                                 <td>
                                     <button v-on:click="Object.assign(update_lich, value)" data-bs-toggle="modal"
@@ -107,15 +107,15 @@
                 </div>
                 <div class="modal-body">
                     <label for="">Mã lịch hẹn</label>
-                    <input v-model="update_lich.id_lich" class="form-control mb-2" type="text">
+                    <input v-model="update_lich.id_lich" class="form-control mb-2" type="text" readonly>
                     <label for="">Tên khách hàng</label>
-                    <input v-model="update_lich.ho_va_ten" class="form-control mb-2" type="text">
+                    <input v-model="update_lich.ho_va_ten" class="form-control mb-2" type="text" readonly>
                     <label for="">Tên thú cưng</label>
-                    <input v-model="update_lich.ten_pet" class="form-control mb-2" type="text">
+                    <input v-model="update_lich.ten_pet" class="form-control mb-2" type="text" readonly>
                     <label for="">Ngày hẹn</label>
-                    <input v-model="update_lich.ngay" class="form-control mb-2" type="text">
+                    <input v-model="update_lich.ngay" class="form-control mb-2" type="text" readonly>
                     <label for="">Giờ hẹn</label>
-                    <input v-model="update_lich.gio" class="form-control mb-2" type="text">
+                    <input v-model="update_lich.gio" class="form-control mb-2" type="text" readonly>
                     <label for="">Tên nhân viên</label>
                     <select v-model="update_lich.id_nv" class="form-control mb-2">
                         <template v-for="(value, index) in nhan_vien" :key="index">
@@ -123,7 +123,7 @@
                         </template>
                     </select>
                     <label for="">Tiền cọc</label>
-                    <input v-model="update_lich.tien_coc" class="form-control mb-2" type="text">
+                    <input v-model="update_lich.tien_coc" class="form-control mb-2" type="text" readonly>
                     <label for="">Tình trạng</label>
                     <select v-model="update_lich.tinh_trang" class="form-control mb-2" name="" id="">
                         <option value="0">Chờ duyệt</option>
@@ -225,8 +225,19 @@ export default {
         getTenNV(id_nv) {
             const nv = this.nhan_vien.find(nv => nv.id == id_nv);
             return nv ? nv.ten_nv : 'Chưa có';
-        }
-
+        },
+        doi_trang_thai(x) {
+            axios
+                .post("http://127.0.0.1:8000/api/lich-hen/doi", x)
+                .then((res) => {
+                    if (res.data.status == true) {
+                        toaster.success(res.data.message);
+                        this.loadLichHen();
+                    } else {
+                        toaster.error("Đổi trạng thái dịch vụ thất bại!")
+                    }
+                });
+        },
     },
 }
 </script>
