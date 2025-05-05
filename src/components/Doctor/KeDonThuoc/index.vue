@@ -10,7 +10,7 @@
             <div class="row mb-3">
               <div class="col-md-6">
                 <label>Khách hàng</label>
-                <select v-model="don_thuoc.id_khach_hang" class="form-control">
+                <select v-model="don_thuoc.id_hsba" class="form-control">
                   <option v-for="kh in khach_hang" :key="kh.id" :value="kh.id">
                     {{ kh.ho_va_ten }}
                   </option>
@@ -26,13 +26,24 @@
               </div>
             </div>
 
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label>Pet của khách hàng</label>
+                <select v-model="don_thuoc.id_pet" class="form-control" :disabled="filteredPets.length === 0">
+                  <option v-for="pet in filteredPets" :key="pet.id" :value="pet.id">
+                    {{ pet.ten_pet }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
             <div class="table-responsive">
               <table class="table table-bordered">
                 <thead>
                   <tr>
                     <th>Thuốc</th>
                     <th>Số lượng</th>
-                    <th>Cách dùng</th>
+                    <th>Liều lượng</th>
                     <th>Thao tác</th>
                   </tr>
                 </thead>
@@ -49,7 +60,7 @@
                       <input type="number" v-model="item.so_luong" class="form-control" min="1">
                     </td>
                     <td>
-                      <input type="text" v-model="item.cach_dung" class="form-control" placeholder="Cách dùng">
+                      <input type="text" v-model="item.lieu_luong" class="form-control" placeholder="Liều lượng">
                     </td>
                     <td>
                       <button class="btn btn-danger" @click="xoaChiTiet(index)">
@@ -74,11 +85,54 @@
         </div>
       </div>
     </div>
+
+    <!-- Table to display saved prescriptions -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Danh sách đơn thuốc</h3>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th>Mã đơn</th>
+                    <th>Khách hàng</th>
+                    <th>Bác sĩ</th>
+                    <th>Tên pet</th>
+                    <th>Ngày kê</th>
+                    <th>Tình trạng</th>
+                    <th>Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="don in danh_sach_don" :key="don.id">
+                    <td>{{ don.id }}</td>
+                    <td>{{ don.ten_khach_hang || don.khach_hang?.ho_va_ten }}</td>
+                    <td>{{ don.ten_bac_si || don.nhan_vien?.ten_nv }}</td>
+                    <td>{{ don.ten_pet }}</td>
+                    <td>{{ formatDate(don.created_at) }}</td>
+                    <td>{{ don.tinh_trang || 'Chưa cập nhật' }}</td>
+                    <td>
+                      <button class="btn btn-info btn-sm" @click="xemChiTiet(don)">
+                        <i class="fa-solid fa-eye"></i> Xem chi tiết
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import api from '@/services/api';
 import { createToaster } from "@meforma/vue-toaster";
 const toaster = createToaster({ position: "top-right" });
 
@@ -86,80 +140,92 @@ export default {
   data() {
     return {
       don_thuoc: {
-        id_khach_hang: '',
-        id_nhan_vien: '',
+        id_hsba: '',
       },
       chi_tiet: [],
       thuocs: [],
       khach_hang: [],
-      nhan_vien: []
+      nhan_vien: [],
+      danh_sach_don: [],
+      pets: [],
+      filteredPets: []
     };
   },
   created() {
     this.loadThuoc();
     this.loadKhachHang();
     this.loadNhanVien();
+    this.loadDanhSachDon();
+    this.loadPets();
   },
   methods: {
     async loadThuoc() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/don-thuoc/load-thuoc');
+        const response = await api.get('http://127.0.0.1:8000/api/don-thuoc/load-thuoc');
         this.thuocs = response.data.thuoc;
       } catch (error) {
-        console.error('Error loading thuoc:', error);
         toaster.error('Lỗi khi tải danh sách thuốc');
       }
     },
     async loadKhachHang() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/khach-hang/load');
+        const response = await api.get('http://127.0.0.1:8000/api/khach-hang/load');
         this.khach_hang = response.data.data;
       } catch (error) {
-        console.error('Error loading khach hang:', error);
         toaster.error('Lỗi khi tải danh sách khách hàng');
       }
     },
     async loadNhanVien() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/nhan-vien/load-bac-si');
-        console.log('Response from loadBacSi:', response.data);
+        const response = await api.get('http://127.0.0.1:8000/api/nhan-vien/load-bac-si');
         if (response.data.status) {
           this.nhan_vien = response.data.data;
         } else {
           toaster.error(response.data.message || 'Lỗi khi tải danh sách bác sĩ');
         }
       } catch (error) {
-        console.error('Error loading nhan vien:', error);
-        if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          console.error('Error response data:', error.response.data);
-          console.error('Error response status:', error.response.status);
-          console.error('Error response headers:', error.response.headers);
-          
-          if (error.response.status === 401) {
-            toaster.error('Bạn cần đăng nhập để truy cập chức năng này');
-          } else if (error.response.status === 403) {
-            toaster.error('Bạn không có quyền truy cập chức năng này');
-          } else {
-            toaster.error(error.response.data?.message || 'Lỗi khi tải danh sách bác sĩ');
-          }
-        } else if (error.request) {
-          // The request was made but no response was received
-          console.error('Error request:', error.request);
-          toaster.error('Không thể kết nối đến máy chủ');
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          console.error('Error message:', error.message);
-          toaster.error('Lỗi khi tải danh sách bác sĩ: ' + error.message);
-        }
+        toaster.error('Lỗi khi tải danh sách bác sĩ');
       }
+    },
+    async loadDanhSachDon() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/api/don-thuoc/danh-sach');
+        if (response.data.status) {
+          this.danh_sach_don = response.data.data;
+        } else {
+          toaster.error(response.data.message || 'Lỗi khi tải danh sách đơn thuốc');
+        }
+      } catch (error) {
+        toaster.error('Lỗi khi tải danh sách đơn thuốc');
+      }
+    },
+    async loadPets() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/api/pet/load');
+        this.pets = response.data.data;
+      } catch (error) {
+        toaster.error('Lỗi khi tải danh sách pet');
+      }
+    },
+    formatDate(dateString) {
+      if (!dateString) return '';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('vi-VN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    },
+    xemChiTiet(don) {
+      // Có thể mở modal hoặc hiển thị chi tiết đơn thuốc ở đây nếu muốn
     },
     themChiTiet() {
       this.chi_tiet.push({
         id_thuoc: '',
         so_luong: 1,
-        cach_dung: ''
+        lieu_luong: ''
       });
     },
     xoaChiTiet(index) {
@@ -167,38 +233,45 @@ export default {
     },
     async luuDonThuoc() {
       try {
-        if (!this.don_thuoc.id_khach_hang || !this.don_thuoc.id_nhan_vien) {
-          toaster.error('Vui lòng chọn khách hàng và bác sĩ');
+        if (!this.don_thuoc.id_hsba) {
+          toaster.error('Vui lòng chọn hồ sơ bệnh án');
           return;
         }
-
         if (this.chi_tiet.length === 0) {
           toaster.error('Vui lòng thêm ít nhất một loại thuốc');
           return;
         }
 
-        const response = await axios.post('http://127.0.0.1:8000/api/don-thuoc/them', {
+        const response = await api.post('http://127.0.0.1:8000/api/don-thuoc/them', {
           ...this.don_thuoc,
           chi_tiet: this.chi_tiet
         });
-
         if (response.data.status === 1) {
           toaster.success(response.data.message);
+          if (response.data.data) {
+            this.danh_sach_don.unshift(response.data.data);
+          } else {
+            this.loadDanhSachDon();
+          }
           this.resetForm();
         } else {
           toaster.error(response.data.message);
         }
       } catch (error) {
-        console.error('Error saving don thuoc:', error);
         toaster.error('Lỗi khi lưu đơn thuốc');
       }
     },
     resetForm() {
       this.don_thuoc = {
-        id_khach_hang: '',
-        id_nhan_vien: '',
+        id_hsba: '',
       };
       this.chi_tiet = [];
+    }
+  },
+  watch: {
+    'don_thuoc.id_hsba'(newVal) {
+      this.filteredPets = this.pets.filter(pet => String(pet.id_kh) === String(newVal));
+      this.don_thuoc.id_pet = '';
     }
   }
 };
@@ -234,5 +307,14 @@ export default {
 
 select.form-control {
   cursor: pointer;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
 }
 </style>
