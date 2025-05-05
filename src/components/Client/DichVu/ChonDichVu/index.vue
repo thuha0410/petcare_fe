@@ -44,6 +44,10 @@
                 <div class="card-body">
                     <FullCalendar :options="calendarOptions" />
                     <button class="btn btn-secondary mt-3" @click="toggleCalendar">Quay lại</button>
+
+                    <p class="text-muted text-center mt-2" style="font-style: italic;">
+                        * Chỉ có thể đặt lịch từ hôm nay đến 50 ngày tới
+                    </p>
                 </div>
             </div>
 
@@ -84,11 +88,25 @@
                     <h3 class="text-white text-center">Chọn giờ</h3>
                 </div>
                 <div class="card-body d-flex flex-wrap justify-content-center">
-                    <button v-for="(value, index) in availableTimes" :key="index" class="btn btn-outline-primary m-2"
-                        @click="selectTime(value)">
+                    <button v-for="(value, index) in availableTimes" :key="index" class="btn m-2"
+                        :disabled="isFull(value.id) || isPastTime(value.khung_gio)" @click="selectTime(value)" :class="{
+                            'btn-danger': isFull(value.id),
+                            'btn-warning': isPastTime(value.khung_gio) && !isFull(value.id),
+                            'btn-outline-primary': !isFull(value.id) && !isPastTime(value.khung_gio)
+                        }">
                         {{ value.khung_gio }}
+                        <br> ({{ slotInfo[value.id] || 0 }}/2 đã đặt)
                     </button>
-
+                </div>
+                <div class="text-center mt-3">
+                    <div class="d-flex justify-content-center align-items-center gap-4 flex-wrap">
+                        <div style="font-size: 16px;"><span class="legend-box bg-primary"></span> Đang chọn</div>
+                        <div style="font-size: 16px;"><span class="legend-box border border-primary"></span> Còn chỗ
+                        </div>
+                        <div style="font-size: 16px; "><span class="legend-box "
+                                style="background-color: #fb6f6f;"></span> Đã đầy</div>
+                        <div style="font-size: 16px;"><span class="legend-box border bg-warning"></span> Quá giờ</div>
+                    </div>
                 </div>
                 <div class="text-center mb-3">
                     <button class="btn btn-success mt-2" @click="xacNhanLichHen()" :disabled="!selectedTime">
@@ -128,10 +146,21 @@ export default {
                 editable: true,
                 height: 600,
                 contentHeight: 'auto',
-                dateClick: this.handleDateClick
+                dateClick: this.handleDateClick,
+                // Giới hạn ngày hợp lệ:
+                validRange: {
+                    start: new Date(), // Không được chọn ngày quá khứ
+                    end: (() => {
+                        const today = new Date();
+                        const future = new Date(today);
+                        future.setDate(today.getDate() + 51); // chỉ +49 để hôm nay là ngày 1/50
+                        return future.toISOString().split('T')[0];
+                    })() // Chỉ cho đặt 50 ngày tới
+                },
             },
             list_pet: [],
             id_pet: '',
+            slotInfo: {},
         };
     },
     mounted() {
@@ -141,6 +170,9 @@ export default {
         window.scrollTo(0, 0);
     },
     methods: {
+        isFull(id_lich) {
+            return (this.slotInfo[id_lich] || 0) >= 2;
+        },
         loadLich() {
             apiClient
                 .get("/api/lich/load")
@@ -169,8 +201,25 @@ export default {
             this.id_lich = timeObj.id;
         },
         handleDateClick(info) {
+            const selected = new Date(info.dateStr);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const maxDate = new Date();
+            maxDate.setDate(maxDate.getDate() + 50); // tăng 50 ngày
+
+            if (selected < today) {
+                toaster.error("Không thể đặt lịch trong quá khứ!");
+                return;
+            }
+
+            if (selected > maxDate) {
+                toaster.error("Bạn chỉ có thể đặt lịch trong vòng 50 ngày tới!");
+                return;
+            }
             this.selectedDate = info.dateStr;
             this.selectedTime = null;
+            this.loadSlot(info.dateStr);
         },
         xacNhanLichHen(id) {
             if (!this.id_pet) {
@@ -209,9 +258,40 @@ export default {
                 })
                 .catch((err) => {
                     console.error(err);
-                    alert("Có lỗi xảy ra khi đặt lịch.");
+
+                    if (err.response && err.response.data && err.response.data.message) {
+                        toaster.error(err.response.data.message); // Hiện thông báo từ backend
+                    } else {
+                        toaster.error("Có lỗi xảy ra khi đặt lịch.");
+                    }
                 });
 
+        },
+        isPastTime(khungGio) {
+            if (!this.selectedDate) return false;
+
+            const [startStr] = khungGio.split(" - "); // ví dụ: "8:00"
+            const now = new Date();
+            const selectedDate = new Date(this.selectedDate);
+
+            // Nếu ngày không phải hôm nay => khung giờ chưa qua
+            const isToday = now.toISOString().split("T")[0] === this.selectedDate;
+            if (!isToday) return false;
+
+            const [hours, minutes] = startStr.split(":");
+            const slotTime = new Date(selectedDate);
+            slotTime.setHours(parseInt(hours), parseInt(minutes), 0);
+
+            return slotTime < now;
+        },
+        loadSlot(ngay) {
+            apiClient.get('/api/lich-hen/thong-tin-slot', {
+                params: { ngay }
+            }).then(res => {
+                if (res.data.status === 1) {
+                    this.slotInfo = res.data.data;
+                }
+            });
         },
         loadPet() {
             const token = localStorage.getItem("token_client");
@@ -252,6 +332,15 @@ export default {
     background-color: #dc3545 !important;
     border-color: #dc3545 !important;
 }
+
+.legend-box {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    margin-right: 6px;
+}
+
 
 @import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css';
 @import 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css';

@@ -84,25 +84,29 @@ export default {
     }
   },
   mounted() {
-    if (localStorage.getItem("token_admin")) {
-      this.user = {
-        name: localStorage.getItem("name_admin"),
-        email: localStorage.getItem("email_admin"),
-        check: true,
-        role: 'Admin'
-      };
-    } else if (localStorage.getItem("token_doctor")) {
+    const currentPath = this.$route.path;
+
+    if (currentPath.startsWith('/doctor') && localStorage.getItem("token_doctor")) {
       this.user = {
         name: localStorage.getItem("name_doctor"),
         email: localStorage.getItem("email_doctor"),
         check: true,
         role: 'Bác sĩ'
       };
+    } else if (localStorage.getItem("token_admin")) {
+      this.user = {
+        name: localStorage.getItem("name_admin"),
+        email: localStorage.getItem("email_admin"),
+        check: true,
+        role: 'Admin'
+      };
     } else {
       this.user = { check: false };
     }
+
     console.log(this.user);
-  },
+  }
+  ,
   methods: {
     dangXuat() {
       let token = localStorage.getItem("token_admin") || localStorage.getItem("token_doctor");
@@ -177,5 +181,4 @@ export default {
   transform: translateY(0);
   visibility: visible;
 }
-
 </style>
