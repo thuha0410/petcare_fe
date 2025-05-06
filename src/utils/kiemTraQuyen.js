@@ -17,27 +17,20 @@ export function kiemTraQuyen(id_chuc_nang) {
       const token = token_admin || token_doctor;
 
       if (!token) {
-        toaster.error('Vui lòng đăng nhập để tiếp tục');
+        toaster.error('Vui lòng đăng nhập lại');
         return next('/nhan-vien/dang-nhap');
       }
 
-      // Nếu là bác sĩ và đang truy cập chức năng của bác sĩ (id_chuc_nang = 17)
-      if (token_doctor && id_chuc_nang === 17) {
-        return next(); // Cho phép bác sĩ truy cập chức năng của bác sĩ
-      }
+      const res = await axios.get(
+        `http://127.0.0.1:8000/api/phan-quyen/kiem-tra-quyen/${id_chuc_nang}`,
+        { headers: { Authorization: 'Bearer ' + token } }
+      );
+      if (res.data.status === 1) {
+        return next();
 
-      // Kiểm tra quyền thông qua API
-      try {
-        const res = await doctorApi.checkPermission(id_chuc_nang);
 
-        if (res.data.status === 1) {
-          return next();
-        } else {
-          toaster.error(res.data.message || 'Bạn không có quyền truy cập chức năng này');
-          return next(false);
-        }
-      } catch (apiError) {
-        // Lỗi API đã được xử lý trong interceptor
+      }else{
+        toaster.error(res.data.message);
         return next(false);
       }
     } catch (error) {

@@ -79,7 +79,7 @@
     </div>
 </template>
 <script>
-import axios from 'axios';
+import apiClient from '../../services/apiClient';
 
 export default {
     data() {
