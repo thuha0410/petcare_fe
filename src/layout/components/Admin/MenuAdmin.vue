@@ -31,6 +31,15 @@
 					</router-link>
 				</li>
 				<li class="nav-item">
+					<router-link to="/admin/ql-gio">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-clock"></i>
+							</div>
+							<div class="menu-title">QL Giờ</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
 					<router-link to="/admin/ql-loai-dich-vu">
 						<a class="nav-link" href="/">
 							<div class="parent-icon"><i class="fa-brands fa-paypal"></i>
