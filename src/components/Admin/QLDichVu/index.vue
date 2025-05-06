@@ -265,29 +265,36 @@ export default {
             axios
                 .post('http://127.0.0.1:8000/api/dich-vu/them', this.dich_vu)
                 .then((res) => {
-                    if (res.data.status == true) {
-                        toaster.success(res.data.message)
-                        this.loaddata()
+                    if (res.data.status === true) {
+                        toaster.success(res.data.message);
+                        this.loaddata();
                         this.dich_vu = {
-                            "ten_dv": '',
-                            'id_loaidv': '',
-                            'mo_ta': '',
-                            'gia': '',
-                            'hinh_anh': '',
-                            'can_nang_min': '',
-                            'can_nang_max': '',
-                            'phan_loai_kg': '',
-                            'tinh_trang': ''
-                        }
+                            ten_dv: '',
+                            id_loaidv: '',
+                            mo_ta: '',
+                            gia: '',
+                            hinh_anh: '',
+                            can_nang_min: '',
+                            can_nang_max: '',
+                            phan_loai_kg: '',
+                            tinh_trang: ''
+                        };
                     } else {
-                        toaster.error('Thêm mới dịch vụ thất bại')
+                        toaster.error('Thêm mới dịch vụ thất bại');
                     }
                 })
-                .catch((res) => {
-                    toaster.error(res.response.data.message);
-                })
-
+                .catch((error) => {
+                    if (error.response && error.response.status === 422) {
+                        const errors = error.response.data.errors;
+                        for (const key in errors) {
+                            toaster.error(errors[key][0]);
+                        }
+                    } else {
+                        toaster.error(error.response?.data?.message || 'Đã xảy ra lỗi');
+                    }
+                });
         },
+
         xoa() {
             axios
                 .post("http://127.0.0.1:8000/api/dich-vu/del", this.del_dich_vu)
@@ -306,14 +313,32 @@ export default {
             axios
                 .post("http://127.0.0.1:8000/api/dich-vu/update", this.update_dich_vu)
                 .then((res) => {
-                    if (res.data.status == true) {
+                    if (res.data.status === true) {
                         toaster.success(res.data.message);
                         this.loaddata();
                     } else {
-                        toaster.error("Cập nhật dịch vụ thất bại!")
+                        toaster.error(res.data.message || "Cập nhật dịch vụ thất bại!");
+                    }
+                })
+                .catch((error) => {
+                    if (error.response && error.response.status === 422) {
+                        // Lỗi validate từ Laravel
+                        const errors = error.response.data.errors;
+                        for (const key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                toaster.error(errors[key][0]); // Hiển thị lỗi đầu tiên của từng trường
+                            }
+                        }
+                    } else if (error.response && error.response.data.message) {
+                        // Lỗi khác (ví dụ không tìm thấy)
+                        toaster.error(error.response.data.message);
+                    } else {
+                        // Lỗi không xác định (ví dụ mất kết nối)
+                        toaster.error("Đã xảy ra lỗi không xác định!");
                     }
                 });
         },
+
         doi_trang_thai(x) {
             axios
                 .post("http://127.0.0.1:8000/api/dich-vu/doi", x)

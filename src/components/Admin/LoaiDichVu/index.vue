@@ -146,21 +146,31 @@ export default {
             axios
                 .post('http://127.0.0.1:8000/api/loai-dich-vu/them', this.loai_dv)
                 .then((res) => {
-                    if (res.data.status == true) {
-                        toaster.success(res.data.message)
-                        this.loaddata()
+                    if (res.data.status === true) {
+                        toaster.success(res.data.message);
+                        this.loaddata();
                         this.loai_dv = {
-                            'ten_loaidv': '',
-                            'mo_ta': '',
-                        }
+                            ten_loaidv: '',
+                            mo_ta: '',
+                        };
                     } else {
-                        toaster.error('Thêm mới loại dịch vụ thất bại')
+                        toaster.error('Thêm mới loại dịch vụ thất bại');
                     }
                 })
-                .catch((res) => {
-                    toaster.error(res.response.data.message);
+                .catch((err) => {
+                    if (err.response && err.response.data && err.response.data.errors) {
+                        const errors = err.response.data.errors;
+                        let msg = '';
+                        for (const key in errors) {
+                            msg += errors[key][0] + '\n'; // Hiển thị lỗi đầu tiên của mỗi trường
+                        }
+                        toaster.error(msg); // Hiện tất cả lỗi bằng toaster
+                    } else {
+                        toaster.error('Đã xảy ra lỗi, vui lòng thử lại');
+                    }
                 });
         },
+
         xoa() {
             axios
                 .post("http://127.0.0.1:8000/api/loai-dich-vu/xoa", this.del_loai_dv)
@@ -177,14 +187,27 @@ export default {
             axios
                 .post("http://127.0.0.1:8000/api/loai-dich-vu/update", this.update_loai_dv)
                 .then((res) => {
-                    if (res.data.status == true) {
+                    if (res.data.status === true) {
                         toaster.success(res.data.message);
                         this.loaddata();
                     } else {
-                        toaster.error("Cập nhật loại dịch vụ thất bại!")
+                        toaster.error("Cập nhật loại dịch vụ thất bại!");
+                    }
+                })
+                .catch((err) => {
+                    if (err.response && err.response.data && err.response.data.errors) {
+                        const errors = err.response.data.errors;
+                        let msg = '';
+                        for (const key in errors) {
+                            msg += errors[key][0] + '\n'; // chỉ hiện lỗi đầu tiên mỗi field
+                        }
+                        toaster.error(msg);
+                    } else {
+                        toaster.error("Đã xảy ra lỗi, vui lòng thử lại!");
                     }
                 });
         },
+
         loaddata() {
             axios
                 .get("http://127.0.0.1:8000/api/loai-dich-vu/load")

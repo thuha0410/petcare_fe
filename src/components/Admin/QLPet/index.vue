@@ -39,7 +39,8 @@
                                 <td>{{ value.gioi_tinh === 1 ? 'Cái' : 'Đực' }}</td>
                                 <td>{{ value.tuoi }}</td>
                                 <td>
-                                    <img class=" img-fluid" style="height: 100px; width: 100px;" :src="value.hinh_anh" alt="">
+                                    <img class=" img-fluid" style="height: 100px; width: 100px;" :src="value.hinh_anh"
+                                        alt="">
                                 </td>
                                 <td>{{ value.can_nang }}</td>
                                 <td>
@@ -198,14 +199,39 @@ export default {
     methods: {
         them() {
             axios
-                .post('http://127.0.0.1:8000/api/them-pet', this.pet )
-                .then(
-                    (res) => {
-                        if (res.data.status == 1)
-                            toaster.success(res.data.message)
+                .post('http://127.0.0.1:8000/api/them-pet', this.pet)
+                .then((res) => {
+                    if (res.data.status == 1) {
+                        toaster.success(res.data.message);
                         this.loadData();
+                        this.pet = {
+                            id_kh: '',
+                            ten_pet: '',
+                            chung_loai: '',
+                            gioi_tinh: '',
+                            tuoi: '',
+                            hinh_anh: '',
+                            can_nang: '',
+                            tinh_trang: ''
+                        };
+                    } else {
+                        toaster.error(res.data.message || 'Thêm pet thất bại!');
                     }
-                )
+                })
+                .catch((err) => {
+                    if (err.response) {
+                        const errors = err.response.data.errors;
+                        if (errors) {
+                            Object.values(errors).forEach((errorMessages) => {
+                                toaster.error(errorMessages[0]);
+                            });
+                        } else {
+                            toaster.error('Có lỗi xảy ra!');
+                        }
+                    } else {
+                        toaster.error('Có lỗi xảy ra!');
+                    }
+                });
         },
         xoa() {
             axios
@@ -226,20 +252,19 @@ export default {
         },
         sua() {
             axios
-                .post('http://127.0.0.1:8000/api/sua-pet', this.sua_pet,
-                    // {
-                    //     headers: {
-                    //         Authorization: 'Bearer ' + localStorage.getItem('token_admin')
-                    //     }
-                    // }
-                )
-                .then(
-                    (res) => {
-                        if (res.data.status == 1)
-                            toaster.success(res.data.message)
-                        this.loadData();
+                .post('http://127.0.0.1:8000/api/sua-pet', this.sua_pet)
+                .then((res) => {
+                    if (res.data.status == 1) {
+                        toaster.success(res.data.message);  
+                    } else {
+                        toaster.error(res.data.message || "Cập nhật thất bại!");  
                     }
-                )
+                    this.loadData();  
+                })
+                .catch((error) => {
+                    toaster.error("Lỗi kết nối! Vui lòng thử lại.");
+                    console.error(error);  
+                });
         },
         loadData() {
             axios
@@ -250,7 +275,7 @@ export default {
                     }
                 )
         },
-        loadKhachHang(){
+        loadKhachHang() {
             axios
                 .get("http://127.0.0.1:8000/api/khach-hang/load", {
                 })

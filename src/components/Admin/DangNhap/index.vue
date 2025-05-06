@@ -45,7 +45,7 @@
 <script>
 import axios from 'axios';
 import { createToaster } from "@meforma/vue-toaster";
-const toaster = createToaster({ position: 'top-left' });
+const toaster = createToaster({ position: 'top-right' });
 export default {
     data() {
         return {
@@ -63,14 +63,27 @@ export default {
                     if (res.data.status == 1) {
                         toaster.success(res.data.message);
                         localStorage.setItem('token_admin', res.data.token);
-                        localStorage.setItem('name_admin', res.data.name);   
+                        localStorage.setItem('name_admin', res.data.name);
                         localStorage.setItem('email_admin', res.data.email);
                         this.$router.push('/admin/nhap-thuoc');
                     } else {
                         toaster.error(res.data.message);
-
                     }
                 })
+                .catch((err) => {
+                    if (err.response && err.response.status === 422) {
+                        const errors = err.response.data.errors;
+                        for (const key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                toaster.error(errors[key][0]);
+                            }
+                        }
+                    } else if (err.response && err.response.data.message) {
+                        toaster.error(err.response.data.message);
+                    } else {
+                        toaster.error("Đã xảy ra lỗi, vui lòng thử lại.");
+                    }
+                });
         }
     },
 }
