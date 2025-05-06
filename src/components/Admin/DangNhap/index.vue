@@ -65,62 +65,60 @@ export default {
     },
     methods: {
         async dangNhap() {
-  try {
-    const { data } = await axios.post(
-      'http://127.0.0.1:8000/api/nhan-vien/dang-nhap',
-      this.nhan_vien
-    );
+            try {
+                const { data } = await axios.post(
+                    'http://127.0.0.1:8000/api/nhan-vien/dang-nhap',
+                    this.nhan_vien
+                );
+                if (data.status === 1) {
+                    toaster.success(data.message);
+                    localStorage.setItem('token_admin', data.token);
+                    localStorage.setItem('name_admin', data.name);
+                    localStorage.setItem('email_admin', data.email);
 
-    if (data.status === 1) {
-      toaster.success(data.message);
-      const { permissions = [], token, name, email } = data;
+                    // Get permissions from the response
+                    const permissions = data.permissions || [];
 
-      const isDoctor = permissions.includes(17) || permissions.includes('17');
+                    // Map permission IDs to routes
+                    const routeMap = {
+                        1: '/admin/nhap-thuoc',
+                        2: '/admin/ql-ton-kho',
+                        3: '/admin/ql-lich-hen',
+                        4: '/admin/ql-dich-vu',
+                        5: '/admin/ql-nhan-vien',
+                        6: '/admin/ql-khach-hang',
+                        7: '/admin/ql-pet',
+                        8: '/admin/ql-thuoc',
+                        9: '/admin/ql-nha-cung-cap',
+                        10: '/admin/ql-luong',
+                        11: '/admin/ql-danh-gia',
+                        12: '/admin/ql-kho',
+                        13: '/admin/hoa-don',
+                        14: '/admin/doanh-thu',
+                        15: '/admin/ql-chuc-vu',
+                        16: '/admin/phan-quyen',
+                    };
 
-      if (isDoctor) {
-        localStorage.setItem('token_doctor', token);
-        localStorage.setItem('name_doctor', name);
-        localStorage.setItem('email_doctor', email);
-        this.$router.push('/doctor');
-      } else {
-        localStorage.setItem('token_admin', token);
-        localStorage.setItem('name_admin', name);
-        localStorage.setItem('email_admin', email);
-
-        const routeMap = {
-          1: '/admin/nhap-thuoc',
-          2: '/admin/ql-ton-kho',
-          3: '/admin/ql-lich-hen',
-          4: '/admin/ql-dich-vu',
-          5: '/admin/ql-nhan-vien',
-          6: '/admin/ql-khach-hang',
-          7: '/admin/ql-pet',
-          8: '/admin/ql-thuoc',
-          9: '/admin/ql-nha-cung-cap',
-          10: '/admin/ql-luong',
-          11: '/admin/ql-danh-gia',
-          12: '/admin/ql-kho',
-          13: '/admin/hoa-don',
-          14: '/admin/doanh-thu',
-          15: '/admin/ql-chuc-vu',
-          16: '/admin/phan-quyen',
-        };
-
-        const allowed = permissions.find(p => routeMap[parseInt(p)]);
-        if (allowed) {
-          this.$router.push(routeMap[parseInt(allowed)]);
-        } else {
-          toaster.error('Tài khoản của bạn không có quyền phù hợp!');
+                    // Check if user has permission 17 (doctor)
+                    if (permissions.includes(17) || permissions.includes('17')) {
+                        this.$router.push('/doctor');
+                    } else {
+                        // Check for other valid permissions
+                        const firstAllowed = permissions.find(id => routeMap[parseInt(id)]);
+                        if (firstAllowed) {
+                            this.$router.push(routeMap[parseInt(firstAllowed)]);
+                        } else {
+                            toaster.error('Tài khoản của bạn không hợp lệ!');
+                        }
+                    }
+                } else {
+                    toaster.error(data.message);
+                }
+            } catch (error) {
+                console.error(error);
+                toaster.error('Đã có lỗi xảy ra!');
+            }
         }
-      }
-    } else {
-      toaster.error(data.message);
-    }
-  } catch (error) {
-    console.error(error);
-    toaster.error('Đã có lỗi xảy ra khi đăng nhập!');
-  }
-}
     },
 }
 </script>

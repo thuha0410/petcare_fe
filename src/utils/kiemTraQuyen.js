@@ -1,21 +1,12 @@
+import axios from 'axios';
 import { createToaster } from '@meforma/vue-toaster';
-import { doctorApi } from '../services/apiDoctor';
 
 const toaster = createToaster({ position: 'top-left' });
 
-/**
- * Middleware kiểm tra quyền truy cập
- * @param {number} id_chuc_nang - ID chức năng cần kiểm tra quyền
- * @returns {Function} Middleware function cho Vue Router
- */
 export function kiemTraQuyen(id_chuc_nang) {
   return async (to, from, next) => {
-    try {
-      // Kiểm tra cả token admin và token doctor
-      const token_admin = localStorage.getItem('token_admin');
-      const token_doctor = localStorage.getItem('token_doctor');
-      const token = token_admin || token_doctor;
-
+try{
+      const token = localStorage.getItem('token_admin');
       if (!token) {
         toaster.error('Vui lòng đăng nhập lại');
         return next('/nhan-vien/dang-nhap');
@@ -34,8 +25,7 @@ export function kiemTraQuyen(id_chuc_nang) {
         return next(false);
       }
     } catch (error) {
-      console.error('Lỗi khi kiểm tra quyền:', error);
-      toaster.error('Đã xảy ra lỗi khi kiểm tra quyền truy cập');
+      toaster.error('Lỗi khi kiểm tra quyền');
       return next(false);
     }
   };

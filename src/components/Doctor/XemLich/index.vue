@@ -244,7 +244,7 @@
   </div>
 </template>
 <script>
-import { doctorApi } from '../../../services/apiDoctor';
+import axios from '../../../services/api';
 import { createToaster } from "@meforma/vue-toaster";
 
 const toaster = createToaster({ position: "top-right" });
@@ -265,136 +265,11 @@ export default {
   },
 
   mounted() {
-    this.getDoctorInfo();
+    
   },
 
   methods: {
-    // Lấy thông tin bác sĩ đang đăng nhập
-    getDoctorInfo() {
-      this.loading = true;
-
-      doctorApi.getDoctorInfo()
-        .then(res => {
-          if (res.data) {
-            this.doctor_info = res.data;
-            this.getAppointments();
-          }
-        })
-        .catch(error => {
-          console.error("Lỗi khi lấy thông tin bác sĩ:", error);
-          toaster.error("Không thể lấy thông tin bác sĩ");
-          this.loading = false;
-        });
-    },
-
-    // Lấy danh sách lịch hẹn
-    getAppointments() {
-      if (!this.doctor_info.id) {
-        this.loading = false;
-        return;
-      }
-
-      doctorApi.getAppointments(this.doctor_info.id)
-        .then(res => {
-          if (res.data && res.data.data) {
-            this.list_lich_hen = res.data.data;
-            this.filterAppointmentsForToday();
-          }
-          this.loading = false;
-        })
-        .catch(error => {
-          console.error("Lỗi khi lấy danh sách lịch hẹn:", error);
-          toaster.error("Không thể lấy danh sách lịch hẹn");
-          this.loading = false;
-        });
-    },
-
-    // Lọc lịch hẹn cho ngày hôm nay
-    filterAppointmentsForToday() {
-      const today = new Date().toISOString().split('T')[0];
-      this.lich_hen_hom_nay = this.list_lich_hen.filter(item => item.ngay === today);
-    },
-
-    // Tìm kiếm lịch hẹn
-    searchAppointments() {
-      if (!this.search_term.trim()) {
-        this.getAppointments();
-        return;
-      }
-
-      const searchTerm = this.search_term.toLowerCase();
-      this.list_lich_hen = this.list_lich_hen.filter(item =>
-        (item.ten_khach_hang && item.ten_khach_hang.toLowerCase().includes(searchTerm)) ||
-        (item.ten_thu_cung && item.ten_thu_cung.toLowerCase().includes(searchTerm)) ||
-        (item.so_dien_thoai && item.so_dien_thoai.includes(searchTerm))
-      );
-    },
-
-    // Lọc lịch hẹn theo trạng thái và ngày
-    filterAppointments() {
-      this.getAppointments(); // Tải lại dữ liệu gốc
-
-      // Áp dụng bộ lọc
-      if (this.status_filter) {
-        this.list_lich_hen = this.list_lich_hen.filter(item =>
-          item.trang_thai === parseInt(this.status_filter)
-        );
-      }
-
-      if (this.date_filter) {
-        this.list_lich_hen = this.list_lich_hen.filter(item =>
-          item.ngay === this.date_filter
-        );
-      }
-    },
-
-    // Làm mới bộ lọc
-    resetFilters() {
-      this.search_term = '';
-      this.status_filter = '';
-      this.date_filter = '';
-      this.getAppointments();
-    },
-
-    // Định dạng ngày
-    formatDate(dateString) {
-      if (!dateString) return '';
-
-      const parts = dateString.split('-');
-      if (parts.length !== 3) return dateString;
-
-      return `${parts[2]}/${parts[1]}/${parts[0]}`;
-    },
-
-    // Xem chi tiết lịch hẹn
-    viewAppointmentDetail(appointment) {
-      this.chi_tiet_lich_hen = appointment;
-      // Hiển thị modal
-      const modal = new bootstrap.Modal(document.getElementById('xemchitiet'));
-      modal.show();
-    },
-
-    // Cập nhật trạng thái lịch hẹn
-    updateAppointmentStatus(id, status) {
-      doctorApi.updateAppointmentStatus(id, status)
-        .then(res => {
-          if (res.data && res.data.status) {
-            toaster.success("Cập nhật trạng thái thành công");
-            this.getAppointments();
-            // Đóng modal nếu đang mở
-            const modal = bootstrap.Modal.getInstance(document.getElementById('xemchitiet'));
-            if (modal) {
-              modal.hide();
-            }
-          } else {
-            toaster.error(res.data.message || "Không thể cập nhật trạng thái");
-          }
-        })
-        .catch(error => {
-          console.error("Lỗi khi cập nhật trạng thái:", error);
-          toaster.error("Đã xảy ra lỗi khi cập nhật trạng thái");
-        });
-    }
+    
   }
 }
 </script>
