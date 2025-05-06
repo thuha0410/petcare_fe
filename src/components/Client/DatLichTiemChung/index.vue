@@ -31,19 +31,19 @@
     <br>
 
     <div class="row ">
-        
-            <div class="col-lg-2"></div>
-            <div class="col-lg-8">
-                <h2 class="text-center fw-bold" style="color: darkblue;">CHỌN DỊCH VỤ TIÊM CHỦNG</h2>
-                <br>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Tìm kiếm...." aria-label="Recipient's username"
-                        aria-describedby="button-addon2">
-                    <button v-on:click="timkiem()" class="btn btn-outline-primary" type="button" id="button-addon2">Tìm
-                        kiếm</button>
-                </div>
-                <br>
-                <template v-for="(value, index) in list_dich_vu" :key="index">
+
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8">
+            <h2 class="text-center fw-bold" style="color: darkblue;">CHỌN DỊCH VỤ TIÊM CHỦNG</h2>
+            <br>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Tìm kiếm...." aria-label="Recipient's username"
+                    aria-describedby="button-addon2">
+                <button v-on:click="timkiem()" class="btn btn-outline-primary" type="button" id="button-addon2">Tìm
+                    kiếm</button>
+            </div>
+            <br>
+            <template v-for="(value, index) in list_dich_vu" :key="index">
                 <div class="card p-3">
                     <div class="row align-items-center">
                         <!-- Cột hình ảnh -->
@@ -78,9 +78,9 @@
                     </div>
                 </div>
             </template>
-            </div>
-            <div class="col-lg-2"></div>
-        
+        </div>
+        <div class="col-lg-2"></div>
+
     </div>
 </template>
 <script>
@@ -92,7 +92,8 @@ export default {
             list_dich_vu: [],
             tim_kiem: {
                 noi_dung: ''
-            }
+            },
+            danh_sach_pet: [],
         };
 
     },
@@ -101,6 +102,21 @@ export default {
     },
 
     methods: {
+        chonDichVu(id_dv) {
+            const token = localStorage.getItem('token_client');
+            if (!token) {
+                this.$router.push('/client/dang-nhap-dang-ky');
+                return;
+            }
+
+            if (this.danh_sach_pet.length === 0) {
+                alert('Bạn cần thêm thú cưng trước khi đặt lịch.');
+                this.$router.push('/client/thong-tin-ca-nhan');
+                return;
+            }
+
+            this.$router.push(`/client/chon-dich-vu/${id_dv}`);
+        },
         load() {
             axios
                 .get('http://127.0.0.1:8000/api/dich-vu/load-tiem-chung')

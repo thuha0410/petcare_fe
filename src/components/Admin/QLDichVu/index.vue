@@ -215,6 +215,7 @@
 import axios from 'axios';
 import { createToaster } from "@meforma/vue-toaster";
 const toaster = createToaster({ position: 'top-right' });
+import api from '@/services/api';
 export default {
     data() {
         return {

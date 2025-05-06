@@ -17,7 +17,15 @@
                     </p>
                     <p class="ms-3" style="font-size: 15px;">{{ list_dv.ten_dv }}</p>
 
-                    <p class="fw-bold" style="font-size: 20px;"><i class="fa-solid fa-calendar-days"></i> Ngày:</p>
+                    <p class="fw-bold" style="font-size: 20px;"><i class="fa-solid fa-paw"></i> Tên pet
+                    </p>
+                    <select class="form-select form-control" v-model="id_pet" name="" id="">
+                        <option disabled value="">--Chọn pet cần khám--</option>
+                        <option v-for="(value, index) in list_pet" :key="index" v-bind:value="value.id">{{ value.ten_pet
+                            }}</option>
+                    </select>
+
+                    <p class="fw-bold mt-2" style="font-size: 20px;"><i class="fa-solid fa-calendar-days"></i> Ngày:</p>
                     <p class="ms-3" style="font-size: 15px;">{{ selectedDate || "Chưa chọn" }}</p>
 
                     <p class="fw-bold" style="font-size: 20px;"><i class="fa-solid fa-clock"></i> Giờ:</p>
@@ -76,13 +84,14 @@
                     <h3 class="text-white text-center">Chọn giờ</h3>
                 </div>
                 <div class="card-body d-flex flex-wrap justify-content-center">
-                    <button v-for="(value,index) in availableTimes" :key="index" class="btn btn-outline-primary m-2"
-                        @click="selectTime(value.khung_gio), Object.assign(id_lich, value.id)">
+                    <button v-for="(value, index) in availableTimes" :key="index" class="btn btn-outline-primary m-2"
+                        @click="selectTime(value)">
                         {{ value.khung_gio }}
                     </button>
+
                 </div>
                 <div class="text-center mb-3">
-                    <button class="btn btn-success mt-2" @click="xacNhanLichHen(id_lich)" :disabled="!selectedTime">
+                    <button class="btn btn-success mt-2" @click="xacNhanLichHen()" :disabled="!selectedTime">
                         Xác nhận lịch hẹn
                     </button>
                 </div>
@@ -96,6 +105,9 @@ import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import axios from 'axios';
+import apiClient from '../../../../services/apiClient';
+import { createToaster } from "@meforma/vue-toaster";
+const toaster = createToaster({ position: "top-right" });
 
 export default {
     components: { FullCalendar },
@@ -117,28 +129,28 @@ export default {
                 height: 600,
                 contentHeight: 'auto',
                 dateClick: this.handleDateClick
-            }
+            },
+            list_pet: [],
+            id_pet: '',
         };
     },
     mounted() {
         this.loadDichVu();
         this.loadLich();
+        this.loadPet();
         window.scrollTo(0, 0);
-        
-        
     },
     methods: {
         loadLich() {
-            axios
-                .get("http://127.0.0.1:8000/api/lich/load")
+            apiClient
+                .get("/api/lich/load")
                 .then((res) => {
                     this.availableTimes = res.data.data;
-                    
                 });
         },
         loadDichVu() {
-            axios
-                .get("http://127.0.0.1:8000/api/dich-vu/load-chi-tiet/" + this.id)
+            apiClient
+                .get("/api/dich-vu/load-chi-tiet/" + this.id)
                 .then((res) => {
                     this.list_dv = res.data.data;
                 });
@@ -152,37 +164,86 @@ export default {
                 this.showCalendar = true;
             }
         },
-        selectTime(time) {
-            this.selectedTime = time;
+        selectTime(timeObj) {
+            this.selectedTime = timeObj.khung_gio;
+            this.id_lich = timeObj.id;
         },
         handleDateClick(info) {
             this.selectedDate = info.dateStr;
             this.selectedTime = null;
         },
         xacNhanLichHen(id) {
+            if (!this.id_pet) {
+                toaster.error("Vui lòng chọn thú cưng cần khám để đặt lịch!");
+                return;
+            }
+
             console.log(this.availableTimes);
             if (!this.selectedDate || !this.selectedTime) return;
-
+            const id_kh = localStorage.getItem("id_khach_hang");
+            if (!id_kh) {
+                alert("Không tìm thấy thông tin khách hàng. Vui lòng đăng nhập lại.");
+                return;
+            }
             const data = {
-                ten_dv: this.list_dv.ten_dv,
-                id_lich: id,
-                id_nv: this.list_dv.id,
-                id_pet: this.list_dv.id_pet,
+                id_lich: this.id_lich,
+                id_kh: id_kh,
+                id_dv: this.list_dv.id,
+                id_pet: this.id_pet,
+                tinh_trang: 0,
+                gia: this.list_dv.gia,
                 ngay: this.selectedDate,
                 gio: this.selectedTime,
             };
-            axios
-                .post('http://127.0.0.1:8000/api/lich-hen/them', data)
+            apiClient
+                .post('/api/lich-hen/them', data,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_client')
+                        }
+                    }
+                )
                 .then((res) => {
-                    alert("Đặt lịch thành công!");
+                    toaster.success("Đặt lịch thành công!");
                     this.toggleCalendar();
                 })
                 .catch((err) => {
                     console.error(err);
                     alert("Có lỗi xảy ra khi đặt lịch.");
                 });
+
+        },
+        loadPet() {
+            const token = localStorage.getItem("token_client");
+            if (!token) {
+                console.warn("Thiếu token đăng nhập.");
+                return;
+            }
+
+            // Gọi API /khach-hang/lay-du-lieu để lấy id khách hàng
+            apiClient.get("/api/khach-hang/lay-du-lieu", {
+                headers: {
+                    Authorization: "Bearer " + token
+                }
+            }).then(res => {
+                const id_kh = res.data.data.id;
+                // lưu lại vào localStorage để sử dụng sau nếu cần
+                localStorage.setItem("id_khach_hang", id_kh);
+
+                // Gọi tiếp API lấy thú cưng theo id_kh
+                return apiClient.get(`/api/pets/${id_kh}`, {
+                    headers: {
+                        Authorization: "Bearer " + token
+                    }
+                });
+            }).then(res => {
+                this.list_pet = res.data.pets;
+            }).catch(err => {
+                console.error("Lỗi khi lấy danh sách thú cưng:", err);
+            });
+
         }
-    }
+    },
 };
 </script>
 

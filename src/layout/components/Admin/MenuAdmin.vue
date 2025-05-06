@@ -31,6 +31,15 @@
 					</router-link>
 				</li>
 				<li class="nav-item">
+					<router-link to="/admin/ql-gio">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-clock"></i>
+							</div>
+							<div class="menu-title">QL Giờ</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
 					<router-link to="/admin/ql-loai-dich-vu">
 						<a class="nav-link" href="/">
 							<div class="parent-icon"><i class="fa-brands fa-paypal"></i>
@@ -81,15 +90,6 @@
 							<div class="parent-icon"><i class="fa-solid fa-capsules"></i>
 							</div>
 							<div class="menu-title">QL Thuốc</div>
-						</a>
-					</router-link>
-				</li>
-				<li class="nav-item">
-					<router-link to="/admin/ql-ho-so-benh-an">
-						<a class="nav-link" href="/">
-							<div class="parent-icon"><i class="fa-solid fa-id-card"></i>
-							</div>
-							<div class="menu-title">QL Hồ Sơ Bệnh Án</div>
 						</a>
 					</router-link>
 				</li>
@@ -182,55 +182,59 @@ export default {
 </script>
 <style>
 .nav-container {
-  position: relative;
-  display: flex;
-  align-items: center;
+	position: relative;
+	display: flex;
+	align-items: center;
 }
+
 .navbar-nav {
-  overflow-x: auto;
-  white-space: nowrap;
-  display: flex;
-  flex-wrap: nowrap;
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: #007bff #f1f1f1;
-  width: 100%;
+	overflow-x: auto;
+	white-space: nowrap;
+	display: flex;
+	flex-wrap: nowrap;
+	scroll-behavior: smooth;
+	scrollbar-width: thin;
+	scrollbar-color: #007bff #f1f1f1;
+	width: 100%;
 }
 
 /* Webkit Scrollbar */
 .navbar::-webkit-scrollbar {
-  height: 8px;
+	height: 8px;
 }
+
 .navbar::-webkit-scrollbar-track {
-  background: #f1f1f1;
+	background: #f1f1f1;
 }
+
 .navbar::-webkit-scrollbar-thumb {
-  background: #007bff;
-  border-radius: 10px;
+	background: #007bff;
+	border-radius: 10px;
 }
 
 /* Nút mũi tên */
 .scroll-btn {
-  background-color: rgba(0,0,0,0.1);
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  padding: 8px 10px;
-  z-index: 1;
-  color: #007bff;
-  transition: 0.2s;
+	background-color: rgba(0, 0, 0, 0.1);
+	border: none;
+	font-size: 20px;
+	cursor: pointer;
+	padding: 8px 10px;
+	z-index: 1;
+	color: #007bff;
+	transition: 0.2s;
 }
+
 .scroll-btn:hover {
-  background-color: rgba(0,0,0,0.2);
+	background-color: rgba(0, 0, 0, 0.2);
 }
 
 .scroll-btn.left {
-  position: absolute;
-  left: 0;
+	position: absolute;
+	left: 0;
 }
 
 .scroll-btn.right {
-  position: absolute;
-  right: 0;
+	position: absolute;
+	right: 0;
 }
 </style>

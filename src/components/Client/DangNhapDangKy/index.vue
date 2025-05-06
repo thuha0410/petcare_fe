@@ -32,7 +32,7 @@
           <input v-model="khach_hang.pass" class="form-control" style="" placeholder="Mật khẩu của bạn"
             :type="showPassword ? 'text' : 'password'" aria-label="Password" aria-describedby="basic-addon1" />
         </div>
-        <router-link to="/client/doi-mat-khau">
+        <router-link to="/client/send-mail">
           <div class="text-end mt-2">
             <a href="#" class="link">Quên mật khẩu?</a>
           </div>
@@ -68,7 +68,7 @@
         </div>
         <div class="input-group flex-nowrap mt-3">
           <span class="input-group-text" id="addon-wrapping"><i class="fa-regular fa-keyboard"></i></span>
-          <input class="form-control" placeholder="Nhập lại mật khẩu" :type="showPassword ? 'text' : 'password'" />
+          <input v-model="khach_hang.password_confirmation" class="form-control" placeholder="Nhập lại mật khẩu" :type="showPassword ? 'text' : 'password'" />
         </div>
         <button style="
             font-size: 18px;
@@ -94,6 +94,8 @@ export default {
         pass: "",
         ho_va_ten: "",
         so_dien_thoai: "",
+        password: "",
+        password_confirmation: "",
       },
     };
   },
@@ -105,6 +107,7 @@ export default {
           if (res.data.status == 1) {
             toaster.success(res.data.message);
             localStorage.setItem("token_client", res.data.token);
+            
             this.$router.push("/");
           } else {
             toaster.error(res.data.message);
@@ -126,37 +129,28 @@ export default {
         });
     },
     dangKy() {
-      axios
-        .post("http://127.0.0.1:8000/api/khach-hang/dang-ky", this.khach_hang)
+      if (this.khach_hang.password !== this.khach_hang.password_confirmation) {
+        toaster.error("Mật khẩu không khớp");
+        return;
+      }else{
+        axios
+        .post(
+          "http://127.0.0.1:8000/api/khach-hang/dang-ky", this.khach_hang)
         .then((res) => {
           toaster.success(res.data.message);
           this.khach_hang = {
             ho_va_ten: "",
             email: "",  
             so_dien_thoai: "",
-            password: "",
-            password_confirmation: ""  
+            password_confirmation: "",
           };
 
           this.showLogin();
 
           this.loaddata();
-        })
-        .catch((err) => {
-          // Kiểm tra nếu có lỗi
-          if (err.response && err.response.data.errors) {
-            const errors = err.response.data.errors;
-            // Duyệt qua các lỗi và hiển thị thông báo cho từng trường
-            for (let field in errors) {
-              toaster.error(errors[field].join(", ")); // Hiển thị thông báo lỗi
-            }
-          } else {
-            // Nếu không có lỗi đặc biệt, hiển thị lỗi chung
-            toaster.error("Đăng ký thất bại, vui lòng thử lại.");
-          }
         });
+      }
     },
-
     showLogin() {
       document.getElementById("login-form").style.display = "block";
       document.getElementById("signup-form").style.display = "none";

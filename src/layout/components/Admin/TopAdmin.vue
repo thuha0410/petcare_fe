@@ -68,7 +68,7 @@
           </li>
           <li>
             
-            <a v-on:click="dangXuat()" class="dropdown-item" href="javascript:;"><i class="bx bx-log-out-circle"></i><span>Logout</span></a>
+            <a v-on:click="dangXuat()" class="dropdown-item" href="javascript:;"><i class="bx bx-log-out-circle"></i><span>Đăng xuất</span></a>
           </li>
         </ul>
       </div>
@@ -78,7 +78,7 @@
 <script>
 import axios from 'axios';
 import { createToaster } from "@meforma/vue-toaster";
-const toaster = createToaster({ position: 'top-left' });
+const toaster = createToaster({ position: 'top-right' });
 export default {
   data() {
     return {
@@ -107,7 +107,7 @@ export default {
             localStorage.removeItem("token_admin");
             localStorage.removeItem("name_admin");
             localStorage.removeItem("email_admin");
-
+            this.$router.push("/nhan-vien/dang-nhap");
           } else {
             toaster.error(res.data.message);
           }

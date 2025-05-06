@@ -1,10 +1,17 @@
 <template>
     <div class="container">
-        <video autoplay loop muted playsinline class="video-background">
-            <source
-                src="https://res.cloudinary.com/prettylitter/video/upload/v1708552338/videos/PL_2024_1920x1080_V2.mp4"
-                type="video/mp4" />
-        </video>
+        <div style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('https://cellphones.com.vn/sforum/wp-content/uploads/2023/04/hinh-anh-30-4-21.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        z-index: -1;
+    "></div>
         <div class="content">
             <div class="logo text-center" style="
           font-size: 25px;
@@ -45,6 +52,8 @@
 <script>
 import axios from 'axios';
 import { createToaster } from "@meforma/vue-toaster";
+
+import api from '@/services/api';
 const toaster = createToaster({ position: 'top-right' });
 export default {
     data() {
@@ -56,6 +65,44 @@ export default {
         }
     },
     methods: {
+        async dangNhap() {
+            try {
+                const { data } = await axios.post(
+                    'http://127.0.0.1:8000/api/nhan-vien/dang-nhap',
+                    this.nhan_vien
+                );
+                if (data.status === 1) {
+                    toaster.success(data.message);
+                    localStorage.setItem('token_admin', data.token);
+                    localStorage.setItem('name_admin', data.name);
+                    localStorage.setItem('email_admin', data.email);
+                    
+                    // Get permissions from the response
+                    const permissions = data.permissions || [];
+
+                    // Map permission IDs to routes
+                    const routeMap = {
+                        1: '/admin/nhap-thuoc',
+                        2: '/admin/ql-ton-kho',
+                        3: '/admin/ql-lich-hen',
+                        4: '/admin/ql-dich-vu',
+                        5: '/admin/ql-nhan-vien',
+                        6: '/admin/ql-khach-hang',
+                        7: '/admin/ql-pet',
+                        8: '/admin/ql-thuoc',
+                        9: '/admin/ql-nha-cung-cap',
+                        10: '/admin/ql-luong',
+                        11: '/admin/ql-danh-gia',
+                        12: '/admin/ql-kho',
+                        13: '/admin/hoa-don',
+                        14: '/admin/doanh-thu',
+                        15: '/admin/ql-chuc-vu',
+                        16: '/admin/phan-quyen',
+                    };
+
+                    // Check if user has permission 17 (doctor)
+                    if (permissions.includes(17) || permissions.includes('17')) {
+                        this.$router.push('/doctor');
         dangNhap() {
             axios
                 .post('http://127.0.0.1:8000/api/nhan-vien/dang-nhap', this.nhan_vien)
@@ -67,23 +114,21 @@ export default {
                         localStorage.setItem('email_admin', res.data.email);
                         this.$router.push('/admin/nhap-thuoc');
                     } else {
-                        toaster.error(res.data.message);
-                    }
-                })
-                .catch((err) => {
-                    if (err.response && err.response.status === 422) {
-                        const errors = err.response.data.errors;
-                        for (const key in errors) {
-                            if (errors.hasOwnProperty(key)) {
-                                toaster.error(errors[key][0]);
-                            }
+                        // Check for other valid permissions
+                        const firstAllowed = permissions.find(id => routeMap[parseInt(id)]);
+                        if (firstAllowed) {
+                            this.$router.push(routeMap[parseInt(firstAllowed)]);
+                        } else {
+                            toaster.error('Tài khoản của bạn không hợp lệ!');
                         }
-                    } else if (err.response && err.response.data.message) {
-                        toaster.error(err.response.data.message);
-                    } else {
-                        toaster.error("Đã xảy ra lỗi, vui lòng thử lại.");
                     }
-                });
+                } else {
+                    toaster.error(data.message);
+                }
+            } catch (error) {
+                console.error(error);
+                toaster.error('Đã có lỗi xảy ra!');
+            }
         }
     },
 }
