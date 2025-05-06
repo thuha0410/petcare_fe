@@ -96,7 +96,7 @@
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-bordered table-hover">
-                <thead>
+                <thead class="thead-light">
                   <tr>
                     <th>Mã đơn</th>
                     <th>Khách hàng</th>
@@ -104,21 +104,26 @@
                     <th>Tên pet</th>
                     <th>Ngày kê</th>
                     <th>Tình trạng</th>
-                    <th>Thao tác</th>
+                    <th class="text-center" style="width: 200px">Thao tác</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="don in danh_sach_don" :key="don.id">
                     <td>{{ don.id }}</td>
-                    <td>{{ don.ten_khach_hang || don.khach_hang?.ho_va_ten }}</td>
-                    <td>{{ don.ten_bac_si || don.nhan_vien?.ten_nv }}</td>
+                    <td>{{ don.ten_khach_hang }}</td>
+                    <td>{{ don.ten_bac_si }}</td>
                     <td>{{ don.ten_pet }}</td>
                     <td>{{ formatDate(don.created_at) }}</td>
                     <td>{{ don.tinh_trang || 'Chưa cập nhật' }}</td>
-                    <td>
-                      <button class="btn btn-info btn-sm" @click="xemChiTiet(don)">
-                        <i class="fa-solid fa-eye"></i> Xem chi tiết
-                      </button>
+                    <td class="text-center">
+                      <div class="d-flex justify-content-center gap-2">
+                        <button class="btn btn-info btn-sm" @click="xemChiTiet(don)">
+                          <i class="fa-solid fa-eye"></i> Xem chi tiết
+                        </button>
+                        <button class="btn btn-danger btn-sm" @click="xoaDonThuoc(don.id)">
+                          <i class="fa-solid fa-trash"></i>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -128,6 +133,58 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal hiển thị chi tiết đơn thuốc -->
+    <div class="modal" :class="{ 'show': showModal }" tabindex="-1" role="dialog" :style="{ display: showModal ? 'block' : 'none' }">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              <i class="fa-solid fa-prescription-bottle-medical me-2"></i>
+              Chi tiết đơn thuốc
+            </h5>
+          </div>
+          <div class="modal-body">
+            <div v-if="chiTietDonThuoc && chiTietDonThuoc.length > 0">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th class="text-center" style="width: 60px">STT</th>
+                      <th class="text-center" style="width: 100px">Mã thuốc</th>
+                      <th>Tên thuốc</th>
+                      <th class="text-center" style="width: 100px">Số lượng</th>
+                      <th>Liều lượng</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(item, index) in chiTietDonThuoc" :key="item.id_ctthuoc">
+                      <td class="text-center">{{ index + 1 }}</td>
+                      <td class="text-center">{{ item.id_thuoc }}</td>
+                      <td>{{ item.ten_thuoc }}</td>
+                      <td class="text-center">{{ item.so_luong }}</td>
+                      <td>{{ item.lieu_luong }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div v-else class="text-center py-4">
+              <i class="fa-solid fa-circle-exclamation text-warning mb-2" style="font-size: 2rem"></i>
+              <p class="mb-0">Không có thông tin chi tiết đơn thuốc</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @click="closeModal">
+              <i class="fa-solid fa-xmark me-1"></i>
+              Đóng
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Backdrop -->
+    <div class="modal-backdrop" v-if="showModal" @click="closeModal"></div>
   </div>
 </template>
 
@@ -148,7 +205,10 @@ export default {
       nhan_vien: [],
       danh_sach_don: [],
       pets: [],
-      filteredPets: []
+      filteredPets: [],
+      chiTietDonThuoc: [],
+      showModal: false,
+      currentDonThuocId: null
     };
   },
   created() {
@@ -218,8 +278,51 @@ export default {
         minute: '2-digit'
       });
     },
-    xemChiTiet(don) {
-      // Có thể mở modal hoặc hiển thị chi tiết đơn thuốc ở đây nếu muốn
+    async xemChiTiet(don) {
+      try {
+        this.currentDonThuocId = don.id;
+        const response = await api.get(`http://127.0.0.1:8000/api/don-thuoc/chi-tiet/${don.id}`);
+        if (response.data.status) {
+          this.chiTietDonThuoc = response.data.data;
+          this.showModal = true;
+          document.body.classList.add('modal-open');
+        } else {
+          toaster.error(response.data.message || 'Lỗi khi tải chi tiết đơn thuốc');
+        }
+      } catch (error) {
+        console.error('Lỗi khi tải chi tiết đơn thuốc:', error);
+        toaster.error('Lỗi khi tải chi tiết đơn thuốc. Vui lòng thử lại sau.');
+      }
+    },
+    async xoaDonThuoc(id) {
+      if (!confirm('Bạn có chắc chắn muốn xóa đơn thuốc này?')) {
+        return;
+      }
+      try {
+        const response = await api.post('http://127.0.0.1:8000/api/don-thuoc/xoa', {
+          id: id
+        });
+        if (response.data.status) {
+          toaster.success('Xóa đơn thuốc thành công');
+          // Cập nhật lại danh sách
+          this.danh_sach_don = this.danh_sach_don.filter(don => don.id !== id);
+          // Nếu đang xem chi tiết đơn thuốc bị xóa thì đóng modal
+          if (this.currentDonThuocId === id) {
+            this.closeModal();
+          }
+        } else {
+          toaster.error(response.data.message || 'Lỗi khi xóa đơn thuốc');
+        }
+      } catch (error) {
+        console.error('Lỗi khi xóa đơn thuốc:', error);
+        toaster.error('Lỗi khi xóa đơn thuốc. Vui lòng thử lại sau.');
+      }
+    },
+    closeModal() {
+      this.showModal = false;
+      this.chiTietDonThuoc = [];
+      this.currentDonThuocId = null;
+      document.body.classList.remove('modal-open');
     },
     themChiTiet() {
       this.chi_tiet.push({
@@ -273,6 +376,11 @@ export default {
       this.filteredPets = this.pets.filter(pet => String(pet.id_kh) === String(newVal));
       this.don_thuoc.id_pet = '';
     }
+  },
+  mounted() {
+    $('#chiTietModal').on('hidden.bs.modal', () => {
+      this.chiTietDonThuoc = [];
+    });
   }
 };
 </script>
@@ -316,5 +424,160 @@ select.form-control {
 .btn-sm {
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
+}
+
+.modal {
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1050;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+}
+
+.modal-content {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  border-radius: 8px 8px 0 0;
+  padding: 1rem;
+}
+
+.modal-title {
+  color: #2c3e50;
+  font-weight: 600;
+  margin: 0;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+  border-radius: 0 0 8px 8px;
+  padding: 1rem;
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.table td {
+  vertical-align: middle;
+  color: #2c3e50;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  border-radius: 4px;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+}
+
+.close {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #000;
+  opacity: 0.5;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: -1rem -1rem -1rem auto;
+}
+
+.close:hover {
+  opacity: 0.75;
+}
+
+.modal-open {
+  overflow: hidden;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+.btn-info:hover {
+  background-color: #138496;
+  border-color: #117a8b;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  min-width: 90px;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+  color: #fff;
+}
+
+.btn-info:hover {
+  background-color: #138496;
+  border-color: #117a8b;
+  color: #fff;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+  color: #fff;
 }
 </style>
