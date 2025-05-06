@@ -62,6 +62,11 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
+        path : '/admin/ql-gio',
+        component: ()=>import('../components/Admin/QLGio/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
         path : '/admin/ql-pet',
         component: ()=>import('../components/Admin/QLPet/index.vue'),
         meta: {layout:'admin'},

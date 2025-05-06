@@ -41,7 +41,7 @@
                     <thead>
                         <tr class="text-center align-middle">
                             <th>#</th>
-                            <th>Mã lịch hẹn</th>
+                            <th>Tên dịch vụ</th>
                             <th>Tên khách hàng</th>
                             <th>Tên thú cưng</th>
                             <th>Ngày hẹn</th>
@@ -56,7 +56,7 @@
                         <template v-for="(value, index) in list_lich" :key="index">
                             <tr class="text-center align-middle">
                                 <th>{{ index + 1 }}</th>
-                                <td>{{ value.id_lich }}</td>
+                                <td>{{ getTenDV(value.id_dv) }}</td>
                                 <td>{{ value.ho_va_ten }}</td>
                                 <td>{{ value.ten_pet }}</td>
                                 <td>{{ value.ngay }}</td>
@@ -153,6 +153,7 @@ export default {
             khach_hang: [],
             pet: [],
             nhan_vien: [],
+            dich_vu: [],
             xoa_lich: {},
         }
     },
@@ -161,6 +162,7 @@ export default {
         this.loadKhachHang();
         this.loadPet();
         this.loadDataNV();
+        this.loadDichVu();
     },
     methods: {
         loadLichHen() {
@@ -226,6 +228,10 @@ export default {
             const nv = this.nhan_vien.find(nv => nv.id == id_nv);
             return nv ? nv.ten_nv : 'Chưa có';
         },
+        getTenDV(id_dv) {
+            const dv = this.dich_vu.find(dv => dv.id == id_dv);
+            return dv ? dv.ten_dv : 'Chưa có';
+        },
         doi_trang_thai(x) {
             axios
                 .post("http://127.0.0.1:8000/api/lich-hen/doi", x)
@@ -237,6 +243,13 @@ export default {
                         toaster.error("Đổi trạng thái dịch vụ thất bại!")
                     }
                 });
+        },
+        loadDichVu() {
+            axios
+                .get('http://127.0.0.1:8000/api/dich-vu/load')
+                .then((res) => {
+                    this.dich_vu = res.data.data
+                })
         },
     },
 }
