@@ -284,9 +284,18 @@ export default {
                         toaster.error('Thêm mới dịch vụ thất bại')
                     }
                 })
-                .catch((res) => {
-                    toaster.error(res.response.data.message);
-                })
+                .catch((error) => {
+                    if (error.response.status === 422) {
+                        let errors = error.response.data.errors;
+                        for (let field in errors) {
+                            errors[field].forEach(err => {
+                                toaster.error(err);
+                            });
+                        }
+                    } else {
+                        toaster.error('Đã xảy ra lỗi máy chủ.');
+                    }
+                });
 
         },
 
@@ -313,6 +322,18 @@ export default {
                         this.loaddata();
                     } else {
                         toaster.error("Cập nhật dịch vụ thất bại!")
+                    }
+                })
+                .catch((error) => {
+                    if (error.response.status === 422) {
+                        let errors = error.response.data.errors;
+                        for (let field in errors) {
+                            errors[field].forEach(err => {
+                                toaster.error(err);
+                            });
+                        }
+                    } else {
+                        toaster.error('Đã xảy ra lỗi máy chủ.');
                     }
                 });
         },

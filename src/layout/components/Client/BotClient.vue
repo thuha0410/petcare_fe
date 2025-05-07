@@ -144,6 +144,11 @@ export default {
                 return;
             }
 
+            if (!this.comment || this.comment.trim() === '') {
+                toaster.error("Bạn phải nhập nội dung đánh giá.");
+                return;
+            }
+
             const data = {
                 id_kh: this.khach_hang.id,
                 noi_dung: this.comment,
@@ -170,7 +175,8 @@ export default {
             }).catch((err) => {
                 toaster.error(err.response?.data?.message || "Lỗi gửi đánh giá");
             });
-        },
+        }
+        ,
 
         loadDG() {
             axios
@@ -206,7 +212,7 @@ export default {
         loadKH() {
             axios
                 .get('http://127.0.0.1:8000/api/khach-hang/load',
-                {
+                    {
                         headers: {
                             Authorization: 'Bearer ' + localStorage.getItem('token_client')
                         }

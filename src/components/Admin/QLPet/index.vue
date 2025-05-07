@@ -218,6 +218,18 @@ export default {
                         toaster.error(res.data.message || 'Thêm pet thất bại!');
                     }
                 })
+                .catch((error) => {
+                    if (error.response.status === 422) {
+                        let errors = error.response.data.errors;
+                        for (let field in errors) {
+                            errors[field].forEach(err => {
+                                toaster.error(err);
+                            });
+                        }
+                    } else {
+                        toaster.error('Đã xảy ra lỗi máy chủ.');
+                    }
+                });
                 
         },
         xoa() {
@@ -248,6 +260,18 @@ export default {
                     }
                     this.loadData();  
                 })
+                .catch((error) => {
+                    if (error.response.status === 422) {
+                        let errors = error.response.data.errors;
+                        for (let field in errors) {
+                            errors[field].forEach(err => {
+                                toaster.error(err);
+                            });
+                        }
+                    } else {
+                        toaster.error('Đã xảy ra lỗi máy chủ.');
+                    }
+                });
                 
         },
         loadData() {

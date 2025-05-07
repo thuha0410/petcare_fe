@@ -78,10 +78,7 @@ export default {
                     localStorage.setItem('name_admin', data.name);
                     localStorage.setItem('email_admin', data.email);
 
-<<<<<<< HEAD
-=======
-                    // Get permissions from the response
->>>>>>> 4d7017d960520d74cc819eec148e35484c28b770
+
                     const permissions = data.permissions || [];
 
                     const routeMap = {
