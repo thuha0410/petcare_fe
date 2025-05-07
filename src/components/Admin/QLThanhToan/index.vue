@@ -6,18 +6,20 @@
             </div>
             <div class="card-body">
                 <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Tìm kiếm"
-                    aria-label="Recipient's username" aria-describedby="button-addon2">
-                <button class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
-            </div>
+                    <input type="text" class="form-control" placeholder="Tìm kiếm" aria-label="Recipient's username"
+                        aria-describedby="button-addon2">
+                    <button class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i
+                            class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
+                </div>
                 <table class="table table-bordered">
                     <thead>
                         <tr class="text-center">
                             <th>#</th>
-                            <th>ID Hóa đơn</th>
+                            <th>Mã hóa đơn</th>
                             <th>Tên khách hàng</th>
                             <th>Ngày xuất hóa đơn</th>
-                            <th>ID pet</th>
+                            <th>Tên pet</th>
+                            <th>Chi tiết</th>
                             <th>Phương thức</th>
                             <th>Tổng tiền</th>
                             <th>Tình trạng</th>
@@ -25,25 +27,30 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="text-center align-middle">
+                        <template>
+                            <tr class="text-center align-middle">
                                 <th>1</th>
                                 <td>HD01</td>
                                 <td>Lê Văn Đạt</td>
                                 <td>2025-04-05</td>
                                 <td>PET01</td>
-                                <td>Cash</td>   
+                                <td>
+                                    <i class="fa-solid fa-2x fa-circle-info"></i>
+                                </td>
+                                <td>Cash</td>
                                 <td>1.200.000VNĐ</td>
                                 <td>
-                                    <button class="btn btn-success">Inactive</button>
-                                    <button class="btn btn-warning">Active</button>
-                                </td>              
+                                    <button class="btn btn-success">Đã thanh toán</button>
+                                    <button class="btn btn-warning">Chưa thanh toán</button>
+                                </td>
                                 <td class="text-center align-middle">
-                                    <button  data-bs-toggle="modal"
-                                        data-bs-target="#sua" class="btn btn-primary">Sửa</button>
-                                    <button class="btn btn-danger"
-                                        data-bs-toggle="modal" data-bs-target="#xoa">Xóa</button>
+                                    <button data-bs-toggle="modal" data-bs-target="#sua"
+                                        class="btn btn-primary">Sửa</button>
+                                    <button class="btn btn-danger" data-bs-toggle="modal"
+                                        data-bs-target="#xoa">Xóa</button>
                                 </td>
                             </tr>
+                        </template>
                     </tbody>
                 </table>
                 <div class="modal fade" id="xoa" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -88,7 +95,7 @@
                                     <option value="1">Online banking</option>
                                 </select>
                                 <label class="mt-2" for="">Tổng tiền</label>
-                                <input class="form-control"  type="text">
+                                <input class="form-control" type="text">
                                 <label class="mt-2" for="">Tình trạng</label>
                                 <select class="form-control" name="" id="">
                                     <option value="0">Inactive</option>

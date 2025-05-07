@@ -226,7 +226,7 @@ export default {
         },
         getTenNV(id_nv) {
             const nv = this.nhan_vien.find(nv => nv.id == id_nv);
-            return nv ? nv.ten_nv : 'Chưa có';
+            return nv ? nv.ten_nv : 'Nhân viên chăm sóc';
         },
         getTenDV(id_dv) {
             const dv = this.dich_vu.find(dv => dv.id == id_dv);
