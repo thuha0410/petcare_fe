@@ -15,7 +15,7 @@
           <h3 class="text-black mb-0" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif;">
             LỊCH HẸN HÔM NAY <span class="text-primary">({{ formatDate(current_date) }})</span>
           </h3>
-          <span class="badge bg-primary">{{ lich_hen_hom_nay.length }} lịch hẹn</span>
+          <span class="badge bg-primary" style="font-size: 16px;">{{ lich_hen_hom_nay.length }} lịch hẹn</span>
         </div>
         <div class="card-body">
           <div v-if="lich_hen_hom_nay.length === 0" class="text-center py-4">
@@ -24,9 +24,8 @@
           </div>
           <div v-else class="row">
             <div v-for="(item, index) in lich_hen_hom_nay" :key="index" class="col-lg-4 col-md-6 mb-3">
-              <div class="card h-100" :class="{
+              <div class="card h-100 border border-dark card-glow" :class="{
                 'border-primary bg-primary bg-opacity-10': item.trang_thai === 1,
-                'border-success bg-success bg-opacity-10': item.trang_thai === 2,
                 'border-danger bg-danger bg-opacity-10': item.trang_thai === 0
               }">
                 <div class="card-body">
@@ -35,19 +34,17 @@
                     {{ item.khung_gio }}
                   </h5>
                   <div class="card-text">
-                    <p><i class="fa-solid fa-paw me-2 text-info"></i><strong>Tên pet:</strong> {{ item.ten_thu_cung }}</p>
-                    <p><i class="fa-solid fa-user me-2 text-warning"></i><strong>Khách hàng:</strong> {{ item.ten_khach_hang }}</p>
-                    <p><i class="fa-solid fa-stethoscope me-2 text-success"></i><strong>Dịch vụ:</strong> {{ item.dich_vu }}</p>
-                    <p><i class="fa-solid fa-tag me-2 text-primary"></i><strong>Trạng thái:</strong>
-                      <span v-if="item.trang_thai === 2" class="badge bg-success">Đã xác nhận</span>
-                      <span v-else-if="item.trang_thai === 1" class="badge bg-warning text-dark">Chưa xác nhận</span>
-                      <span v-else class="badge bg-danger">Đã huỷ</span>
+                    <p><i class="fa-solid fa-paw me-2 text-info"></i><strong>Tên pet:</strong> {{ item.ten_thu_cung }}
                     </p>
-                  </div>
-                  <div class="text-center mt-3">
-                    <button class="btn btn-primary" @click="viewAppointmentDetail(item)">
-                      <i class="fa-solid fa-eye me-1"></i> Xem chi tiết
-                    </button>
+                    <p><i class="fa-solid fa-user me-2 text-warning"></i><strong>Khách hàng:</strong> {{
+                      item.ten_khach_hang }}</p>
+                    <p><i class="fa-solid fa-stethoscope me-2 text-success"></i><strong>Dịch vụ:</strong> {{
+                      item.dich_vu }}</p>
+                    <p><i class="fa-solid fa-tag me-2 text-primary"></i><strong class="me-2">Trạng thái:</strong>
+                      <span v-if="item.trang_thai == 0" class="badge bg-danger" style="font-size: 16px;">Chờ
+                        duyệt</span>
+                      <span v-else class="badge bg-success text-dark" style="font-size: 16px;">Đã duyệt</span>
+                    </p>
                   </div>
                 </div>
               </div>
@@ -74,12 +71,8 @@
                 <span class="input-group-text bg-primary text-white">
                   <i class="fa-solid fa-magnifying-glass"></i>
                 </span>
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="search_term"
-                  placeholder="Tên khách hàng, thú cưng hoặc SĐT..."
-                />
+                <input type="text" class="form-control" v-model="search_term"
+                  placeholder="Tên khách hàng, thú cưng hoặc SĐT..." />
                 <button class="btn btn-primary" @click="searchAppointments">
                   Tìm kiếm
                 </button>
@@ -95,9 +88,8 @@
                 </span>
                 <select class="form-select" v-model="status_filter">
                   <option value="">-- Tất cả trạng thái --</option>
-                  <option value="2">Đã xác nhận</option>
-                  <option value="1">Chưa xác nhận</option>
-                  <option value="0">Đã hủy</option>
+                  <option value="0">Chờ duyệt</option>
+                  <option value="1">Đã duyệt</option>
                 </select>
                 <button class="btn btn-info text-white" @click="filterAppointments">
                   Lọc
@@ -112,11 +104,7 @@
                 <span class="input-group-text bg-success text-white">
                   <i class="fa-solid fa-calendar-days"></i>
                 </span>
-                <input
-                  type="date"
-                  class="form-control"
-                  v-model="date_filter"
-                />
+                <input type="date" class="form-control" v-model="date_filter" />
                 <button class="btn btn-success" @click="filterAppointments">
                   Lọc
                 </button>
@@ -145,7 +133,6 @@
                   <th scope="col">Thú cưng</th>
                   <th scope="col">Số điện thoại</th>
                   <th scope="col">Trạng thái</th>
-                  <th scope="col">Thao tác</th>
                 </tr>
               </thead>
               <tbody>
@@ -158,21 +145,10 @@
                   <td>{{ item.ten_thu_cung }}</td>
                   <td>{{ item.so_dien_thoai }}</td>
                   <td>
-                    <span v-if="item.trang_thai === 2" class="badge bg-success">Đã xác nhận</span>
-                    <span v-else-if="item.trang_thai === 1" class="badge bg-warning text-dark">Chưa xác nhận</span>
-                    <span v-else class="badge bg-danger">Đã huỷ</span>
+                    <p v-if="item.trang_thai == 0" style="font-size: 16px;" class="text-danger fw-bold">Chờ duyệt</p>
+                    <p v-else style="font-size: 16px;" class=" text-success fw-bold">Đã duyệt</p>
                   </td>
-                  <td>
-                    <button class="btn btn-sm btn-primary me-1" @click="viewAppointmentDetail(item)">
-                      <i class="fa-solid fa-eye"></i>
-                    </button>
-                    <button v-if="item.trang_thai === 1" class="btn btn-sm btn-success me-1" @click="updateAppointmentStatus(item.id, 2)">
-                      <i class="fa-solid fa-check"></i>
-                    </button>
-                    <button v-if="item.trang_thai === 1" class="btn btn-sm btn-danger" @click="updateAppointmentStatus(item.id, 0)">
-                      <i class="fa-solid fa-times"></i>
-                    </button>
-                  </td>
+
                 </tr>
                 <tr v-if="list_lich_hen.length === 0">
                   <td colspan="9" class="text-center py-4">
@@ -186,60 +162,7 @@
         </div>
       </div>
 
-      <!-- Modal chi tiết lịch hẹn -->
-      <div class="modal fade" id="xemchitiet" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content rounded-3 shadow">
-            <div class="modal-header" :class="{
-              'bg-warning text-dark': chi_tiet_lich_hen.trang_thai === 1,
-              'bg-success text-white': chi_tiet_lich_hen.trang_thai === 2,
-              'bg-danger text-white': chi_tiet_lich_hen.trang_thai === 0
-            }">
-              <h5 class="modal-title">
-                <i class="fa-solid fa-calendar-check me-2"></i>
-                CHI TIẾT LỊCH HẸN
-              </h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-            </div>
-            <div class="modal-body">
-              <div class="mb-3 p-3 rounded" :class="{
-                'bg-warning bg-opacity-10': chi_tiet_lich_hen.trang_thai === 1,
-                'bg-success bg-opacity-10': chi_tiet_lich_hen.trang_thai === 2,
-                'bg-danger bg-opacity-10': chi_tiet_lich_hen.trang_thai === 0
-              }">
-                <h5 class="text-center">
-                  <span v-if="chi_tiet_lich_hen.trang_thai === 2" class="badge bg-success">Đã xác nhận</span>
-                  <span v-else-if="chi_tiet_lich_hen.trang_thai === 1" class="badge bg-warning text-dark">Chưa xác nhận</span>
-                  <span v-else class="badge bg-danger">Đã huỷ</span>
-                </h5>
-              </div>
 
-              <p><i class="fa-solid fa-paw me-2 text-info"></i> <strong>Tên pet:</strong> {{ chi_tiet_lich_hen.ten_thu_cung }}</p>
-              <p><i class="fa-solid fa-user me-2 text-warning"></i> <strong>Khách hàng:</strong> {{ chi_tiet_lich_hen.ten_khach_hang }}</p>
-              <p><i class="fa-solid fa-calendar-days me-2 text-success"></i> <strong>Ngày:</strong> {{ formatDate(chi_tiet_lich_hen.ngay) }}</p>
-              <p><i class="fa-solid fa-clock me-2 text-primary"></i> <strong>Khung giờ:</strong> {{ chi_tiet_lich_hen.khung_gio }}</p>
-              <p><i class="fa-solid fa-stethoscope me-2 text-danger"></i> <strong>Dịch vụ:</strong> {{ chi_tiet_lich_hen.dich_vu }}</p>
-              <p><i class="fa-solid fa-phone me-2 text-secondary"></i> <strong>Số điện thoại:</strong> {{ chi_tiet_lich_hen.so_dien_thoai }}</p>
-
-              <div v-if="chi_tiet_lich_hen.ghi_chu" class="mt-3 p-3 bg-light rounded">
-                <h6><i class="fa-solid fa-comment-dots me-2 text-primary"></i> <strong>Ghi chú:</strong></h6>
-                <p class="mb-0">{{ chi_tiet_lich_hen.ghi_chu }}</p>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button v-if="chi_tiet_lich_hen.trang_thai === 1" class="btn btn-success" @click="updateAppointmentStatus(chi_tiet_lich_hen.id, 2)">
-                <i class="fa-solid fa-check me-1"></i> Xác nhận
-              </button>
-              <button v-if="chi_tiet_lich_hen.trang_thai === 1" class="btn btn-danger" @click="updateAppointmentStatus(chi_tiet_lich_hen.id, 0)">
-                <i class="fa-solid fa-times me-1"></i> Hủy lịch
-              </button>
-              <button class="btn btn-secondary" data-bs-dismiss="modal">
-                <i class="fa-solid fa-xmark me-1"></i> Đóng
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -253,6 +176,7 @@ export default {
   data() {
     return {
       list_lich_hen: [],
+      all_lich_hen: [],
       lich_hen_hom_nay: [],
       chi_tiet_lich_hen: {},
       doctor_info: {},
@@ -260,16 +184,85 @@ export default {
       search_term: '',
       status_filter: '',
       date_filter: '',
-      current_date: new Date().toISOString().split('T')[0],
+      current_date: new Date().toLocaleDateString('en-CA', {
+        timeZone: 'Asia/Ho_Chi_Minh'
+      }),
     }
   },
 
   mounted() {
-    
+    this.getLichHen();
   },
 
+
   methods: {
-    
+    getLichHen() {
+      this.loading = true;
+      axios.get('http://127.0.0.1:8000/api/doctor/lich-hen', {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+        }
+      })
+        .then(res => {
+          if (res.data && res.data.data) {
+            this.list_lich_hen = res.data.data;
+            this.all_lich_hen = res.data.data;
+            // cho hiển thị lịch hẹn từ ngày hiện tại tới sau này
+            this.list_lich_hen = this.all_lich_hen.filter(item => item.ngay >= this.current_date);
+            // cho hiển thị lịch hẹn hôm nay
+            this.lich_hen_hom_nay = this.list_lich_hen.filter(item => item.ngay === this.current_date.split(',')[0]);
+          }
+          this.loading = false;
+        })
+        .catch(error => {
+          toaster.error("Không thể tải danh sách lịch hẹn");
+          this.loading = false;
+        });
+    },
+
+    formatDate(dateString) {
+      if (!dateString) return '';
+      const parts = dateString.split('-');
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    },
+
+    viewAppointmentDetail(appointment) {
+      this.chi_tiet_lich_hen = appointment;
+      const modal = new bootstrap.Modal(document.getElementById('xemchitiet'));
+      modal.show();
+    },
+
+
+    searchAppointments() {
+      if (!this.search_term.trim()) {
+        this.getLichHen();
+        return;
+      }
+      const searchTerm = this.search_term.toLowerCase();
+      this.list_lich_hen = this.list_lich_hen.filter(item =>
+        (item.ten_khach_hang && item.ten_khach_hang.toLowerCase().includes(searchTerm)) ||
+        (item.ten_thu_cung && item.ten_thu_cung.toLowerCase().includes(searchTerm)) ||
+        (item.so_dien_thoai && item.so_dien_thoai.includes(searchTerm))
+      );
+    },
+
+    filterAppointments() {
+      let filtered = this.all_lich_hen.filter(item => item.ngay >= this.current_date);
+
+      if (this.status_filter) {
+        filtered = filtered.filter(item =>
+          item.trang_thai.toString() === this.status_filter
+        );
+      }
+
+      if (this.date_filter) {
+        filtered = filtered.filter(item =>
+          item.ngay === this.date_filter
+        );
+      }
+
+      this.list_lich_hen = filtered;
+    }
   }
 }
 </script>
@@ -307,6 +300,29 @@ export default {
   border-radius: 5px;
   font-weight: 500;
   transition: all 0.2s;
+}
+
+.card-glow {
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.card-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 10px;
+  padding: 2px;
+  background: linear-gradient(135deg, #2c4b85, #5f94e8);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
 }
 
 .btn-primary {
@@ -375,12 +391,14 @@ export default {
   border: none;
 }
 
-.form-control, .form-select {
+.form-control,
+.form-select {
   border: 1px solid #ced4da;
   padding: 8px 12px;
 }
 
-.form-control:focus, .form-select:focus {
+.form-control:focus,
+.form-select:focus {
   border-color: #2c4b85;
   box-shadow: 0 0 0 0.25rem rgba(44, 75, 133, 0.25);
 }
@@ -416,7 +434,8 @@ export default {
     font-size: 20px !important;
   }
 
-  .table th, .table td {
+  .table th,
+  .table td {
     padding: 8px;
     font-size: 0.9rem;
   }

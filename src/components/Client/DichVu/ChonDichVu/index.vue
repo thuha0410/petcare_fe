@@ -22,7 +22,7 @@
                     <select class="form-select form-control" v-model="id_pet" name="" id="">
                         <option disabled value="">--Chọn pet cần khám--</option>
                         <option v-for="(value, index) in list_pet" :key="index" v-bind:value="value.id">{{ value.ten_pet
-                            }}</option>
+                        }}</option>
                     </select>
 
                     <p class="fw-bold mt-2" style="font-size: 20px;"><i class="fa-solid fa-calendar-days"></i> Ngày:</p>
@@ -63,6 +63,7 @@
                                 <th class="text-center align-middle">#</th>
                                 <th class="text-center align-middle">Tên dịch vụ</th>
                                 <th class="text-center align-middle">Giá tiền</th>
+                                <th class="text-center align-middle">Tiền cọc</th>
                                 <th class="text-center align-middle">Hành động</th>
                             </tr>
                         </thead>
@@ -71,6 +72,7 @@
                                 <td class="text-center align-middle">1</td>
                                 <td class="text-center align-middle">{{ list_dv.ten_dv || '...' }}</td>
                                 <td class="text-center align-middle">{{ list_dv.gia || '...' }} VNĐ</td>
+                                <td class="text-center align-middle">{{ (list_dv.gia * 25) / 100 || '...' }} VNĐ</td>
                                 <td class="text-center align-middle">
                                     <button class="btn btn-outline-secondary" data-bs-toggle="modal"
                                         data-bs-target="#info">Chi tiết</button>
@@ -79,7 +81,9 @@
                                 </td>
                             </tr>
                         </tbody>
+
                     </table>
+                    <p class="text-muted text-center">Tiền cọc được tính theo 25% giá dịch vụ</p>
                 </div>
             </div>
 
@@ -241,6 +245,7 @@ export default {
                 id_pet: this.id_pet,
                 tinh_trang: 0,
                 gia: this.list_dv.gia,
+                tien_coc: this.list_dv.gia * 25 / 100,
                 ngay: this.selectedDate,
                 gio: this.selectedTime,
             };
