@@ -218,20 +218,7 @@ export default {
                         toaster.error(res.data.message || 'Thêm pet thất bại!');
                     }
                 })
-                .catch((err) => {
-                    if (err.response) {
-                        const errors = err.response.data.errors;
-                        if (errors) {
-                            Object.values(errors).forEach((errorMessages) => {
-                                toaster.error(errorMessages[0]);
-                            });
-                        } else {
-                            toaster.error('Có lỗi xảy ra!');
-                        }
-                    } else {
-                        toaster.error('Có lỗi xảy ra!');
-                    }
-                });
+                
         },
         xoa() {
             axios
@@ -261,10 +248,7 @@ export default {
                     }
                     this.loadData();  
                 })
-                .catch((error) => {
-                    toaster.error("Lỗi kết nối! Vui lòng thử lại.");
-                    console.error(error);  
-                });
+                
         },
         loadData() {
             axios
