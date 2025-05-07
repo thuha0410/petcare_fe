@@ -97,6 +97,19 @@
             <h3 class="card-title">Danh sách đơn thuốc</h3>
           </div>
           <div class="card-body">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <select class="form-control" v-model="search.ten_bac_si" @change="timKiem">
+                  <option value="">Tất cả bác sĩ</option>
+                  <option v-for="nv in nhan_vien" :key="nv.id" :value="nv.ten_nv">
+                    {{ nv.ten_nv }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <input type="date" class="form-control" v-model="search.ngay_ke" @change="timKiem">
+              </div>
+            </div>
             <div class="table-responsive">
               <table class="table table-bordered table-hover">
                 <thead class="thead-light">
@@ -228,6 +241,10 @@ export default {
       ho_so_benh_an: [],
       khach_hang_hsba: [],
       selectedKhachHang: '',
+      search: {
+        ten_bac_si: '',
+        ngay_ke: ''
+      }
     };
   },
   created() {
@@ -494,6 +511,19 @@ export default {
         } else {
           toaster.error(response.data.message || 'Lỗi khi cập nhật tình trạng');
         }
+    },
+    async timKiem() {
+      try {
+        const response = await api.post('http://127.0.0.1:8000/api/don-thuoc/tim-kiem', this.search);
+        if (response.data.status) {
+          this.danh_sach_don = response.data.data;
+        } else {
+          toaster.error(response.data.message || 'Lỗi khi tìm kiếm đơn thuốc');
+        }
+      } catch (error) {
+        console.error('Lỗi khi tìm kiếm đơn thuốc:', error);
+        toaster.error('Lỗi khi tìm kiếm đơn thuốc');
+      }
     }
   },
   watch: {
@@ -543,7 +573,6 @@ export default {
           return;
         }
 
-        // Find the medical record for the selected pet
         const medicalRecord = this.ho_so_benh_an.find(hs => 
           hs.id_pet === newVal && 
           hs.tinh_trang === 1
@@ -558,14 +587,13 @@ export default {
     'chi_tiet': {
       deep: true,
       handler(newVal) {
-        // Kiểm tra trùng lặp khi có thay đổi trong chi_tiet
+
         const seen = new Set();
         newVal.forEach((item, index) => {
           if (item.id_thuoc) {
             if (seen.has(item.id_thuoc)) {
-              // Nếu phát hiện trùng lặp, xóa item hiện tại
               this.chi_tiet.splice(index, 1);
-              toaster.error('Thuốc này đã được thêm vào đơn. Không thể thêm trùng lặp.');
+              toaster.error('Thuốc này đã được thêm vào đơn. Không thể thêm.');
             } else {
               seen.add(item.id_thuoc);
             }
