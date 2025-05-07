@@ -1,3 +1,4 @@
+
 <template>
     <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh; background-color: #f8f9fa;">
         <div class="container bg-white p-4 shadow rounded" style="max-width: 800px; font-family: 'Arial', sans-serif;">
@@ -11,53 +12,171 @@
             </div>
             <h2 class="text-center fw-bold mb-4 text-primary">ĐƠN THUỐC</h2>
 
-            <div class="mb-3">
-                <p><strong>Họ tên bệnh nhân:</strong> Nguyễn Văn A</p>
-                <p><strong>Ngày khám:</strong> 12/12/2022</p>
-                <p><strong>Chuẩn đoán:</strong> Viêm hô hấp</p>
-                <p><strong>Bác sĩ điều trị:</strong> Huỳnh Văn Đức</p>
+            <div class="mb-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-2"><strong>Tên thú cưng:</strong> {{ donThuoc.ten_pet }}</p>
+                        <p class="mb-2"><strong>Ngày khám:</strong> {{ formatDate(donThuoc.ngay_kham) }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-2"><strong>Chẩn đoán:</strong> {{ donThuoc.chuan_doan }}</p>
+                        <p class="mb-2"><strong>Bác sĩ điều trị:</strong> {{ donThuoc.ten_bac_si }}</p>
+                    </div>
+                </div>
             </div>
 
-            <table class="table table-bordered">
-                <thead class="table-light">
-                    <tr>
-                        <th>STT</th>
-                        <th>Tên thuốc</th>
-                        <th>Số lượng</th>
-                        <th>Liều lượng</th>
-                        <th>Ghi chú</th> <!--Có thể trống-->
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Thuốc số</td>
-                        <td>10</td>
-                        <td>3 lần/ngày</td>
-                        <td>Sau ăn sáng, trưa, tối</td> <!--Có thể trống-->
-                    </tr>
-                    <!-- Các dòng thuốc khác -->
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-center" style="width: 60px">STT</th>
+                            <th>Tên thuốc</th>
+                            <th class="text-center" style="width: 100px">Số lượng</th>
+                            <th>Liều lượng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in chiTiet" :key="index">
+                            <td class="text-center">{{ index + 1 }}</td>
+                            <td>{{ item.ten_thuoc }}</td>
+                            <td class="text-center">{{ item.so_luong }}</td>
+                            <td>{{ item.lieu_luong }}</td>
+                        </tr>
+                        <tr v-if="!chiTiet || chiTiet.length === 0">
+                            <td colspan="4" class="text-center">Không có thông tin thuốc</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <div class="mt-5 row">
                 <div class="col text-start">
-                    <p><strong>Ngày in:</strong> 22/04/2025</p>
+                    <p><strong>Ngày in:</strong> {{ formatDate(new Date()) }}</p>
                 </div>
                 <div class="col text-end me-5">
                     <p><strong>Bác sĩ điều trị</strong></p>
+                    <p>{{ donThuoc.ten_bac_si }}</p>
                     <p class="me-3">(Ký tên)</p>
                     <br><br><br><br>
                 </div>
             </div>
+
+            <div class="text-center mt-4 no-print">
+                <button @click="printDonThuoc" class="btn btn-primary">
+                    <i class="fas fa-print me-2"></i>In đơn thuốc
+                </button>
+                <button @click="closeWindow" class="btn btn-secondary ms-2">
+                    <i class="fas fa-times me-2"></i>Đóng
+                </button>
+            </div>
         </div>
     </div>
-    
-
 </template>
-<script>
-export default {
 
+<script>
+import api from '@/services/api';
+import { createToaster } from "@meforma/vue-toaster";
+const toaster = createToaster({ position: "top-right" });
+import { nextTick } from 'vue'; 
+export default {
+    data() {
+        return {
+            donThuoc: {},
+            chiTiet: []
+        }
+    },
+    created() {
+        this.loadDonThuoc();
+    },
+    methods: {
+        async loadDonThuoc() {
+            try {
+                const id = this.$route.query.id;
+                console.log('ID đơn thuốc:', id);
+                
+                if (!id) {
+                    toaster.error('Không tìm thấy thông tin đơn thuốc');
+                    return;
+                }
+
+                const response = await api.get(`http://127.0.0.1:8000/api/don-thuoc/chi-tiet-in/${id}`);
+                console.log('Response từ API:', response.data);
+                
+                if (response.data.status) {
+                    this.donThuoc = response.data.data.don_thuoc;
+                    this.chiTiet = response.data.data.chi_tiet;
+                    console.log('Don thuoc:', this.donThuoc);
+                    console.log('Chi tiet:', this.chiTiet);
+                } else {
+                    toaster.error('Không thể lấy thông tin đơn thuốc');
+                }
+            } catch (error) {
+                console.error('Lỗi khi tải thông tin đơn thuốc:', error);
+                toaster.error('Lỗi khi tải thông tin đơn thuốc');
+            }
+        },
+        formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        },
+        async printDonThuoc() {
+            // Đợi Vue render DOM xong trước khi in
+            await nextTick();
+            setTimeout(() => {
+                window.print();
+            }, 300); // delay nhẹ để trình duyệt xử lý hiển thị
+        },
+        closeWindow() {
+            window.close();
+        }
+    }
 }
 </script>
-<style></style>
+
+<style>
+@media print {
+    .no-print {
+        display: none;
+    }
+    body {
+        background-color: white;
+    }
+    .container {
+        box-shadow: none;
+        padding: 0;
+    }
+}
+
+.table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.table-bordered {
+    border: 1px solid #dee2e6;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #dee2e6;
+}
+
+.table-light {
+    background-color: #f8f9fa;
+}
+
+.table-light th {
+    background-color: #e9ecef;
+}
+</style>
