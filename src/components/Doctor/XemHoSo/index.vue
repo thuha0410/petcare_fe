@@ -1,97 +1,82 @@
 <template>
-  <div class="container">
-    <div class="card">
-      <div class="card-header d-flex justify-content-between text-nowrap ">
-        <h3 class="" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif; color: darkblue;">HỒ SƠ
-          BỆNH ÁN
-        </h3>
-
-        <button data-bs-toggle="modal" data-bs-target="#them" type="button"
-          class="btn btn-outline-primary px-5 radius-30"><i class="bx bx-cloud-upload mr-1"></i>Thêm mới</button>
-      </div>
-      <div class="card-body ">
-        <div class="input-group mb-3">
-          <input v-model="tim_kiem.noi_dung" @input="timkiem" type="text" class="form-control" placeholder="Tìm kiếm theo tên thú cưng hoặc chẩn đoán"
-            aria-label="Tìm kiếm" aria-describedby="button-addon2">
-          <button v-on:click="timkiem()" class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i
-              class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
-        </div>
-        <div class="table table-responsive">
-          <table class="table table-bordered table-striped table-hover">
-            <thead>
-              <tr class="text-center align-middle text-nowrap">
-                <th>#</th>
-                <th>Tên Thú Cưng</th>
-                <th>Chủ Thú Cưng</th>
-                <th>Số Điện Thoại</th>
-                <th>Ngày khám</th>
-                <th>Chẩn đoán</th>
-                <th>Tình trạng</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <template v-for="(value,index) in list_ho_so_benh_an" :key="index">
-                <tr class="text-center align-middle text-nowrap">
-                  <th>{{ index+1 }}</th>
-                  <td>{{ value.ten_thu_cung }}</td>
-                  <td>{{ value.ten_chu }}</td>
-                  <td>{{ value.sdt }}</td>
-                  <td>{{ formatDate(value.ngay_kham) }}</td>
-                  <td>{{ value.chuan_doan }}</td>
-                  <td>
-                    <span @click="toggleStatus(value)" :class="['badge', value.tinh_trang ? 'bg-warning' : 'bg-success', 'cursor-pointer', 'status-badge']">
-                      {{ value.tinh_trang ? 'Đang điều trị' : 'Đã khỏi' }}
-                    </span>
-                  </td>
-                  <td>
-                    <button @click="openUpdateModal(value)" data-bs-toggle="modal" data-bs-target="#sua" class="btn btn-success me-2">
-                      <i class="fas fa-edit"></i> Cập nhật
-                    </button>
-                    <button @click="openDetailModal(value)" data-bs-toggle="modal" data-bs-target="#chiTiet" class="btn btn-info me-2">
-                      <i class="fas fa-info-circle"></i> Chi tiết
-                    </button>
-                    <button @click="confirmDelete(value)" data-bs-toggle="modal" data-bs-target="#xoa" class="btn btn-danger me-2">
-                      <i class="fas fa-trash"></i> Xóa
-                    </button>
-                  </td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
-        </div>
-      </div>
+  <div class="card">
+    <div class="card-header bg-white">
+      <h3 class="m-0" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif; color: darkblue;">
+        HỒ SƠ BỆNH ÁN
+      </h3>
     </div>
-  </div>
 
-  <!-- Modal Thêm mới -->
-  <div class="modal fade" id="them" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header bg-primary">
-          <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">NHẬP THÔNG TIN HỒ SƠ BỆNH ÁN</h1>
-        </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">Số điện thoại chủ thú cưng</label>
-            <input v-model="ho_so_benh_an.sdt" class="form-control" type="text" placeholder="Nhập số điện thoại">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Chẩn đoán</label>
-            <textarea v-model="ho_so_benh_an.chuan_doan" class="form-control" rows="3" placeholder="Nhập chẩn đoán bệnh"></textarea>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Tình trạng</label>
-            <select v-model="ho_so_benh_an.tinh_trang" class="form-select">
-              <option value="1">Đang điều trị</option>
-              <option value="0">Đã khỏi</option>
+    <div class="card-body">
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <div class="input-group">
+            <select v-model="selectedBacSi" class="form-select" @change="locTheoBacSi">
+              <option disabled value="">-- Chọn bác sĩ --</option>
+              <option v-for="bacSi in danhSachBacSi" :key="bacSi.id" :value="bacSi.id">
+                {{ bacSi.ten_nv }}
+              </option>
             </select>
+            <button @click="resetFilter" class="btn btn-outline-secondary" type="button">
+              <i class="fas fa-times"></i> Xóa bộ lọc
+            </button>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" @click="them" data-bs-dismiss="modal">Thêm</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <div class="col-md-4">
+          <div class="input-group">
+            <input v-model="tim_kiem.noi_dung" @input="timkiem" type="text" class="form-control" 
+              placeholder="Tìm kiếm theo tên thú cưng" aria-label="Tìm kiếm" aria-describedby="button-addon2">
+            <button v-on:click="timkiem()" class="btn btn-outline-secondary text-dark" type="button" id="button-addon2">
+              <i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i> Tìm
+            </button>
+          </div>
         </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover">
+          <thead>
+            <tr class="text-center align-middle text-nowrap">
+              <th>#</th>
+              <th>Tên thú cưng</th>
+              <th>Tên chủ</th>
+              <th>Số điện thoại</th>
+              <th>Bác sĩ</th>
+              <th>Ngày khám</th>
+              <th>Chẩn đoán</th>
+              <th>Tình trạng</th>
+              <th class="text-center">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-for="(value,index) in list_ho_so_benh_an" :key="index">
+              <tr class="text-center align-middle text-nowrap">
+                <th>{{ index+1 }}</th>
+                <td>{{ value.ten_thu_cung }}</td>
+                <td>{{ value.ten_chu }}</td>
+                <td>{{ value.sdt }}</td>
+                <td>{{ value.ten_bac_si }}</td>
+                <td>{{ formatDate(value.ngay_kham) }}</td>
+                <td>{{ value.chuan_doan }}</td>
+                <td>
+                  <span @click="toggleStatus(value)" :class="['badge', value.tinh_trang ? 'bg-warning' : 'bg-success', 'cursor-pointer', 'status-badge']">
+                    {{ value.tinh_trang ? 'Đang điều trị' : 'Đã khỏi' }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <button @click="openUpdateModal(value)" data-bs-toggle="modal" data-bs-target="#sua" class="btn btn-success me-2">
+                    <i class="fas fa-edit"></i> Cập nhật
+                  </button>
+                  <button @click="openDetailModal(value)" data-bs-toggle="modal" data-bs-target="#chiTiet" class="btn btn-info me-2">
+                    <i class="fas fa-info-circle"></i> Chi tiết
+                  </button>
+                  <button @click="confirmDelete(value)" data-bs-toggle="modal" data-bs-target="#xoa" class="btn btn-danger me-2">
+                    <i class="fas fa-trash"></i> Xóa
+                  </button>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -157,7 +142,7 @@
               <p><strong>Tên thú cưng:</strong> {{ detail_ho_so_benh_an.ten_thu_cung }}</p>
               <p><strong>Tuổi:</strong> {{ detail_ho_so_benh_an.tuoi }} tuổi</p>
               <p><strong>Cân nặng:</strong> {{ detail_ho_so_benh_an.can_nang }} kg</p>
-              <p><strong>Chủng loại:</strong> {{ detail_ho_so_benh_an.chung_loai }}</p>
+              <p><strong>Chủng loại:</strong> {{ detail_ho_so_benh_an.chung_loai === 0 ? 'Chó' : 'Mèo' }}</p>
               <p><strong>Giới tính:</strong> {{ detail_ho_so_benh_an.gioi_tinh_pet ? 'Đực' : 'Cái' }}</p>
             </div>
             <div class="col-md-6">
@@ -183,7 +168,6 @@
                       <th>Tên thuốc</th>
                       <th>Số lượng</th>
                       <th>Liều lượng</th>
-                      <th>Ghi chú</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -191,7 +175,9 @@
                       <td>{{ thuoc.ten_thuoc }}</td>
                       <td>{{ thuoc.so_luong }}</td>
                       <td>{{ thuoc.lieu_luong }}</td>
-                      <td>{{ thuoc.ghi_chu }}</td>
+                    </tr>
+                    <tr v-if="!danh_sach_thuoc.length">
+                      <td colspan="3" class="text-center">Không có thông tin thuốc</td>
                     </tr>
                   </tbody>
                 </table>
@@ -235,27 +221,6 @@ export default {
         })
         .catch((error) => {
           toaster.error('Lỗi khi tải dữ liệu: ' + error.message);
-        })
-    },
-    them() {
-      if (!this.ho_so_benh_an.sdt || !this.ho_so_benh_an.chuan_doan) {
-        toaster.error('Vui lòng điền đầy đủ thông tin');
-        return;
-      }
-
-      axios
-        .post('http://127.0.0.1:8000/api/ho-so-benh-an/them', this.ho_so_benh_an)
-        .then((res) => {
-          if (res.data.status) {
-            toaster.success(res.data.message)
-            this.load()
-            this.resetForm()
-          } else {
-            toaster.error(res.data.message || 'Thêm mới thất bại')
-          }
-        })
-        .catch((error) => {
-          toaster.error(error.response?.data?.message || 'Lỗi khi thêm mới');
         })
     },
     openUpdateModal(record) {
@@ -347,14 +312,14 @@ export default {
         });
     },
     openDetailModal(record) {
-      this.detail_ho_so_benh_an = { ...record };
-      // Gọi API lấy danh sách thuốc
+      this.detail_ho_so_benh_an = {}; // reset
+      this.danh_sach_thuoc = [];
       axios
         .get(`http://127.0.0.1:8000/api/ho-so-benh-an/chi-tiet/${record.id}`)
         .then((res) => {
           if (res.data.status) {
-            this.detail_ho_so_benh_an = res.data.data;
-          
+            this.detail_ho_so_benh_an = res.data.ho_so;
+            this.danh_sach_thuoc = res.data.thuoc;
           } else {
             toaster.error('Không thể lấy thông tin chi tiết');
           }
@@ -362,10 +327,50 @@ export default {
         .catch((error) => {
           toaster.error('Lỗi khi lấy thông tin chi tiết: ' + error.message);
         });
+    },
+    loadDanhSachBacSi() {
+      axios
+        .get('http://127.0.0.1:8000/api/nhan-vien/load-bac-si')
+        .then((res) => {
+          if (res.data.status) {
+            this.danhSachBacSi = res.data.data;
+          } else {
+            toaster.error('Lỗi khi tải danh sách bác sĩ');
+          }
+        })
+        .catch((error) => {
+          toaster.error('Lỗi khi tải danh sách bác sĩ: ' + error.message);
+        });
+    },
+    locTheoBacSi() {
+      if (!this.selectedBacSi) {
+        this.load();
+        return;
+      }
+
+      axios
+        .get(`http://127.0.0.1:8000/api/ho-so-benh-an/loc-theo-bac-si/${this.selectedBacSi}`)
+        .then((res) => {
+          if (res.data.status) {
+            this.list_ho_so_benh_an = res.data.data;
+            toaster.success('Đã lọc theo bác sĩ');
+          } else {
+            toaster.error('Lỗi khi lọc theo bác sĩ');
+          }
+        })
+        .catch((error) => {
+          toaster.error('Lỗi khi lọc theo bác sĩ: ' + error.message);
+        });
+    },
+    resetFilter() {
+      this.selectedBacSi = '';
+      this.load();
+      toaster.success('Đã xóa bộ lọc');
     }
   },
   mounted() {
-    this.load()
+    this.load();
+    this.loadDanhSachBacSi();
   },
   data() {
     return {
@@ -382,40 +387,83 @@ export default {
       },
       detail_ho_so_benh_an: {},
       danh_sach_thuoc: [],
+      selectedBacSi: '',
+      danhSachBacSi: [],
     }
   },
 };
 </script>
 
 <style scoped>
+.card {
+  margin: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.card-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.card-body {
+  padding: 20px;
+}
+
 .status-badge {
-    padding: 8px 16px;
-    font-size: 0.9em;
-    font-weight: 500;
-    border-radius: 4px;
-    min-width: 120px;
-    display: inline-block;
-    text-align: center;
-    transition: all 0.3s ease;
+  padding: 8px 16px;
+  font-size: 0.9em;
+  font-weight: 500;
+  border-radius: 4px;
+  min-width: 120px;
+  display: inline-block;
+  text-align: center;
+  transition: all 0.3s ease;
 }
 
 .status-badge:hover {
-    transform: scale(1.05);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transform: scale(1.05);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .bg-warning {
-    background-color: #ffc107 !important;
-    color: #000;
+  background-color: #ffc107 !important;
+  color: #000;
 }
 
 .bg-success {
-    background-color: #28a745 !important;
-    color: #fff;
+  background-color: #28a745 !important;
+  color: #fff;
 }
 
 .cursor-pointer {
-    cursor: pointer;
+  cursor: pointer;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  white-space: nowrap;
+}
+
+.table td {
+  white-space: nowrap;
+}
+
+.btn i {
+  margin-right: 5px;
+}
+
+.modal-lg {
+  max-width: 800px;
+}
+
+.border-bottom {
+  border-bottom: 2px solid #dee2e6;
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
 }
 
 .modal-header {
@@ -424,27 +472,5 @@ export default {
 
 .modal-footer {
   border-top: none;
-}
-
-.form-label {
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-}
-
-.btn i {
-  margin-right: 5px;
-}
-
-.modal-lg {
-    max-width: 800px;
-}
-
-.border-bottom {
-    border-bottom: 2px solid #dee2e6;
-    margin-bottom: 1rem;
-}
-
-.table th {
-    background-color: #f8f9fa;
 }
 </style>

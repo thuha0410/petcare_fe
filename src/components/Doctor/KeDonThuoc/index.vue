@@ -10,17 +10,19 @@
             <div class="row mb-3">
               <div class="col-md-6">
                 <label>Khách hàng</label>
-                <select v-model="don_thuoc.id_hsba" class="form-control">
-                  <option v-for="kh in khach_hang" :key="kh.id" :value="kh.id">
+                <select v-model="selectedKhachHang" class="form-control">
+                  <option disabled value="">Chọn khách hàng</option>
+                  <option v-for="kh in khach_hang_hsba" :key="kh.id" :value="kh.id">
                     {{ kh.ho_va_ten }}
                   </option>
                 </select>
               </div>
               <div class="col-md-6">
                 <label>Bác sĩ</label>
-                <select v-model="don_thuoc.id_nhan_vien" class="form-control">
+                <select v-model="don_thuoc.id_nhan_vien" class="form-control" disabled>
+                  <option value="">Chọn bác sĩ</option>
                   <option v-for="nv in nhan_vien" :key="nv.id" :value="nv.id">
-                    {{ nv.ten_nv }} - {{ nv.chuc_vu?.ten_chuc_vu }}
+                    {{ nv.ten_nv }}
                   </option>
                 </select>
               </div>
@@ -29,7 +31,8 @@
             <div class="row mb-3">
               <div class="col-md-6">
                 <label>Pet của khách hàng</label>
-                <select v-model="don_thuoc.id_pet" class="form-control" :disabled="filteredPets.length === 0">
+                <select v-model="don_thuoc.id_pet" class="form-control" :disabled="!selectedKhachHang">
+                  <option value="">Chọn pet</option>
                   <option v-for="pet in filteredPets" :key="pet.id" :value="pet.id">
                     {{ pet.ten_pet }}
                   </option>
@@ -98,27 +101,28 @@
               <table class="table table-bordered table-hover">
                 <thead class="thead-light">
                   <tr>
-                    <th>Mã đơn</th>
+                    <th>#</th>
                     <th>Khách hàng</th>
                     <th>Bác sĩ</th>
                     <th>Tên pet</th>
                     <th>Ngày kê</th>
-                    <th>Tình trạng</th>
                     <th class="text-center" style="width: 200px">Thao tác</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="don in danh_sach_don" :key="don.id">
-                    <td>{{ don.id }}</td>
+                  <tr v-for="(don, index) in danh_sach_don" :key="index">
+                    <td>{{ index + 1 }}</td>
                     <td>{{ don.ten_khach_hang }}</td>
                     <td>{{ don.ten_bac_si }}</td>
                     <td>{{ don.ten_pet }}</td>
                     <td>{{ formatDate(don.created_at) }}</td>
-                    <td>{{ don.tinh_trang || 'Chưa cập nhật' }}</td>
                     <td class="text-center">
                       <div class="d-flex justify-content-center gap-2">
                         <button class="btn btn-info btn-sm" @click="xemChiTiet(don)">
                           <i class="fa-solid fa-eye"></i> Xem chi tiết
+                        </button>
+                        <button class="btn btn-primary btn-sm" @click="inDonThuoc(don)">
+                          <i class="fa-solid fa-print"></i> In đơn
                         </button>
                         <button class="btn btn-danger btn-sm" @click="xoaDonThuoc(don.id)">
                           <i class="fa-solid fa-trash"></i>
@@ -150,11 +154,12 @@
                 <table class="table table-bordered table-hover">
                   <thead>
                     <tr>
-                      <th class="text-center" style="width: 60px">STT</th>
+                      <th class="text-center" style="width: 60px">#</th>
                       <th class="text-center" style="width: 100px">Mã thuốc</th>
                       <th>Tên thuốc</th>
                       <th class="text-center" style="width: 100px">Số lượng</th>
                       <th>Liều lượng</th>
+                      <th class="text-center" style="width: 150px">Tình trạng</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -164,6 +169,15 @@
                       <td>{{ item.ten_thuoc }}</td>
                       <td class="text-center">{{ item.so_luong }}</td>
                       <td>{{ item.lieu_luong }}</td>
+                      <td class="text-center">
+                        <button 
+                          class="btn btn-sm" 
+                          :class="item.tinh_trang === '1' ? 'btn-success' : 'btn-danger'"
+                          @click="toggleTinhTrang(item)"
+                        >
+                          {{ item.tinh_trang === '1' ? 'Đang sử dụng' : 'Dừng sử dụng' }}
+                        </button>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -198,6 +212,8 @@ export default {
     return {
       don_thuoc: {
         id_hsba: '',
+        id_pet: '',
+        id_nhan_vien: ''
       },
       chi_tiet: [],
       thuocs: [],
@@ -208,31 +224,93 @@ export default {
       filteredPets: [],
       chiTietDonThuoc: [],
       showModal: false,
-      currentDonThuocId: null
+      currentDonThuocId: null,
+      ho_so_benh_an: [],
+      khach_hang_hsba: [],
+      selectedKhachHang: '',
     };
   },
   created() {
-    this.loadThuoc();
-    this.loadKhachHang();
-    this.loadNhanVien();
-    this.loadDanhSachDon();
-    this.loadPets();
+    // Initialize data
+    this.don_thuoc = {
+      id_hsba: '',
+      id_pet: '',
+      id_nhan_vien: ''
+    };
+    this.chi_tiet = [];
+    this.thuocs = [];
+    this.khach_hang = [];
+    this.nhan_vien = [];
+    this.danh_sach_don = [];
+    this.pets = [];
+    this.filteredPets = [];
+    this.chiTietDonThuoc = [];
+    this.showModal = false;
+    this.currentDonThuocId = null;
+    this.ho_so_benh_an = [];
+    this.khach_hang_hsba = [];
+    this.selectedKhachHang = '';
+  },
+  mounted() {
+    // Load all data when component is mounted
+    this.loadAllData();
+    
+    // Modal event listener
+    $('#chiTietModal').on('hidden.bs.modal', () => {
+      this.chiTietDonThuoc = [];
+    });
   },
   methods: {
-    async loadThuoc() {
+    async loadAllData() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/api/don-thuoc/load-thuoc');
-        this.thuocs = response.data.thuoc;
+        // Load all data in parallel
+        await Promise.all([
+          this.loadKhachHangDangDieuTri(),
+          this.loadThuoc(),
+          this.loadNhanVien(),
+          this.loadDanhSachDon(),
+          this.loadPets(),
+          this.loadHoSoBenhAn()
+        ]);
       } catch (error) {
-        toaster.error('Lỗi khi tải danh sách thuốc');
+        console.error('Error loading data:', error);
+        toaster.error('Lỗi khi tải dữ liệu');
       }
     },
-    async loadKhachHang() {
+    async loadKhachHangDangDieuTri() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/api/khach-hang/load');
-        this.khach_hang = response.data.data;
+        const response = await api.get('http://127.0.0.1:8000/api/don-thuoc/khach-hang-dang-dieu-tri');
+        if (response.data.status) {
+          this.khach_hang_hsba = response.data.data;
+        } else {
+          toaster.error(response.data.message || 'Lỗi khi tải danh sách khách hàng');
+        }
       } catch (error) {
         toaster.error('Lỗi khi tải danh sách khách hàng');
+      }
+    },
+    async loadHoSoBenhAn() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/api/ho-so-benh-an/load');
+        if (response.data.status) {
+          this.ho_so_benh_an = response.data.data;
+        } else {
+          toaster.error(response.data.message || 'Lỗi khi tải hồ sơ bệnh án');
+        }
+      } catch (error) {
+        toaster.error('Lỗi khi tải hồ sơ bệnh án');
+      }
+    },
+    async loadPets() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/api/pet/load');
+        if (response.data.status) {
+          this.pets = response.data.data;
+        } else {
+          toaster.error(response.data.message || 'Lỗi khi tải danh sách thú cưng');
+        }
+      } catch (error) {
+        toaster.error('Lỗi khi tải danh sách thú cưng');
       }
     },
     async loadNhanVien() {
@@ -259,12 +337,12 @@ export default {
         toaster.error('Lỗi khi tải danh sách đơn thuốc');
       }
     },
-    async loadPets() {
+    async loadThuoc() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/api/pet/load');
-        this.pets = response.data.data;
+        const response = await api.get('http://127.0.0.1:8000/api/don-thuoc/load-thuoc');
+        this.thuocs = response.data.thuoc;
       } catch (error) {
-        toaster.error('Lỗi khi tải danh sách pet');
+        toaster.error('Lỗi khi tải danh sách thuốc');
       }
     },
     formatDate(dateString) {
@@ -325,6 +403,15 @@ export default {
       document.body.classList.remove('modal-open');
     },
     themChiTiet() {
+      // Kiểm tra xem đã có thuốc nào được chọn chưa
+      if (this.chi_tiet.length > 0) {
+        const lastItem = this.chi_tiet[this.chi_tiet.length - 1];
+        if (!lastItem.id_thuoc) {
+          toaster.warning('Vui lòng chọn thuốc trước khi thêm thuốc mới');
+          return;
+        }
+      }
+
       this.chi_tiet.push({
         id_thuoc: '',
         so_luong: 1,
@@ -334,10 +421,19 @@ export default {
     xoaChiTiet(index) {
       this.chi_tiet.splice(index, 1);
     },
+    // Thêm phương thức kiểm tra trùng lặp
+    kiemTraTrungThuoc(id_thuoc) {
+      return this.chi_tiet.some(item => item.id_thuoc === id_thuoc);
+    },
     async luuDonThuoc() {
       try {
-        if (!this.don_thuoc.id_hsba) {
-          toaster.error('Vui lòng chọn hồ sơ bệnh án');
+        
+        if (!this.don_thuoc.id_pet) {
+          toaster.error('Vui lòng chọn pet');
+          return;
+        }
+        if (!this.don_thuoc.id_nhan_vien) {
+          toaster.error('Vui lòng chọn bác sĩ');
           return;
         }
         if (this.chi_tiet.length === 0) {
@@ -345,43 +441,139 @@ export default {
           return;
         }
 
-        const response = await api.post('http://127.0.0.1:8000/api/don-thuoc/them', {
-          ...this.don_thuoc,
+        // Tìm hồ sơ bệnh án của pet được chọn
+        const hsba = this.ho_so_benh_an.find(hs => 
+          hs.id_pet === this.don_thuoc.id_pet && 
+          hs.tinh_trang === 1
+        );
+
+        if (!hsba) {
+          toaster.error('Không tìm thấy hồ sơ bệnh án đang điều trị cho pet này');
+          return;
+        }
+
+        const payload = {
+          id_hsba: hsba.id,
           chi_tiet: this.chi_tiet
-        });
-        if (response.data.status === 1) {
-          toaster.success(response.data.message);
-          if (response.data.data) {
-            this.danh_sach_don.unshift(response.data.data);
-          } else {
-            this.loadDanhSachDon();
-          }
-          this.resetForm();
+        };
+
+        const response = await api.post('http://127.0.0.1:8000/api/don-thuoc/them', payload);
+        if (response.data.status) {
+          toaster.success('Lưu đơn thuốc thành công');
+          this.loadDanhSachDon();
+          this.chi_tiet = [];
+          this.don_thuoc.id_pet = '';
+          this.don_thuoc.id_nhan_vien = '';
+          this.selectedKhachHang = '';
+          this.filteredPets = [];
         } else {
-          toaster.error(response.data.message);
+          toaster.error(response.data.message || 'Lỗi khi lưu đơn thuốc');
         }
       } catch (error) {
+        console.error('Lỗi khi lưu đơn thuốc:', error);
         toaster.error('Lỗi khi lưu đơn thuốc');
       }
     },
-    resetForm() {
-      this.don_thuoc = {
-        id_hsba: '',
-      };
-      this.chi_tiet = [];
+    inDonThuoc(don) {
+      console.log('Đơn thuốc cần in:', don);
+      const routeData = this.$router.resolve({
+        path: '/doctor/in-don-thuoc',
+        query: { id: don.id }
+      });
+      console.log('Route data:', routeData);
+      window.open(routeData.href, '_blank', 'width=800,height=600');
+    },
+    async toggleTinhTrang(item) {
+        const response = await api.post('http://127.0.0.1:8000/api/don-thuoc/toggle-tinh-trang', {
+          id_ctthuoc: item.id_ctthuoc
+        });
+        if (response.data.status) {
+          toaster.success('Cập nhật tình trạng thành công');
+
+          item.tinh_trang = item.tinh_trang === '1' ? '0' : '1';
+        } else {
+          toaster.error(response.data.message || 'Lỗi khi cập nhật tình trạng');
+        }
     }
   },
   watch: {
-    'don_thuoc.id_hsba'(newVal) {
-      this.filteredPets = this.pets.filter(pet => String(pet.id_kh) === String(newVal));
-      this.don_thuoc.id_pet = '';
+    selectedKhachHang: {
+      handler(newVal) {
+        if (!newVal) {
+          this.filteredPets = [];
+          this.don_thuoc.id_nhan_vien = '';
+          this.don_thuoc.id_hsba = '';
+          this.don_thuoc.id_pet = '';
+          return;
+        }
+
+
+        if (!this.ho_so_benh_an.length || !this.pets.length) {
+          return;
+        }
+
+        const activeMedicalRecords = this.ho_so_benh_an.filter(hs => 
+          hs.id_kh === newVal && hs.tinh_trang === 1
+        );
+
+        if (activeMedicalRecords.length > 0) {
+
+          const activePetIds = activeMedicalRecords.map(hs => hs.id_pet);
+
+          this.filteredPets = this.pets.filter(pet => 
+            pet.id_kh === newVal && activePetIds.includes(pet.id)
+          );
+
+          const firstRecord = activeMedicalRecords[0];
+          this.don_thuoc.id_nhan_vien = firstRecord.id_nv;
+          this.don_thuoc.id_hsba = firstRecord.id;
+        } else {
+          toaster.warning('Không tìm thấy hồ sơ bệnh án đang điều trị cho khách hàng này');
+          this.don_thuoc.id_nhan_vien = '';
+          this.don_thuoc.id_hsba = '';
+          this.don_thuoc.id_pet = '';
+          this.filteredPets = [];
+        }
+      }
+    },
+    'don_thuoc.id_pet': {
+      handler(newVal) {
+        if (!newVal) {
+          this.don_thuoc.id_hsba = '';
+          return;
+        }
+
+        // Find the medical record for the selected pet
+        const medicalRecord = this.ho_so_benh_an.find(hs => 
+          hs.id_pet === newVal && 
+          hs.tinh_trang === 1
+        );
+
+        if (medicalRecord) {
+          this.don_thuoc.id_hsba = medicalRecord.id;
+          this.don_thuoc.id_nhan_vien = medicalRecord.id_nv;
+        }
+      }
+    },
+    'chi_tiet': {
+      deep: true,
+      handler(newVal) {
+        // Kiểm tra trùng lặp khi có thay đổi trong chi_tiet
+        const seen = new Set();
+        newVal.forEach((item, index) => {
+          if (item.id_thuoc) {
+            if (seen.has(item.id_thuoc)) {
+              // Nếu phát hiện trùng lặp, xóa item hiện tại
+              this.chi_tiet.splice(index, 1);
+              toaster.error('Thuốc này đã được thêm vào đơn. Không thể thêm trùng lặp.');
+            } else {
+              seen.add(item.id_thuoc);
+            }
+          }
+        });
+      }
     }
   },
-  mounted() {
-    $('#chiTietModal').on('hidden.bs.modal', () => {
-      this.chiTietDonThuoc = [];
-    });
-  }
 };
 </script>
 
