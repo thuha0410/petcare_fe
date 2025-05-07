@@ -9,7 +9,7 @@ try{
       const token = localStorage.getItem('token_admin');
       if (!token) {
         toaster.error('Vui lòng đăng nhập lại');
-        return next('/login');
+        return next('/nhan-vien/dang-nhap');
       }
 
       const res = await axios.get(
@@ -18,6 +18,8 @@ try{
       );
       if (res.data.status === 1) {
         return next();
+
+
       }else{
         toaster.error(res.data.message);
         return next(false);

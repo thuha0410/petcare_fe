@@ -50,9 +50,9 @@
                             <h3 class="fw-bold" style="color: darkblue;">{{ value.ten_dv }}</h3>
                             <p style="font-size: 20px;">{{ value.mo_ta }}</p>
                             <p style="font-size: 25px;" class="text-danger fw-bold">
-                                Giá dao động: <span>{{ value.gia }}</span> VND
+                                Giá dao động: <span>{{ value.gia }} VND</span> VND
                             </p>
-                            <router-link to="/client/chon-dich-vu/" class="text-decoration-none">
+                            <router-link :to="`/client/chon-dich-vu/${value.id}`" class="text-decoration-none">
                                 <div class="text-end ">
                                     <button class="btn btn-info btn-hover fw-bold">ĐẶT LỊCH NGAY</button>
                                 </div>
@@ -67,7 +67,7 @@
     </div>
 </template>
 <script>
-import axios from 'axios';
+import apiClient from '../../../services/apiClient';
 
 export default {
     data() {
@@ -87,15 +87,15 @@ export default {
 
     methods: {
         load() {
-            axios
-                .get('http://127.0.0.1:8000/api/dich-vu/load')
+            apiClient
+                .get('/api/dich-vu/load')
                 .then((res) => {
                     this.list_dich_vu = res.data.data
                 })
         },
         timkiem() {
-            axios
-                .post('http://127.0.0.1:8000/api/dich-vu/tim-kiem', this.tim_kiem)
+            apiClient
+                .post('/api/dich-vu/tim-kiem', this.tim_kiem)
                 .then((res) => {
                     this.list_dich_vu = res.data.data
                 })
@@ -105,7 +105,7 @@ export default {
 };
 
 </script>
-<style>
+<style scoped>
 body {
     background-color: #f5f7fa;
     background: url(https://cityvet.vn/storage/general-1/br-1.png ) no-repeat;
