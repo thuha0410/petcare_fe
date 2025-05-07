@@ -100,7 +100,7 @@
     </div>
 </template>
 <script>
-import axios from 'axios';
+import apiClient from '../../services/apiClient';
 
 export default {
     data() {
@@ -134,15 +134,15 @@ export default {
             this.$router.push(`/client/chon-dich-vu/${id_dv}`);
         },
         load() {
-            axios
+            apiClient
                 .get('http://127.0.0.1:8000/api/dich-vu/load-kham-benh')
                 .then((res) => {
                     this.list_dich_vu = res.data.data
                 })
         },
         timkiem() {
-            axios
-                .post('http://127.0.0.1:8000/api/dich-vu/tim-kiem', this.tim_kiem)
+            apiClient
+                .post('/api/dich-vu/tim-kiem', this.tim_kiem)
                 .then((res) => {
                     this.list_dich_vu = res.data.data
                 })
@@ -150,7 +150,7 @@ export default {
     },
 }
 </script>
-<style>
+<style scoped>
 body {
     background-color: #f5f7fa;
     background: url(https://cityvet.vn/storage/general-1/br-1.png ) no-repeat;
