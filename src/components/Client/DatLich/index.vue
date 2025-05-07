@@ -32,7 +32,7 @@
                 <div class="widgets-icons rounded-circle mx-auto bg-light-danger text-danger mb-3">
                   <i class="fa-solid fa-user-doctor" style="color: #3066c5;"></i>
                 </div>
-                <h5 class="">Đặt lịch <br> khám bệnh</h5>
+                <h5 class="">Đặt khám <br> theo bác sĩ</h5>
               </div>
             </div>
           </div>

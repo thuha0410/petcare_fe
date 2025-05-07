@@ -150,7 +150,7 @@
                     <input v-model="sua_pet.tuoi" class="form-control mb-2" type="text">
                     <label for="">Hình ảnh</label>
                     <!-- <img class="form-control" :src="pet.hinh_anh" alt=""> -->
-                    <input v-model="sua_pet.hinh_anh" type="text">
+                    <input class="form-control mb-2" v-model="sua_pet.hinh_anh" type="text">
                     <label for="">Cân nặng</label>
                     <input v-model="sua_pet.can_nang" class="form-control mb-2" type="text">
                     <label for="">Tình trạng</label>

@@ -15,9 +15,6 @@
                             <dt class="col-sm-2">Mô tả </dt>
                             <dd class="col-sm-9">{{ list_nvct.mo_ta }}</dd>
 
-                            <dt class="col-sm-2">Giá khám</dt>
-                            <dd class="col-sm-9">{{ list_nvct.tien_kham }}</dd>
-
                             <dt class="col-sm-2">Lịch khám</dt>
                             <dd class="col-sm-9">Hẹn khám</dd>
                         </dl>
@@ -26,14 +23,6 @@
                 <div class="card-footer text-end">
                     <button class="btn btn-info btn-lg custom-btn">Đặt khám ngay</button>
                 </div>
-            </div>
-        </div>
-        <div class="card rounded-3">
-            <div class="card-header">
-                <h3>Giới thiệu</h3>
-            </div>
-            <div class="card-body">
-                <p style="font-size:20px;">{{ list_nvct.mo_ta }}</p>
             </div>
         </div>
 
@@ -58,11 +47,9 @@
                                 <div style="font-size:20px;" class="row">
                                     <div class="col-lg-5">
                                         <b>Chuyên khoa</b><br>
-                                        <b>Giá khám</b>
                                     </div>
                                     <div class="col-lg-7">
                                         <span>Chẩn đoán hình ảnh</span><br>
-                                        <span>{{ value.tien_kham }}</span>
                                     </div>
                                 </div>
                                 <hr>
@@ -79,7 +66,7 @@
     </div>
 </template>
 <script>
-import apiClient from '../../services/apiClient';
+import axios from 'axios';
 
 export default {
     data() {

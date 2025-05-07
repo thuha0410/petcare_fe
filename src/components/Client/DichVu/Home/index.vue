@@ -50,7 +50,7 @@
                             <h3 class="fw-bold" style="color: darkblue;">{{ value.ten_dv }}</h3>
                             <p style="font-size: 20px;">{{ value.mo_ta }}</p>
                             <p style="font-size: 25px;" class="text-danger fw-bold">
-                                Giá dao động: <span>{{ value.gia }} VND</span> VND
+                                Giá dao động: <span>{{ value.gia }} VND</span>
                             </p>
                             <router-link :to="`/client/chon-dich-vu/${value.id}`" class="text-decoration-none">
                                 <div class="text-end ">
@@ -67,7 +67,8 @@
     </div>
 </template>
 <script>
-import apiClient from '../../../services/apiClient';
+import apiClient from '../../../../services/apiClient';
+
 
 export default {
     data() {

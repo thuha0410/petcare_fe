@@ -243,7 +243,7 @@ export default {
                 id_kh: id_kh,
                 id_dv: this.list_dv.id,
                 id_pet: this.id_pet,
-                tinh_trang: 0,
+                tinh_trang: "0",
                 gia: this.list_dv.gia,
                 tien_coc: this.list_dv.gia * 25 / 100,
                 ngay: this.selectedDate,
