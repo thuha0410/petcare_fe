@@ -139,7 +139,13 @@ export default {
     methods: {
         load() {
             axios
-                .get('http://127.0.0.1:8000/api/nha-cung-cap/load')
+                .get('http://127.0.0.1:8000/api/nha-cung-cap/load',
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.list_nha_cung_cap = res.data.data
                 })

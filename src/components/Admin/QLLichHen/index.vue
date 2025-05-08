@@ -70,9 +70,7 @@
                                 <td>
                                     <button v-on:click="Object.assign(update_lich, value)" data-bs-toggle="modal"
                                         data-bs-target="#capnhat" style="width:100px;" class="btn btn-primary me-2">Cập
-                                        nhật</button>
-                                    <button v-on:click="Object.assign(del_lich, value)" data-bs-toggle="modal"
-                                        data-bs-target="#xoa" style="width:100px;" class="btn btn-danger ">Xóa</button>
+                                        nhật</button>   
                                 </td>
                             </tr>
                         </template>
@@ -81,23 +79,6 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="xoa" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xlg">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">THÔNG BÁO!</h1>
-                </div>
-                <div class="modal-body">
-                    <h5>Bạn có muốn xóa lịch hẹn này không?</h5>
-                </div>
-                <div class="modal-footer">
-                    <button v-on:click="xoa()" type="button" class="btn btn-danger" data-bs-dismiss="modal">Xóa</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="modal fade" id="capnhat" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -116,7 +97,7 @@
                     <label for="">Giờ hẹn</label>
                     <input v-model="update_lich.gio" class="form-control mb-2" type="text" readonly>
                     <label for="">Tên nhân viên</label>
-                    <select v-model="update_lich.id_nv" class="form-control mb-2">
+                    <select v-model="update_lich.id_nv" class="form-control mb-2" :disabled="update_lich.id_dv != 4">
                         <template v-for="(value, index) in nhan_vien" :key="index">
                             <option v-bind:value="value.id">{{ value.ten_nv }}</option>
                         </template>
@@ -130,8 +111,7 @@
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button v-on:click="update()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cập
-                        nhật</button>
+                    <button v-on:click="update()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cập nhật</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
@@ -153,7 +133,6 @@ export default {
             pet: [],
             nhan_vien: [],
             dich_vu: [],
-            xoa_lich: {},
         }
     },
     mounted() {
@@ -197,18 +176,6 @@ export default {
                         this.nhan_vien = res.data.data;
                     }
                 )
-        },
-        xoa() {
-            axios
-                .post('http://127.0.0.1:8000/api/lich-hen/del', this.xoa_lich)
-                .then((res) => {
-                    if (res.data.status == true) {
-                        toaster.success(res.data.message)
-                        this.loadLichHen()
-                    } else {
-                        toaster.error('Xóa thất bại')
-                    }
-                })
         },
         update() {
             axios

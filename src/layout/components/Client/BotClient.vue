@@ -216,7 +216,6 @@ export default {
                     this.khach_hang = res.data.data
                 })
         },
-
     }
 }
 </script>

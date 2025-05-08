@@ -8,23 +8,19 @@
                         src="https://res.cloudinary.com/dd1p908gm/image/upload/v1743239937/step3-dogimg_oqzgd5.avif"
                         alt="">
                     <h1 style="color: #1F365E; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;"
-                        class="ms-5 fw-bold">ĐẶT LỊCH KHÁM THEO
-                        BÁC SĨ</h1>
+                        class="ms-5 fw-bold">ĐẶT LỊCH KHÁM BỆNH</h1>
                     <div style="font-size: medium; font-family: Poppins; color: black;" class="mt-4">
 
                         <p><i class="fa-regular fa-circle-check" style="color: #35c051;"></i> Đặt khám theo giờ, không
                             cần chờ lấy
                             số thứ tự, chờ thanh toán </p>
-                        <p><i class="fa-regular fa-circle-check" style="color: #35c051;"></i> Chọn bác sĩ & thời gian
+                        <p><i class="fa-regular fa-circle-check" style="color: #35c051;"></i> Chọn dịch vụ khám & thời gian
                             linh hoạt</p>
                         <p><i class="fa-regular fa-circle-check" style="color: #35c051;"></i> Tư vấn & khám bệnh chuyên
                             sâu</p>
                         <p><i class="fa-regular fa-circle-check" style="color: #35c051;"></i> Được hưởng chính sách khi
                             đặt lịch </p>
-                        <p><i class="fa-regular fa-circle-check" style="color: #35c051;"></i> Chủ động chọn bác sĩ tin
-                            tưởng, đặt
-                            càng sớm, càng có cơ hội có số thứ tự thấp nhất, tránh
-                            hết số</p>
+                        <p><i class="fa-regular fa-circle-check" style="color: #35c051;"></i> Ưu đãi, nhiệt tình, tận tụy</p>
                         <hr>
                         <h3 class="text-center">Liên hệ để tư vấn thêm <i class="fa-solid fa-phone-volume"
                                 style="color: #22779b;"></i>
@@ -50,7 +46,7 @@
         <div class="row ">
             <div class="col-lg-2"></div>
             <div class="col-lg-8">
-                <h2 class="text-center fw-bold" style="color: darkblue;">CHỌN BÁC SĨ</h2>
+                <h2 class="text-center fw-bold" style="color: darkblue;">CHỌN DỊCH VỤ KHÁM</h2>
                 <br>
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" placeholder="Tìm kiếm bác sĩ"
@@ -100,7 +96,8 @@
     </div>
 </template>
 <script>
-import apiClient from '../../services/apiClient';
+import apiClient from '../../../services/apiClient';
+
 
 export default {
     data() {
