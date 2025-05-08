@@ -27,9 +27,8 @@
                     <div class="input-group">
                         <select class="form-select">
                             <option value="">-- Tất cả trạng thái --</option>
-                            <option value="2">Đã xác nhận</option>
-                            <option value="1">Chưa xác nhận</option>
-                            <option value="0">Đã hủy</option>
+                            <option value="1">Đã thực hiện</option>
+                            <option value="0">Chưa thực hiện</option>
 
                         </select>
                         <button class="btn btn-dark">Lọc</button>
@@ -64,9 +63,9 @@
                                 <td>{{ getTenNV(value.id_nv) }}</td>
                                 <td>{{ value.tien_coc }}</td>
                                 <td class="text-center align-middle">
-                                    <button v-if="value.tinh_trang == 1" v-on:click="doi_trang_thai(value)"
-                                        class="btn btn-success me-2">Đã duyệt</button>
-                                    <button v-else class="btn btn-warning " v-on:click="doi_trang_thai(value)">Chờ duyệt</button>
+                                    <button v-if="value.tinh_trang == 0" v-on:click="doi_trang_thai(value)"
+                                        class="btn btn-success me-2">Chưa thực hiện</button>
+                                    <button v-else class="btn btn-warning " v-on:click="doi_trang_thai(value)">Đã thực hiện</button>
                                 </td>
                                 <td>
                                     <button v-on:click="Object.assign(update_lich, value)" data-bs-toggle="modal"
@@ -126,8 +125,8 @@
                     <input v-model="update_lich.tien_coc" class="form-control mb-2" type="text" readonly>
                     <label for="">Tình trạng</label>
                     <select v-model="update_lich.tinh_trang" class="form-control mb-2" name="" id="">
-                        <option value="0">Chờ duyệt</option>
-                        <option value="1">Đã duyệt</option>
+                        <option value="0">Chưa thực hiện</option>
+                        <option value="1">Đã thực hiện</option>
                     </select>
                 </div>
                 <div class="modal-footer">

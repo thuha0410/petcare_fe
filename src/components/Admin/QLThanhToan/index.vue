@@ -14,12 +14,11 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr class="text-center">
-                            <th>#</th>
                             <th>Mã hóa đơn</th>
                             <th>Tên khách hàng</th>
                             <th>Ngày xuất hóa đơn</th>
-                            <th>Tên pet</th>
                             <th>Chi tiết</th>
+                            <th>Tiền khám</th>
                             <th>Phương thức</th>
                             <th>Tổng tiền</th>
                             <th>Tình trạng</th>
@@ -27,21 +26,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <template>
+                        <template v-for="(value,index) in list_hoa_don" :key="index">
                             <tr class="text-center align-middle">
-                                <th>1</th>
-                                <td>HD01</td>
-                                <td>Lê Văn Đạt</td>
-                                <td>2025-04-05</td>
-                                <td>PET01</td>
+                                <td>{{value.id}}</td>
+                                <td>{{value.ho_va_ten}}</td>
+                                <td>{{value.ngay_xuat}}</td>
                                 <td>
                                     <i class="fa-solid fa-2x fa-circle-info"></i>
                                 </td>
-                                <td>Cash</td>
-                                <td>1.200.000VNĐ</td>
+                                <td>{{value.phuong_thuc}}</td>
+                                <td>{{value.tong_tien}}</td>
                                 <td>
-                                    <button class="btn btn-success">Đã thanh toán</button>
-                                    <button class="btn btn-warning">Chưa thanh toán</button>
+                                    <button v-if="value.tinh_trang == 1" class="btn btn-success">Đã thanh toán</button>
+                                    <button v-else class="btn btn-warning">Chưa thanh toán</button>
                                 </td>
                                 <td class="text-center align-middle">
                                     <button data-bs-toggle="modal" data-bs-target="#sua"
@@ -117,7 +114,22 @@
     </div>
 </template>
 <script>
+import axios from 'axios'
+import { createToaster } from "@meforma/vue-toaster";
+const toaster = createToaster({ position: "top-right" });
 export default {
+    data() {
+        return {
+            list_hoa_don: [],
+            search:{},
+        }
+    },
+    mounted() {
+        
+    },
+    methods: {
+        
+    },
 }
 </script>
 <style></style>
