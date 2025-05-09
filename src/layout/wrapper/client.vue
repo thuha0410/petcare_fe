@@ -11,6 +11,7 @@
             </div>
         </div>
         <BotClient></BotClient>
+        <Chatbot></Chatbot>
     </div>
 </template>
 <script>
@@ -24,10 +25,14 @@ import "../../assets/js/app.js";
 import "../../assets/js/pace.min.js";
 import TopClient from "../components/Client/TopClient.vue";
 import BotClient from "../components/Client/BotClient.vue";
+import Chatbot from "../../components/Chatbot.vue";
+
 export default {
     name: "app",
     components: {
-        TopClient, BotClient
+        TopClient,
+        BotClient,
+        Chatbot
     }
 }
 </script>

@@ -301,10 +301,17 @@ export default {
     methods: {
         load() {
             axios
-                .get('http://127.0.0.1:8000/api/dich-vu/load-bac-si')
+                .get('http://localhost:8000/api/dich-vu/load-bac-si')
                 .then((res) => {
-                    this.list_nhan_vien = res.data.data
+                    if (res.data.status === 'success') {
+                        this.list_nhan_vien = res.data.data;
+                    } else {
+                        console.error('Error loading doctors:', res.data.message);
+                    }
                 })
+                .catch((error) => {
+                    console.error('Error loading doctors:', error);
+                });
         },
     },
 }

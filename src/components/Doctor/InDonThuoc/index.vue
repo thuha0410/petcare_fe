@@ -28,10 +28,11 @@
                 <table class="table table-bordered">
                     <thead class="table-light">
                         <tr>
-                            <th class="text-center" style="width: 60px">STT</th>
+                            <th class="text-center" style="width: 60px">#</th>
                             <th>Tên thuốc</th>
                             <th class="text-center" style="width: 100px">Số lượng</th>
                             <th>Liều lượng</th>
+                            <th style="width: 300px">Ghi chú</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -40,9 +41,10 @@
                             <td>{{ item.ten_thuoc }}</td>
                             <td class="text-center">{{ item.so_luong }}</td>
                             <td>{{ item.lieu_luong }}</td>
+                            <td></td>
                         </tr>
                         <tr v-if="!chiTiet || chiTiet.length === 0">
-                            <td colspan="4" class="text-center">Không có thông tin thuốc</td>
+                            <td colspan="5" class="text-center">Không có thông tin thuốc</td>
                         </tr>
                     </tbody>
                 </table>

@@ -63,9 +63,10 @@
                                 <td>{{ getTenNV(value.id_nv) }}</td>
                                 <td>{{ value.tien_coc }}</td>
                                 <td class="text-center align-middle">
-                                    <button v-if="value.tinh_trang == 0" v-on:click="doi_trang_thai(value)"
-                                        class="btn btn-success me-2">Chưa thực hiện</button>
-                                    <button v-else class="btn btn-warning " v-on:click="doi_trang_thai(value)">Đã thực hiện</button>
+                                    <button v-if="value.tinh_trang == 1" v-on:click="doi_trang_thai(value)"
+                                        class="btn btn-success me-2">Đã duyệt</button>
+                                    <button v-else class="btn btn-warning " v-on:click="doi_trang_thai(value)">Chờ
+                                        duyệt</button>
                                 </td>
                                 <td>
                                     <button @click="showModal(value)" data-bs-toggle="modal"
@@ -86,28 +87,12 @@
                     <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">CẬP NHẬT THÔNG TIN</h1>
                 </div>
                 <div class="modal-body">
-                    <label for="">Mã lịch hẹn</label>
-                    <input v-model="update_lich.id_lich" class="form-control mb-2" type="text" readonly>
-                    <label for="">Tên khách hàng</label>
-                    <input v-model="update_lich.ho_va_ten" class="form-control mb-2" type="text" readonly>
-                    <label for="">Tên thú cưng</label>
-                    <input v-model="update_lich.ten_pet" class="form-control mb-2" type="text" readonly>
-                    <label for="">Ngày hẹn</label>
-                    <input v-model="update_lich.ngay" class="form-control mb-2" type="text" readonly>
-                    <label for="">Giờ hẹn</label>
-                    <input v-model="update_lich.gio" class="form-control mb-2" type="text" readonly>
-                    <label for="">Tên nhân viên</label>
-                    <select v-model="update_lich.id_nv" class="form-control mb-2" :disabled="update_lich.id_dv == 4">
+
+                    <label for="">Phân công nhân viên</label>
+                    <select v-model="update_lich.id_nv" class="form-control mb-2" :disabled="!isServiceEditable">
                         <template v-for="(value, index) in nhan_vien" :key="index">
                             <option v-bind:value="value.id">{{ value.ten_nv }}</option>
                         </template>
-                    </select>
-                    <label for="">Tiền cọc</label>
-                    <input v-model="update_lich.tien_coc" class="form-control mb-2" type="text" readonly>
-                    <label for="">Tình trạng</label>
-                    <select v-model="update_lich.tinh_trang" class="form-control mb-2" name="" id="">
-                        <option value="0">Chưa thực hiện</option>
-                        <option value="1">Đã thực hiện</option>
                     </select>
                 </div>
                 <div class="modal-footer">
