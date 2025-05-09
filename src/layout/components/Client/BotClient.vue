@@ -148,7 +148,7 @@ export default {
                 id_kh: this.khach_hang.id,
                 noi_dung: this.comment,
                 ngay_tao: new Date().toISOString().split('T')[0],
-                tinh_trang: 0,
+                tinh_trang: 1,
             };
 
             axios.post("http://127.0.0.1:8000/api/danh-gia/them2", data, {
@@ -180,9 +180,9 @@ export default {
                     }
                 })
                 .then((res) => {
-                    this.ds_danh_gia = res.data.data;
-                    // Đảo ngược danh sách để hiển thị đánh giá mới ở đầu
-                    this.ds_danh_gia.reverse();
+                    this.ds_danh_gia = res.data.data.sort((a, b) => {
+                        return new Date(b.id) - new Date(a.id);
+                    });
                 });
         },
         load() {
@@ -206,7 +206,7 @@ export default {
         loadKH() {
             axios
                 .get('http://127.0.0.1:8000/api/khach-hang/load',
-                {
+                    {
                         headers: {
                             Authorization: 'Bearer ' + localStorage.getItem('token_client')
                         }

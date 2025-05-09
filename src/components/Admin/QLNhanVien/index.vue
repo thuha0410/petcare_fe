@@ -246,11 +246,10 @@ export default {
         },
         loadChucVu() {
             axios
-                .get("http://127.0.0.1:8000/api/chuc-vu/load", {
+                .get("http://127.0.0.1:8000/api/phan-quyen/load-chuc-vu", {
                 })
                 .then((res) => {
                     this.list_chuc_vu = res.data.data
-                    console.log(this.list_chuc_vu);
                 });
         },
         them() {
