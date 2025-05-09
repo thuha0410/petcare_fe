@@ -23,9 +23,9 @@
         </div>
         <div class="col-md-4">
           <div class="input-group">
-            <input v-model="tim_kiem.noi_dung" @input="timkiem" type="text" class="form-control" 
+            <input v-model="tim_kiem.noi_dung" type="text" class="form-control"
               placeholder="Tìm kiếm theo tên thú cưng" aria-label="Tìm kiếm" aria-describedby="button-addon2">
-            <button v-on:click="timkiem()" class="btn btn-outline-secondary text-dark" type="button" id="button-addon2">
+            <button v-on:click="timkiem" class="btn btn-outline-secondary text-dark" type="button" id="button-addon2">
               <i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i> Tìm
             </button>
           </div>
@@ -48,9 +48,9 @@
             </tr>
           </thead>
           <tbody>
-            <template v-for="(value,index) in list_ho_so_benh_an" :key="index">
+            <template v-for="(value, index) in list_ho_so_benh_an" :key="index">
               <tr class="text-center align-middle text-nowrap">
-                <th>{{ index+1 }}</th>
+                <th>{{ index + 1 }}</th>
                 <td>{{ value.ten_thu_cung }}</td>
                 <td>{{ value.ten_chu }}</td>
                 <td>{{ value.sdt }}</td>
@@ -58,18 +58,24 @@
                 <td>{{ formatDate(value.ngay_kham) }}</td>
                 <td>{{ value.chuan_doan }}</td>
                 <td>
-                  <span @click="toggleStatus(value)" :class="['badge', value.tinh_trang ? 'bg-warning' : 'bg-success', 'cursor-pointer', 'status-badge']">
-                    {{ value.tinh_trang ? 'Đang điều trị' : 'Đã khỏi' }}
-                  </span>
+                  <button v-if="value.tinh_trang == 1" class="btn btn-warning btn-sm" @click="toggleStatus(value)">
+                    Đang điều trị
+                  </button>
+                  <button v-else class="btn btn-success btn-sm" disabled>
+                    Đã khỏi
+                  </button>
                 </td>
                 <td class="text-center">
-                  <button @click="openUpdateModal(value)" data-bs-toggle="modal" data-bs-target="#sua" class="btn btn-success me-2">
+                  <button v-if="value.tinh_trang == 1" @click="openUpdateModal(value)" data-bs-toggle="modal"
+                    data-bs-target="#sua" class="btn btn-success me-2">
                     <i class="fas fa-edit"></i> Cập nhật
                   </button>
-                  <button @click="openDetailModal(value)" data-bs-toggle="modal" data-bs-target="#chiTiet" class="btn btn-info me-2">
+                  <button @click="openDetailModal(value)" data-bs-toggle="modal" data-bs-target="#chiTiet"
+                    class="btn btn-info me-2">
                     <i class="fas fa-info-circle"></i> Chi tiết
                   </button>
-                  <button @click="confirmDelete(value)" data-bs-toggle="modal" data-bs-target="#xoa" class="btn btn-danger me-2">
+                  <button @click="confirmDelete(value)" data-bs-toggle="modal" data-bs-target="#xoa"
+                    class="btn btn-danger me-2">
                     <i class="fas fa-trash"></i> Xóa
                   </button>
                 </td>
@@ -93,13 +99,6 @@
             <label class="form-label">Chẩn đoán</label>
             <textarea v-model="update_ho_so_benh_an.chuan_doan" class="form-control" rows="3"></textarea>
           </div>
-          <div class="mb-3">
-            <label class="form-label">Tình trạng</label>
-            <select v-model="update_ho_so_benh_an.tinh_trang" class="form-select">
-              <option value="1">Đang điều trị</option>
-              <option value="0">Đã khỏi</option>
-            </select>
-          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-success" @click="update" data-bs-dismiss="modal">Cập nhật</button>
@@ -122,6 +121,27 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" @click="xoa" data-bs-dismiss="modal">Xóa</button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal xác nhận đổi trạng thái -->
+  <div class="modal fade" id="modalXacNhanTrangThai" tabindex="-1" aria-labelledby="modalTrangThaiLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-warning text-dark">
+          <h5 class="modal-title" id="modalTrangThaiLabel">Xác nhận đổi trạng thái</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+        </div>
+        <div class="modal-body">
+          <p style="font-size: 16px;">Bạn có chắc chắn muốn <strong>đổi trạng thái</strong> hồ sơ bệnh án này?</p>
+          <p class="text-muted small mb-0" style="font-size: 14px;">Sau khi đổi, hệ thống sẽ tạo hóa đơn tương ứng nếu
+            điều trị đã kết thúc.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-warning" @click="xacNhanDoiTrangThai">Đồng ý</button>
         </div>
       </div>
     </div>
@@ -150,14 +170,14 @@
               <p><strong>Ngày khám:</strong> {{ formatDate(detail_ho_so_benh_an.ngay_kham) }}</p>
               <p><strong>Bác sĩ khám:</strong> {{ detail_ho_so_benh_an.ten_bac_si }}</p>
               <p><strong>Chẩn đoán:</strong> {{ detail_ho_so_benh_an.chuan_doan }}</p>
-              <p><strong>Tình trạng:</strong> 
+              <p><strong>Tình trạng:</strong>
                 <span :class="['badge', detail_ho_so_benh_an.tinh_trang ? 'bg-warning' : 'bg-success']">
                   {{ detail_ho_so_benh_an.tinh_trang ? 'Đang điều trị' : 'Đã khỏi' }}
                 </span>
               </p>
             </div>
           </div>
-          
+
           <div class="row">
             <div class="col-12">
               <h5 class="border-bottom pb-2">Thông tin thuốc</h5>
@@ -199,14 +219,19 @@ import { createToaster } from "@meforma/vue-toaster";
 
 const toaster = createToaster({ position: "top-right" });
 export default {
+  data() {
+    return {
+      hoSoDangDoiTrangThai: null,
+    }
+  },
   methods: {
     formatDate(date) {
-      return new Date(date).toLocaleDateString('vi-VN', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+      if (!date) return '';
+      const d = new Date(date);
+      return d.toLocaleDateString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
       });
     },
     load() {
@@ -287,30 +312,44 @@ export default {
       this.ho_so_benh_an = {
         sdt: '',
         chuan_doan: '',
-        tinh_trang: '1'
       };
     },
     toggleStatus(record) {
-      const newStatus = !record.tinh_trang;
-      const data = {
-        id: record.id,
-        tinh_trang: newStatus
-      };
+      if (record.tinh_trang === 0) {
+        toaster.warning('Hồ sơ đã hoàn tất điều trị và không thể thay đổi lại trạng thái.');
+        return;
+      }
 
-      axios
-        .post('http://127.0.0.1:8000/api/ho-so-benh-an/update', data)
+      this.hoSoDangDoiTrangThai = record;
+      const modal = new bootstrap.Modal(document.getElementById('modalXacNhanTrangThai'));
+      modal.show();
+    },
+    xacNhanDoiTrangThai() {
+      if (!this.hoSoDangDoiTrangThai) return;
+
+      const newStatus = this.hoSoDangDoiTrangThai.tinh_trang === 1 ? 0 : 1;
+      axios.post('http://127.0.0.1:8000/api/ho-so-benh-an/update', {
+        id: this.hoSoDangDoiTrangThai.id,
+        tinh_trang: newStatus
+      })
         .then((res) => {
           if (res.data.status) {
-            toaster.success('Cập nhật tình trạng thành công');
+            toaster.success('Đổi trạng thái thành công');
             this.load();
           } else {
-            toaster.error(res.data.message || 'Cập nhật không thành công');
+            toaster.error(res.data.message || 'Cập nhật thất bại');
           }
+
+          const modal = bootstrap.Modal.getInstance(document.getElementById('modalXacNhanTrangThai'));
+          if (modal) modal.hide();
+
+          this.hoSoDangDoiTrangThai = null;
         })
-        .catch((error) => {
-          toaster.error(error.response?.data?.message || 'Lỗi khi cập nhật');
+        .catch((err) => {
+          toaster.error('Lỗi khi cập nhật trạng thái');
         });
     },
+
     openDetailModal(record) {
       this.detail_ho_so_benh_an = {}; // reset
       this.danh_sach_thuoc = [];
@@ -397,7 +436,7 @@ export default {
 <style scoped>
 .card {
   margin: 20px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .card-header {
@@ -422,7 +461,7 @@ export default {
 
 .status-badge:hover {
   transform: scale(1.05);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .bg-warning {

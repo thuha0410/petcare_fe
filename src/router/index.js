@@ -82,6 +82,7 @@ const routes = [
         path : '/admin/ql-lich-hen',
         component: ()=>import('../components/Admin/QLLichHen/index.vue'),
         meta: {layout:'admin'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(3) ]
     },
     {
         path : '/admin/ql-nha-cung-cap',

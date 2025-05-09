@@ -32,11 +32,12 @@
               <div class="col-md-6">
                 <label>Pet của khách hàng</label>
                 <select v-model="don_thuoc.id_pet" class="form-control" :disabled="!selectedKhachHang">
-                  <option value="">Chọn pet</option>
-                  <option v-for="pet in filteredPets" :key="pet.id" :value="pet.id">
+                  <option disabled value="">Chọn pet</option>
+                  <option v-for="pet in filteredPets" :key="pet.id_pet" :value="pet.id_pet">
                     {{ pet.ten_pet }}
                   </option>
                 </select>
+
               </div>
             </div>
 
@@ -139,7 +140,8 @@
     </div>
 
     <!-- Modal hiển thị chi tiết đơn thuốc -->
-    <div class="modal" :class="{ 'show': showModal }" tabindex="-1" role="dialog" :style="{ display: showModal ? 'block' : 'none' }">
+    <div class="modal" :class="{ 'show': showModal }" tabindex="-1" role="dialog"
+      :style="{ display: showModal ? 'block' : 'none' }">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -170,11 +172,8 @@
                       <td class="text-center">{{ item.so_luong }}</td>
                       <td>{{ item.lieu_luong }}</td>
                       <td class="text-center">
-                        <button 
-                          class="btn btn-sm" 
-                          :class="item.tinh_trang === '1' ? 'btn-success' : 'btn-danger'"
-                          @click="toggleTinhTrang(item)"
-                        >
+                        <button class="btn btn-sm" :class="item.tinh_trang === '1' ? 'btn-success' : 'btn-danger'"
+                          @click="toggleTinhTrang(item)">
                           {{ item.tinh_trang === '1' ? 'Đang sử dụng' : 'Dừng sử dụng' }}
                         </button>
                       </td>
@@ -254,7 +253,7 @@ export default {
   mounted() {
     // Load all data when component is mounted
     this.loadAllData();
-    
+
     // Modal event listener
     $('#chiTietModal').on('hidden.bs.modal', () => {
       this.chiTietDonThuoc = [];
@@ -427,7 +426,6 @@ export default {
     },
     async luuDonThuoc() {
       try {
-        
         if (!this.don_thuoc.id_pet) {
           toaster.error('Vui lòng chọn pet');
           return;
@@ -436,24 +434,17 @@ export default {
           toaster.error('Vui lòng chọn bác sĩ');
           return;
         }
+        if (!this.don_thuoc.id_hsba) {
+          toaster.error('Không tìm thấy hồ sơ bệnh án');
+          return;
+        }
         if (this.chi_tiet.length === 0) {
           toaster.error('Vui lòng thêm ít nhất một loại thuốc');
           return;
         }
 
-        // Tìm hồ sơ bệnh án của pet được chọn
-        const hsba = this.ho_so_benh_an.find(hs => 
-          hs.id_pet === this.don_thuoc.id_pet && 
-          hs.tinh_trang === 1
-        );
-
-        if (!hsba) {
-          toaster.error('Không tìm thấy hồ sơ bệnh án đang điều trị cho pet này');
-          return;
-        }
-
         const payload = {
-          id_hsba: hsba.id,
+          id_hsba: this.don_thuoc.id_hsba,
           chi_tiet: this.chi_tiet
         };
 
@@ -464,6 +455,7 @@ export default {
           this.chi_tiet = [];
           this.don_thuoc.id_pet = '';
           this.don_thuoc.id_nhan_vien = '';
+          this.don_thuoc.id_hsba = '';
           this.selectedKhachHang = '';
           this.filteredPets = [];
         } else {
@@ -484,74 +476,50 @@ export default {
       window.open(routeData.href, '_blank', 'width=800,height=600');
     },
     async toggleTinhTrang(item) {
-        const response = await api.post('http://127.0.0.1:8000/api/don-thuoc/toggle-tinh-trang', {
-          id_ctthuoc: item.id_ctthuoc
-        });
-        if (response.data.status) {
-          toaster.success('Cập nhật tình trạng thành công');
+      const response = await api.post('http://127.0.0.1:8000/api/don-thuoc/toggle-tinh-trang', {
+        id_ctthuoc: item.id_ctthuoc
+      });
+      if (response.data.status) {
+        toaster.success('Cập nhật tình trạng thành công');
 
-          item.tinh_trang = item.tinh_trang === '1' ? '0' : '1';
-        } else {
-          toaster.error(response.data.message || 'Lỗi khi cập nhật tình trạng');
-        }
+        item.tinh_trang = item.tinh_trang === '1' ? '0' : '1';
+      } else {
+        toaster.error(response.data.message || 'Lỗi khi cập nhật tình trạng');
+      }
     }
   },
   watch: {
     selectedKhachHang: {
-      handler(newVal) {
-        if (!newVal) {
-          this.filteredPets = [];
-          this.don_thuoc.id_nhan_vien = '';
-          this.don_thuoc.id_hsba = '';
-          this.don_thuoc.id_pet = '';
-          return;
-        }
+      async handler(newVal) {
+        this.don_thuoc.id_pet = '';
+        this.don_thuoc.id_hsba = '';
+        this.don_thuoc.id_nhan_vien = '';
+        this.filteredPets = [];
 
+        if (!newVal) return;
 
-        if (!this.ho_so_benh_an.length || !this.pets.length) {
-          return;
-        }
-
-        const activeMedicalRecords = this.ho_so_benh_an.filter(hs => 
-          hs.id_kh === newVal && hs.tinh_trang === 1
-        );
-
-        if (activeMedicalRecords.length > 0) {
-
-          const activePetIds = activeMedicalRecords.map(hs => hs.id_pet);
-
-          this.filteredPets = this.pets.filter(pet => 
-            pet.id_kh === newVal && activePetIds.includes(pet.id)
-          );
-
-          const firstRecord = activeMedicalRecords[0];
-          this.don_thuoc.id_nhan_vien = firstRecord.id_nv;
-          this.don_thuoc.id_hsba = firstRecord.id;
-        } else {
-          toaster.warning('Không tìm thấy hồ sơ bệnh án đang điều trị cho khách hàng này');
-          this.don_thuoc.id_nhan_vien = '';
-          this.don_thuoc.id_hsba = '';
-          this.don_thuoc.id_pet = '';
-          this.filteredPets = [];
+        try {
+          const res = await api.get(`http://127.0.0.1:8000/api/don-thuoc/pets-dang-dieu-tri/${newVal}`);
+          if (res.data.status) {
+            this.filteredPets = res.data.data;
+          } else {
+            toaster.warning('Không có thú cưng nào đang điều trị.');
+          }
+        } catch (err) {
+          toaster.error('Lỗi khi tải danh sách pet đang điều trị');
         }
       }
     },
+
     'don_thuoc.id_pet': {
       handler(newVal) {
-        if (!newVal) {
+        const pet = this.filteredPets.find(p => p.id_pet === newVal);
+        if (pet) {
+          this.don_thuoc.id_hsba = pet.id_hsba;
+          this.don_thuoc.id_nhan_vien = pet.id_nv;
+        } else {
           this.don_thuoc.id_hsba = '';
-          return;
-        }
-
-        // Find the medical record for the selected pet
-        const medicalRecord = this.ho_so_benh_an.find(hs => 
-          hs.id_pet === newVal && 
-          hs.tinh_trang === 1
-        );
-
-        if (medicalRecord) {
-          this.don_thuoc.id_hsba = medicalRecord.id;
-          this.don_thuoc.id_nhan_vien = medicalRecord.id_nv;
+          this.don_thuoc.id_nhan_vien = '';
         }
       }
     },

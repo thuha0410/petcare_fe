@@ -97,7 +97,7 @@
                     <label for="">Giờ hẹn</label>
                     <input v-model="update_lich.gio" class="form-control mb-2" type="text" readonly>
                     <label for="">Tên nhân viên</label>
-                    <select v-model="update_lich.id_nv" class="form-control mb-2" :disabled="update_lich.id_dv != 4">
+                    <select v-model="update_lich.id_nv" class="form-control mb-2" :disabled="update_lich.id_dv == 4">
                         <template v-for="(value, index) in nhan_vien" :key="index">
                             <option v-bind:value="value.id">{{ value.ten_nv }}</option>
                         </template>
@@ -152,7 +152,7 @@ export default {
         },
         loadKhachHang() {
             axios
-                .get("http://127.0.0.1:8000/api/khach-hang/load", {
+                .get("http://127.0.0.1:8000/api/lich-hen/khach-hang-load", {
                 })
                 .then((res) => {
                     this.khach_hang = res.data.data

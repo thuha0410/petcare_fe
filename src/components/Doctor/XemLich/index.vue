@@ -15,15 +15,15 @@
           <h3 class="text-black mb-0" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif;">
             LỊCH HẸN HÔM NAY <span class="text-primary">({{ formatDate(current_date) }})</span>
           </h3>
-          <span class="badge bg-primary" style="font-size: 16px;">{{ lich_hen_hom_nay.length }} lịch hẹn</span>
+          <span class="badge bg-primary" style="font-size: 16px;">{{ all_lich_hen.length }} lịch hẹn</span>
         </div>
         <div class="card-body">
-          <div v-if="lich_hen_hom_nay.length === 0" class="text-center py-4">
+          <div v-if="all_lich_hen.length === 0" class="text-center py-4">
             <i class="fa-regular fa-calendar-check fa-3x text-muted mb-3"></i>
             <h5 class="text-muted">Không có lịch hẹn nào hôm nay</h5>
           </div>
           <div v-else class="row">
-            <div v-for="(item, index) in lich_hen_hom_nay" :key="index" class="col-lg-4 col-md-6 mb-3">
+            <div v-for="(item, index) in all_lich_hen" :key="index" class="col-lg-4 col-md-6 mb-3">
               <div class="card h-100 border border-dark card-glow" :class="{
                 'border-primary bg-primary bg-opacity-10': item.trang_thai === 1,
                 'border-danger bg-danger bg-opacity-10': item.trang_thai === 0
@@ -36,15 +36,21 @@
                   <div class="card-text">
                     <p><i class="fa-solid fa-paw me-2 text-info"></i><strong>Tên pet:</strong> {{ item.ten_thu_cung }}
                     </p>
+
                     <p><i class="fa-solid fa-user me-2 text-warning"></i><strong>Khách hàng:</strong> {{
                       item.ten_khach_hang }}</p>
                     <p><i class="fa-solid fa-stethoscope me-2 text-success"></i><strong>Dịch vụ:</strong> {{
                       item.dich_vu }}</p>
                     <p><i class="fa-solid fa-tag me-2 text-primary"></i><strong class="me-2">Trạng thái:</strong>
-                      <span v-if="item.trang_thai == 0" class="badge bg-danger" style="font-size: 16px;">Chờ
-                        duyệt</span>
-                      <span v-else class="badge bg-success text-dark" style="font-size: 16px;">Đã duyệt</span>
+                      <span v-if="item.trang_thai == 0" class="text-danger" style="font-size: 16px;">Chưa khám</span>
+                      <span v-else class="text-success" style="font-size: 16px;">Đã khám</span>
                     </p>
+
+                  </div>
+                  <div class=" text-end">
+                    <button class="btn btn-danger" v-on:click="khamNgay(item)">
+                      <i class="fa-solid fa-stethoscope me-1"></i> Khám ngay
+                    </button>
                   </div>
                 </div>
               </div>
@@ -88,8 +94,8 @@
                 </span>
                 <select class="form-select" v-model="status_filter">
                   <option value="">-- Tất cả trạng thái --</option>
-                  <option value="0">Chờ duyệt</option>
-                  <option value="1">Đã duyệt</option>
+                  <option value="0">Chưa khám</option>
+                  <option value="1">Đã khám</option>
                 </select>
                 <button class="btn btn-info text-white" @click="filterAppointments">
                   Lọc
@@ -187,15 +193,49 @@ export default {
       current_date: new Date().toLocaleDateString('en-CA', {
         timeZone: 'Asia/Ho_Chi_Minh'
       }),
+
     }
   },
 
   mounted() {
     this.getLichHen();
+
   },
 
 
   methods: {
+    khamNgay(item) {
+      axios.post('http://127.0.0.1:8000/api/ho-so-benh-an/tao-tu-lich', {
+        id_lich: item.id,
+        id_nv: item.id_nv, // hoặc lấy từ token nếu cần
+      }, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+        }
+      })
+        .then((res) => {
+          if (res.data.status) {
+            toaster.success('Đã tạo hồ sơ bệnh án');
+            // Chuyển sang trang cập nhật chẩn đoán
+            this.$router.push({
+              path: '/doctor/xem-ho-so-benh-an',
+              query: { highlight: res.data.id_hsba }
+            });
+
+          } else {
+            toaster.error(res.data.message || 'Không thể tạo hồ sơ');
+          }
+        })
+        .catch((error) => {
+          console.log(error.response);
+          if (error.response && error.response.data && error.response.data.message) {
+            toaster.error(error.response.data.message);
+          } else {
+            toaster.error('Lỗi hệ thống khi tạo hồ sơ bệnh án');
+          }
+        });
+    },
+
     getLichHen() {
       this.loading = true;
       axios.get('http://127.0.0.1:8000/api/doctor/lich-hen', {
