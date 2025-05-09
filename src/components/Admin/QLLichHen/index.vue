@@ -68,9 +68,9 @@
                                     <button v-else class="btn btn-warning " v-on:click="doi_trang_thai(value)">Đã thực hiện</button>
                                 </td>
                                 <td>
-                                    <button v-on:click="Object.assign(update_lich, value)" data-bs-toggle="modal"
+                                    <button @click="showModal(value)" data-bs-toggle="modal"
                                         data-bs-target="#capnhat" style="width:100px;" class="btn btn-primary me-2">Cập
-                                        nhật</button>   
+                                        nhật</button>
                                 </td>
                             </tr>
                         </template>
@@ -111,7 +111,8 @@
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button v-on:click="update()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cập nhật</button>
+                    <button v-on:click="update()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cập
+                        nhật</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
@@ -142,7 +143,18 @@ export default {
         this.loadDataNV();
         this.loadDichVu();
     },
+    computed: {
+    isServiceEditable() {
+        const service = this.dich_vu.find(dv => dv.id == this.update_lich.id_dv);
+        return service ? Number(service.id_loaidv) === 4 : false;
+    }
+},
+
     methods: {
+        showModal(value) {
+            this.update_lich = { ...value }; 
+        },
+
         loadLichHen() {
             axios
                 .get('http://127.0.0.1:8000/api/lich-hen/load')
@@ -178,6 +190,11 @@ export default {
                 )
         },
         update() {
+            const service = this.dich_vu.find(dv => dv.id === this.update_lich.id_dv);
+            if (service && service.id_loaidv !== 4) {
+                toaster.error('Dịch vụ này không thể sửa thông tin!');
+                return;
+            }
             axios
                 .post('http://127.0.0.1:8000/api/lich-hen/update', this.update_lich)
                 .then((res) => {

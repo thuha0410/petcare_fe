@@ -39,9 +39,7 @@
           </router-link>
         </li>
         <li class="nav-item me-2 text-nowrap">
-          <router-link to="/client/dat-lich">
-            <a class="nav-link" href="#">Đặt lịch</a>
-          </router-link>
+          <a class="nav-link" href="javascript:;" @click="xuLyDatLich">Đặt lịch</a>
         </li>
       </ul>
       <!-- Menu chính -->
@@ -95,7 +93,7 @@
 <script>
 import apiClient from "@/services/apiClient";
 import { createToaster } from "@meforma/vue-toaster";
-const toaster = createToaster({ position: 'top-left' });
+const toaster = createToaster({ position: 'top-right' });
 export default {
   data() {
     return {
@@ -117,7 +115,7 @@ export default {
         this.khach_hang = {};
         return;
       }
-      apiClient.get("/api/khach-hang/lay-du-lieu",{
+      apiClient.get("/api/khach-hang/lay-du-lieu", {
         headers: { Authorization: `Bearer ${token}` }
       })
         .then((res) => {
@@ -160,6 +158,59 @@ export default {
           toaster.error('Đã xảy ra lỗi khi đăng xuất tất cả');
         });
     },
+    loadPet() {
+      const token = localStorage.getItem("token_client");
+      if (!token) {
+        console.warn("Thiếu token đăng nhập.");
+        return;
+      }
+      apiClient.get("/api/khach-hang/lay-du-lieu", {
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      }).then(res => {
+        const id_kh = res.data.data.id;
+        localStorage.setItem("id_khach_hang", id_kh);
+
+        return apiClient.get(`/api/pets/${id_kh}`, {
+          headers: {
+            Authorization: "Bearer " + token
+          }
+        });
+      }).then(res => {
+        this.list_pet = res.data.pets;
+      }).catch(err => {
+        console.error("Lỗi khi lấy danh sách thú cưng:", err);
+      });
+
+    },
+    xuLyDatLich() {
+      const token = localStorage.getItem("token_client");
+      if (!token) {
+        this.$router.push("/client/dang-nhap-dang-ky");
+        return;
+      }
+
+      apiClient.get("/api/khach-hang/lay-du-lieu", {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(res => {
+        const id_kh = res.data.data.id;
+        return apiClient.get(`/api/pets/${id_kh}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      }).then(res => {
+        const pets = res.data.pets;
+        if (pets && pets.length > 0) {
+          this.$router.push("/client/dat-lich");
+        } else {
+          toaster.error("Bạn chưa có thú cưng nào. Vui lòng thêm thú cưng trước khi đặt lịch.");
+          this.$router.push("/client/thong-tin-ca-nhan");
+        }
+      }).catch(err => {
+        console.error("Lỗi khi kiểm tra thú cưng:", err);
+        this.$router.push("/client/thong-tin-ca-nhan");
+      });
+    }
   },
 };
 </script>

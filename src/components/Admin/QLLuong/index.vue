@@ -19,7 +19,7 @@
                     <label for="">Ngày thanh toán</label>
                     <input v-model="loai_luong.ngay_thanh_toan" class="form-control" type="date">
                     <label for="">Tiền thưởng</label>
-                    <input v-model="loai_luong.tien_thuong" class="form-control" type="text">
+                    <input v-model="loai_luong.tien_thuong" class="form-control" type="text" readonly>
                     <label for="">Tình trạng</label>
                     <select v-model="loai_luong.tinh_trang" class="form-control">
                         <option value="0">Chưa thanh toán</option>
@@ -50,10 +50,11 @@
                                 <tr>
                                     <th class="text-center align-middle">#</th>
                                     <th class="text-center align-middle">Tên nhân viên</th>
-                                    <th class="text-center align-middle">Tiền lương</th>
+                                    <th class="text-center align-middle">Lương cứng</th>
                                     <th class="text-center align-middle">Ngày thanh toán</th>
                                     <th class="text-center align-middle">Tiền thưởng</th>
                                     <th class="text-center align-middle">Tình trạng</th>
+                                    <th class="text-center align-middle">Tổng lương</th>
                                     <th class="text-center align-middle">Action</th>
                                 </tr>
                             </thead>
@@ -70,6 +71,9 @@
                                                 class="btn btn-success">Đã thanh toán</button>
                                             <button v-on:click="doitt(value)" v-if="value.tinh_trang == 0"
                                                 class="btn btn-warning">Chưa thanh toán</button>
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            {{ parseInt(value.tien_luong) + parseInt(value.tien_thuong) }}
                                         </td>
                                         <td class="text-center align-middle">
                                             <button v-on:click="Object.assign(sua_luongNV, value)"
@@ -210,11 +214,11 @@ export default {
         loadData() {
             axios
                 .get('http://127.0.0.1:8000/api/load-luong',
-                    // {
-                    //     headers: {
-                    //         Authorization: 'Bearer ' + localStorage.getItem('token_admin')
-                    //     }
-                    // }
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
                 )
                 .then(
                     (res) => {
@@ -225,11 +229,11 @@ export default {
         doitt(x) {
             axios
                 .post('http://127.0.0.1:8000/api/thay-doi-trang-thai-luong', x,
-                    // {
-                    //     headers: {
-                    //         Authorization: 'Bearer ' + localStorage.getItem('token_admin')
-                    //     }
-                    // }
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
                 )
                 .then(
                     (res) => {
@@ -242,12 +246,12 @@ export default {
         loadDataNV() {
             axios
                 .get('http://127.0.0.1:8000/api/nhan-vien/load',
-                {
+                    {
                         headers: {
                             Authorization: 'Bearer ' + localStorage.getItem('token_admin')
                         }
                     }
-                )   
+                )
                 .then(
                     (res) => {
                         this.nhan_vien = res.data.data;
@@ -262,6 +266,16 @@ export default {
                 })
         },
     },
+    watch: {
+        'loai_luong.tien_luong'(newVal) {
+            let tienLuong = parseFloat(newVal);
+            if (!isNaN(tienLuong)) {
+                this.loai_luong.tien_thuong = (tienLuong * 0.1).toFixed(0); // Làm tròn nếu muốn
+            } else {
+                this.loai_luong.tien_thuong = '';
+            }
+        }
+    }
 }
 </script>
 <style></style>

@@ -2,7 +2,6 @@
     <div class="row">
         <div class="col-lg-1"></div>
 
-        <!-- Card Thông tin cơ sở y tế -->
         <div class="col-lg-3">
             <div class="card rounded-3">
                 <div class="card-header" style="background-color: darkblue;">
@@ -22,7 +21,7 @@
                     <select class="form-select form-control" v-model="id_pet" name="" id="">
                         <option disabled value="">--Chọn pet cần khám--</option>
                         <option v-for="(value, index) in list_pet" :key="index" v-bind:value="value.id">{{ value.ten_pet
-                        }}</option>
+                            }}</option>
                     </select>
 
                     <p class="fw-bold mt-2" style="font-size: 20px;"><i class="fa-solid fa-calendar-days"></i> Ngày:</p>
@@ -34,9 +33,7 @@
             </div>
         </div>
 
-        <!-- Card Nội dung -->
         <div class="col-lg-7">
-            <!-- Hiển thị lịch nếu showCalendar = true -->
             <div class="card" v-if="showCalendar">
                 <div class="card-header" style="background-color: darkblue;">
                     <h3 class="text-white text-center">Chọn lịch hẹn</h3>
@@ -51,7 +48,6 @@
                 </div>
             </div>
 
-            <!-- Hiển thị bảng dịch vụ nếu showCalendar = false -->
             <div class="card" v-else>
                 <div class="card-header" style="background-color: darkblue;">
                     <h3 class="text-white text-center">Vui lòng xác nhận dịch vụ</h3>
@@ -126,7 +122,6 @@
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import axios from 'axios';
 import apiClient from '../../../../services/apiClient';
 import { createToaster } from "@meforma/vue-toaster";
 const toaster = createToaster({ position: "top-right" });
@@ -135,6 +130,8 @@ export default {
     components: { FullCalendar },
     data() {
         return {
+            giaGoc: 0,
+            tienCoc: 0,
             id: this.$route.params.id,
             list_dv: {},
             showCalendar: false,
@@ -151,15 +148,14 @@ export default {
                 height: 600,
                 contentHeight: 'auto',
                 dateClick: this.handleDateClick,
-                // Giới hạn ngày hợp lệ:
                 validRange: {
-                    start: new Date(), // Không được chọn ngày quá khứ
+                    start: new Date(), 
                     end: (() => {
                         const today = new Date();
                         const future = new Date(today);
-                        future.setDate(today.getDate() + 51); // chỉ +49 để hôm nay là ngày 1/50
+                        future.setDate(today.getDate() + 51); 
                         return future.toISOString().split('T')[0];
-                    })() // Chỉ cho đặt 50 ngày tới
+                    })()
                 },
             },
             list_pet: [],
@@ -167,6 +163,7 @@ export default {
             slotInfo: {},
         };
     },
+
     mounted() {
         this.loadDichVu();
         this.loadLich();
@@ -189,6 +186,7 @@ export default {
                 .get("/api/dich-vu/load-chi-tiet/" + this.id)
                 .then((res) => {
                     this.list_dv = res.data.data;
+                    this.giaGoc = res.data.data.gia;
                 });
         },
         toggleCalendar() {
@@ -210,7 +208,7 @@ export default {
             today.setHours(0, 0, 0, 0);
 
             const maxDate = new Date();
-            maxDate.setDate(maxDate.getDate() + 50); // tăng 50 ngày
+            maxDate.setDate(maxDate.getDate() + 50);
 
             if (selected < today) {
                 toaster.error("Không thể đặt lịch trong quá khứ!");
@@ -245,7 +243,7 @@ export default {
                 id_pet: this.id_pet,
                 tinh_trang: "0",
                 gia: this.list_dv.gia,
-                tien_coc: this.list_dv.gia * 25 / 100,
+                tien_coc: this.tienCoc,
                 ngay: this.selectedDate,
                 gio: this.selectedTime,
             };
@@ -265,7 +263,7 @@ export default {
                     console.error(err);
 
                     if (err.response && err.response.data && err.response.data.message) {
-                        toaster.error(err.response.data.message); // Hiện thông báo từ backend
+                        toaster.error(err.response.data.message);
                     } else {
                         toaster.error("Có lỗi xảy ra khi đặt lịch.");
                     }
@@ -275,11 +273,10 @@ export default {
         isPastTime(khungGio) {
             if (!this.selectedDate) return false;
 
-            const [startStr] = khungGio.split(" - "); // ví dụ: "8:00"
+            const [startStr] = khungGio.split(" - ");
             const now = new Date();
             const selectedDate = new Date(this.selectedDate);
 
-            // Nếu ngày không phải hôm nay => khung giờ chưa qua
             const isToday = now.toISOString().split("T")[0] === this.selectedDate;
             if (!isToday) return false;
 
@@ -304,18 +301,14 @@ export default {
                 console.warn("Thiếu token đăng nhập.");
                 return;
             }
-
-            // Gọi API /khach-hang/lay-du-lieu để lấy id khách hàng
             apiClient.get("/api/khach-hang/lay-du-lieu", {
                 headers: {
                     Authorization: "Bearer " + token
                 }
             }).then(res => {
                 const id_kh = res.data.data.id;
-                // lưu lại vào localStorage để sử dụng sau nếu cần
                 localStorage.setItem("id_khach_hang", id_kh);
 
-                // Gọi tiếp API lấy thú cưng theo id_kh
                 return apiClient.get(`/api/pets/${id_kh}`, {
                     headers: {
                         Authorization: "Bearer " + token
@@ -327,8 +320,40 @@ export default {
                 console.error("Lỗi khi lấy danh sách thú cưng:", err);
             });
 
-        }
+        },
     },
+    watch: {
+        id_pet(value) {
+            const selectedPet = this.list_pet.find(pet => pet.id === value);
+            if (!selectedPet) return;
+
+            const canNang = selectedPet.can_nang;
+            const { can_nang_min, can_nang_max, id_loaidv } = this.list_dv;
+
+            if (can_nang_min != null && can_nang_max != null) {
+                if (canNang < can_nang_min || canNang > can_nang_max) {
+                    toaster.error(`Thú cưng này không phù hợp với dịch vụ (cân nặng yêu cầu: ${can_nang_min}kg - ${can_nang_max}kg).`);
+                    this.id_pet = '';
+                    return;
+                }
+            }
+            if (id_loaidv === 2) {
+                let heSo = 1;
+                if (canNang > 30) {
+                    heSo = 1.6;
+                } else if (canNang > 20) {
+                    heSo = 1.4;
+                } else if (canNang > 10) {
+                    heSo = 1.2;
+                }
+                this.list_dv.gia = Math.round(this.giaGoc * heSo); 
+                this.tienCoc = Math.round(this.list_dv.gia * 0.25);
+            } else {
+                this.list_dv.gia = this.giaGoc;
+                
+            }
+        }
+    }
 };
 </script>
 
@@ -337,7 +362,6 @@ export default {
     background-color: #dc3545 !important;
     border-color: #dc3545 !important;
 }
-
 .legend-box {
     display: inline-block;
     width: 16px;
@@ -345,8 +369,6 @@ export default {
     border-radius: 4px;
     margin-right: 6px;
 }
-
-
 @import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css';
 @import 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css';
 </style>

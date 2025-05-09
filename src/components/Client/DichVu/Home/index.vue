@@ -52,12 +52,11 @@
                             <p style="font-size: 25px;" class="text-danger fw-bold">
                                 Giá dao động: <span>{{ value.gia }} VND</span>
                             </p>
-                            <router-link :to="`/client/chon-dich-vu/${value.id}`" class="text-decoration-none">
-                                <div class="text-end ">
-                                    <button class="btn btn-info btn-hover fw-bold">ĐẶT LỊCH NGAY</button>
-                                </div>
-                            </router-link>
-
+                            <p style="font-size: 20px;">Cân nặng yêu cầu: {{ value.can_nang_min||"Không có" }} - {{ value.can_nang_max||"Không có" }}</p>
+                            <div class="text-end ">
+                                <button class="btn btn-info btn-hover fw-bold" @click="chonDichVu(value.id)">ĐẶT LỊCH
+                                    NGAY</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -68,7 +67,8 @@
 </template>
 <script>
 import apiClient from '../../../../services/apiClient';
-
+import { createToaster } from "@meforma/vue-toaster";
+const toaster = createToaster({ position: 'top-right' });
 
 export default {
     data() {
@@ -76,13 +76,15 @@ export default {
             list_dich_vu: [],
             tim_kiem: {
                 noi_dung: ''
-            }
+            },
+            list_pet: []
         };
 
     },
 
     mounted() {
-        this.load()
+        this.load();
+        this.loadPet();
         window.scrollTo(0, 0);
     },
 
@@ -101,6 +103,40 @@ export default {
                     this.list_dich_vu = res.data.data
                 })
         },
+        loadPet() {
+            const token = localStorage.getItem("token_client");
+            if (!token) {
+                console.warn("Thiếu token đăng nhập.");
+                return;
+            }
+            apiClient.get("/api/khach-hang/lay-du-lieu", {
+                headers: {
+                    Authorization: "Bearer " + token
+                }
+            }).then(res => {
+                const id_kh = res.data.data.id;
+                localStorage.setItem("id_khach_hang", id_kh);
+
+                return apiClient.get(`/api/pets/${id_kh}`, {
+                    headers: {
+                        Authorization: "Bearer " + token
+                    }
+                });
+            }).then(res => {
+                this.list_pet = res.data.pets;
+            }).catch(err => {
+                console.error("Lỗi khi lấy danh sách thú cưng:", err);
+            });
+
+        },
+        chonDichVu(id) {
+            if (!this.list_pet || this.list_pet.length === 0) {
+                toaster.error("Bạn chưa có thú cưng nào, vui lòng thêm thú cưng trước khi đặt lịch!");
+                this.$router.push("/client/thong-tin-ca-nhan");
+            } else {
+                this.$router.push(`/client/chon-dich-vu/${id}`);
+            }
+        }
     },
 
 };
