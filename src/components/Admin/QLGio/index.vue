@@ -1,7 +1,8 @@
 <template>
     <div class="card">
         <div class="card-header d-flex justify-content-between ">
-            <h3 class="text-dark" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif;">QUẢN LÝ GIỜ</h3>
+            <h3 class="text-dark" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif;">QUẢN LÝ
+                GIỜ</h3>
             <button data-bs-toggle="modal" data-bs-target="#them" type="button"
                 class="btn btn-outline-dark px-5 radius-30"><i class="bx bx-cloud-upload mr-1"></i>Thêm mới</button>
         </div>
@@ -134,15 +135,31 @@ export default {
     methods: {
         them() {
             axios
-                .post('http://127.0.0.1:8000/api/gio/them', this.gio )
-                .then(
-                    (res) => {
-                        if (res.data.status == 1)
-                            toaster.success(res.data.message)
-                        this.loadData();
-                    }
+                .post('http://127.0.0.1:8000/api/gio/them', this.gio)
+                .then((res) => {
+                    if (res.data.status == 1)
+                        toaster.success(res.data.message)
+                    this.loadData();
+                }
                 )
+                .catch((error) => {
+                    if (error.response && error.response.status === 422) {
+                        const errors = error.response.data.errors;
+
+                        for (const key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                errors[key].forEach(err => {
+                                    toaster.error(err);
+                                });
+                            }
+                        }
+                    } else {
+                        toaster.error('Đã xảy ra lỗi khi gửi yêu cầu.');
+                    }
+                });
+
         },
+
         xoa() {
             axios
                 .post('http://127.0.0.1:8000/api/gio/del', this.xoa_gio,
@@ -176,6 +193,23 @@ export default {
                         this.loadData();
                     }
                 )
+                .catch((error) => {
+                    if (error.response && error.response.status === 422) {
+                        const errors = error.response.data.errors;
+
+                        for (const key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                
+                                errors[key].forEach(err => {
+                                    toaster.error(err);
+                                });
+                            }
+                        }
+                    } else {
+                        toaster.error('Đã xảy ra lỗi khi gửi yêu cầu.');
+                    }
+                });
+
         },
         loadData() {
             axios

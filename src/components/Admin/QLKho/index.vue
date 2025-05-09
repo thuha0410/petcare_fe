@@ -156,9 +156,22 @@ export default {
                         toaster.error('Thêm mới kho thất bại')
                     }
                 })
-                .catch((res) => {
-                    toaster.error(res.response.data.message);
-                })
+                .catch((error) => {
+                    if (error.response && error.response.status === 422) {
+                        const errors = error.response.data.errors;
+
+                        for (const key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                
+                                errors[key].forEach(err => {
+                                    toaster.error(err);
+                                });
+                            }
+                        }
+                    } else {
+                        toaster.error('Đã xảy ra lỗi khi gửi yêu cầu.');
+                    }
+                });
 
         },
         timkiem() {
@@ -191,6 +204,22 @@ export default {
                         this.loaddata();
                     } else {
                         toaster.error("Cập nhật kho thất bại!")
+                    }
+                })
+                .catch((error) => {
+                    if (error.response && error.response.status === 422) {
+                        const errors = error.response.data.errors;
+
+                        for (const key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                
+                                errors[key].forEach(err => {
+                                    toaster.error(err);
+                                });
+                            }
+                        }
+                    } else {
+                        toaster.error('Đã xảy ra lỗi khi gửi yêu cầu.');
                     }
                 });
         },

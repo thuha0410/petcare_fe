@@ -74,8 +74,8 @@
                     <div v-for="(value, index) in danh_sach_pet" :key="index" class="card shadow"
                         style="border-radius: 16px; background-color: #e6f2ff;">
                         <div class="text-end " style="background-color: white;">
-                            <button v-on:click="Object.assign(xoa_pet, value)" data-bs-toggle="modal" data-bs-target="#xoa" class="btn "><i
-                                    class="fa-solid fa-circle-xmark  "
+                            <button v-on:click="Object.assign(xoa_pet, value)" data-bs-toggle="modal"
+                                data-bs-target="#xoa" class="btn "><i class="fa-solid fa-circle-xmark  "
                                     style="color: #ff0000; font-size: 25px;"></i></button>
                         </div>
                         <div class="card-header bg-white d-flex justify-content-center border-0 pt-4">
@@ -94,8 +94,9 @@
                             </div>
                         </div>
                         <div class="card-footer bg-transparent text-center border-0 pb-4">
-                            <button v-on:click="Object.assign(update_pet, value)" data-bs-toggle="modal" data-bs-target="#capnhatttp"
-                                class="btn btn-outline-primary px-4 rounded-pill">Cập nhật</button>
+                            <button v-on:click="Object.assign(update_pet, value)" data-bs-toggle="modal"
+                                data-bs-target="#capnhatttp" class="btn btn-outline-primary px-4 rounded-pill">Cập
+                                nhật</button>
                         </div>
                     </div>
                     <div class="text-center">
@@ -360,11 +361,16 @@ export default {
                         toaster.error(res.data.message);
                     }
                 })
-                .catch(err => {
-                    if (err.response && err.response.data && err.response.data.message) {
-                        toaster.error(err.response.data.message);
+                .catch((error) => {
+                    if (error.response.status === 422) {
+                        let errors = error.response.data.errors;
+                        for (let field in errors) {
+                            errors[field].forEach(err => {
+                                toaster.error(err);
+                            });
+                        }
                     } else {
-                        toaster.error('Đã xảy ra lỗi. Vui lòng thử lại.');
+                        toaster.error('Đã xảy ra lỗi máy chủ.');
                     }
                 });
         },
@@ -396,13 +402,29 @@ export default {
                     }
                 })
                 .catch((error) => {
-                    if (error.response && error.response.status === 401) {
-                        localStorage.removeItem("token_client");
-                        this.$router.push("/client/dang-nhap-dang-ky");
+                    if (error.response) {
+                        const status = error.response.status;
+
+                        if (status === 401) {
+                            localStorage.removeItem("token_client");
+                            this.$router.push("/client/dang-nhap-dang-ky");
+                        } else if (status === 422 && error.response.data.errors) {
+                            const errors = error.response.data.errors;
+                            for (let field in errors) {
+                                errors[field].forEach(err => {
+                                    toaster.error(err);
+                                });
+                            }
+                        } else if (error.response.data?.message) {
+                            toaster.error(error.response.data.message);
+                        } else {
+                            toaster.error("Lỗi không xác định từ máy chủ.");
+                        }
                     } else {
-                        toaster.error("Có lỗi xảy ra khi lấy thông tin người dùng");
+                        toaster.error("Không kết nối được tới máy chủ.");
                     }
                 })
+
                 .finally(() => {
                     this.loading = false;
                 });
@@ -417,8 +439,17 @@ export default {
                         toaster.error(res.data.message);
                     }
                 })
-                .catch(() => {
-                    toaster.error('Đã xảy ra lỗi khi cập nhật pet.');
+                .catch((error) => {
+                    if (error.response.status === 422) {
+                        let errors = error.response.data.errors;
+                        for (let field in errors) {
+                            errors[field].forEach(err => {
+                                toaster.error(err);
+                            });
+                        }
+                    } else {
+                        toaster.error('Đã xảy ra lỗi máy chủ.');
+                    }
                 });
         },
         xoapet() {
@@ -457,8 +488,17 @@ export default {
                         toaster.error(res.data.message);
                     }
                 })
-                .catch(() => {
-                    toaster.error('Đã xảy ra lỗi khi thêm pet.');
+                .catch((error) => {
+                    if (error.response.status === 422) {
+                        let errors = error.response.data.errors;
+                        for (let field in errors) {
+                            errors[field].forEach(err => {
+                                toaster.error(err);
+                            });
+                        }
+                    } else {
+                        toaster.error('Đã xảy ra lỗi máy chủ.');
+                    }
                 });
         },
         getPets(id_kh) {
@@ -488,8 +528,17 @@ export default {
                         this.getUserInfo();
                     }
                 })
-                .catch(() => {
-                    toaster.error('Đã xảy ra lỗi khi cập nhật thông tin.');
+                .catch((error) => {
+                    if (error.response.status === 422) {
+                        let errors = error.response.data.errors;
+                        for (let field in errors) {
+                            errors[field].forEach(err => {
+                                toaster.error(err);
+                            });
+                        }
+                    } else {
+                        toaster.error('Đã xảy ra lỗi máy chủ.');
+                    }
                 });
         },
         chuyenGioiTinh(gt) {
