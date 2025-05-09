@@ -49,16 +49,18 @@
                     </tbody>
                 </table>
             </div>
-
+            <label for="">Ghi chú: </label>
+            <br>
             <div class="mt-5 row">
                 <div class="col text-start">
                     <p><strong>Ngày in:</strong> {{ formatDate(new Date()) }}</p>
                 </div>
                 <div class="col text-end me-5">
-                    <p><strong>Bác sĩ điều trị</strong></p>
+                    <label><strong>Bác sĩ điều trị</strong></label> <br>
+                    <label class="me-3">(Ký tên)</label>
+                    <br>
+                    <br><br><br>
                     <p>{{ donThuoc.ten_bac_si }}</p>
-                    <p class="me-3">(Ký tên)</p>
-                    <br><br><br><br>
                 </div>
             </div>
 
@@ -76,9 +78,9 @@
 
 <script>
 import api from '@/services/api';
-import { createToaster } from "@meforma/vue-toaster";
+import { createToaster } from '@meforma/vue-toaster';
 const toaster = createToaster({ position: "top-right" });
-import { nextTick } from 'vue'; 
+import { nextTick } from 'vue';
 export default {
     data() {
         return {
@@ -94,7 +96,7 @@ export default {
             try {
                 const id = this.$route.query.id;
                 console.log('ID đơn thuốc:', id);
-                
+
                 if (!id) {
                     toaster.error('Không tìm thấy thông tin đơn thuốc');
                     return;
@@ -102,7 +104,7 @@ export default {
 
                 const response = await api.get(`http://127.0.0.1:8000/api/don-thuoc/chi-tiet-in/${id}`);
                 console.log('Response từ API:', response.data);
-                
+
                 if (response.data.status) {
                     this.donThuoc = response.data.data.don_thuoc;
                     this.chiTiet = response.data.data.chi_tiet;
@@ -116,15 +118,13 @@ export default {
                 toaster.error('Lỗi khi tải thông tin đơn thuốc');
             }
         },
-        formatDate(dateString) {
-            if (!dateString) return '';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('vi-VN', {
-                year: 'numeric',
-                month: '2-digit',
+        formatDate(date) {
+            if (!date) return '';
+            const d = new Date(date);
+            return d.toLocaleDateString('vi-VN', {
                 day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit'
+                month: '2-digit',
+                year: 'numeric'
             });
         },
         async printDonThuoc() {
@@ -146,9 +146,11 @@ export default {
     .no-print {
         display: none;
     }
+
     body {
         background-color: white;
     }
+
     .container {
         box-shadow: none;
         padding: 0;

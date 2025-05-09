@@ -62,6 +62,11 @@ const routes = [
         meta: {layout:'admin'},
     },
     {
+        path : '/admin/ql-gio',
+        component: ()=>import('../components/Admin/QLGio/index.vue'),
+        meta: {layout:'admin'},
+    },
+    {
         path : '/admin/ql-pet',
         component: ()=>import('../components/Admin/QLPet/index.vue'),
         meta: {layout:'admin'},
@@ -77,6 +82,7 @@ const routes = [
         path : '/admin/ql-lich-hen',
         component: ()=>import('../components/Admin/QLLichHen/index.vue'),
         meta: {layout:'admin'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(3) ]
     },
     {
         path : '/admin/ql-nha-cung-cap',

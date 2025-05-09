@@ -1,32 +1,61 @@
 <template>
     <hr>
-    <div class="container mt-5">
-        <div class="card p-4 shadow-sm" style="background-color: #e9f0fc; border-radius: 16px; border: none;">
-            <!-- Tiêu đề -->
-            <h4 style="color: #1F365E;" class="mb-4 fw-bold d-flex align-items-center">
-                <i class="fa-solid fa-comment-dots me-2"></i>
-                Đánh giá dịch vụ ngay
-            </h4>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card p-4 shadow-sm"
+                    style="background-color: #e9f0fc; border-radius: 16px; border: none; height: 400px;">
+                    <!-- Tiêu đề -->
+                    <h4 style="color: #1F365E;" class="mb-4 fw-bold d-flex align-items-center">
+                        <i class="fa-solid fa-comment-dots me-2"></i>
+                        Đánh giá dịch vụ ngay
+                    </h4>
 
-            <!-- Thông tin người dùng -->
-            <div class="d-flex align-items-center mb-3">
-                <i style="color: #1F365E;" class="fa-solid fa-circle-user fa-2x me-3"></i>
-                <label class="mb-0 fs-5 text-dark">Tên người dùng</label>
-            </div>
+                    <!-- Thông tin người dùng -->
+                    <div class="d-flex align-items-center mb-3">
+                        <i style="color: #1F365E;" class="fa-solid fa-circle-user fa-2x me-3"></i>
+                        <p class="mb-0 fs-5 text-dark">{{ khach_hang.ho_va_ten || 'Tên người dùng' }}</p>
+                    </div>
 
-            <!-- Ô nhập bình luận -->
-            <div class="mb-4">
-                <textarea class="form-control" rows="4" v-model="comment" placeholder="Nhập bình luận của bạn..."
-                    style="resize: none; border-radius: 12px;"></textarea>
-            </div>
+                    <!-- Ô nhập bình luận -->
+                    <div class="mb-4">
+                        <textarea class="form-control" rows="4" v-model="comment"
+                            placeholder="Nhập bình luận của bạn..."
+                            style="resize: none; border-radius: 12px; height: 200px;"></textarea>
+                    </div>
 
-            <!-- Nút gửi -->
-            <p class="text-end"><button v-on:click="them()" style="width: 130px;" class="btn btn-primary">Gửi đánh giá</button></p>
-            <!-- Danh sách đánh giá đã gửi
+                    <!-- Nút gửi -->
+                    <p class="text-end"><button v-on:click="them()" style="width: 130px;" class="btn btn-primary">Gửi
+                            đánh
+                            giá</button></p>
+                    <!-- Danh sách đánh giá đã gửi
     </div> -->
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card p-4 shadow-sm" style="background-color: #e9f0fc; border-radius: 16px; border: none;">
+                    <h4 style="color: #1F365E;" class="mb-4 fw-bold d-flex align-items-center">
+                        <i class="fa-solid fa-comment-dots me-2"></i>
+                        Đánh giá dịch vụ gần đây
+                    </h4>
+
+                    <div class="scroll-wrapper d-flex gap-3">
+                        <div v-for="(value, index) in ds_danh_gia" :key="index" class="card shadow-sm"
+                            style="min-width: 300px; border-radius: 12px;">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fa-solid fa-user-circle fa-lg me-2" style="color: #1F365E;"></i>
+                                    <strong class="text-dark">{{ value.ho_va_ten || 'Ẩn danh' }}</strong>
+                                </div>
+                                <p class="mb-1 text-muted" style="font-size: 0.9rem;">{{ value.ngay_tao }}</p>
+                                <p class="mb-0">{{ value.noi_dung }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
     <div class="container-fluid bd-footer py-4 py-md-5 mt-5 bg-body-tertiary" style="background-color: #1F365E;">
 
         <div class="container">
@@ -92,36 +121,122 @@
 </template>
 
 <script>
+import axios from 'axios';
+import { createToaster } from "@meforma/vue-toaster";
+const toaster = createToaster({ position: "top-right" });
 export default {
     data() {
         return {
-            danh_gia: []
+            ds_danh_gia: [],
+            khach_hang: {},
+            comment: "",
         }
+    },
+    mounted() {
+        this.load();
+        this.loadDG();
+        this.loadKH();
     },
     methods: {
         them() {
+            if (!this.khach_hang.id) {
+                toaster.error("Bạn cần đăng nhập để gửi đánh giá.");
+                return;
+            }
+
+            const data = {
+                id_kh: this.khach_hang.id,
+                noi_dung: this.comment,
+                ngay_tao: new Date().toISOString().split('T')[0],
+                tinh_trang: 0,
+            };
+
+            axios.post("http://127.0.0.1:8000/api/danh-gia/them2", data, {
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem('token_client')
+                }
+            }).then((res) => {
+                if (res.data.status) {
+                    toaster.success('Đánh giá thành công!');
+                    this.comment = "";
+                    this.ds_danh_gia.unshift({
+                        ho_va_ten: this.khach_hang.ho_va_ten || 'Ẩn danh',
+                        ngay_tao: new Date().toISOString().split('T')[0],
+                        noi_dung: data.noi_dung
+                    });
+                } else {
+                    toaster.error('Thêm mới đánh giá thất bại');
+                }
+            }).catch((err) => {
+                toaster.error(err.response?.data?.message || "Lỗi gửi đánh giá");
+            });
+        },
+
+        loadDG() {
             axios
-                .post('http://127.0.0.1:8000/api/danh-gia/them', this.danh_gia)
-                .then((res) => {
-                    if (res.data.status == true) {
-                        toaster.success(res.data.message)
-                        this.dich_vu = {
-                            'id_kh':"",
-                            'noi_dung':"",
-                            'ngay_tao':"",
-                            'tinh_trang':"",
-                        }
-                    } else {
-                        toaster.error('Thêm mới đánh giá thất bại')
+                .get('http://127.0.0.1:8000/api/danh-gia/load2', {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('token_client')
                     }
                 })
-                .catch((res) => {
-                    toaster.error(res.response.data.message);
-                })
-
+                .then((res) => {
+                    this.ds_danh_gia = res.data.data;
+                    // Đảo ngược danh sách để hiển thị đánh giá mới ở đầu
+                    this.ds_danh_gia.reverse();
+                });
         },
-    },
-
+        load() {
+            axios
+                .get("http://127.0.0.1:8000/api/khach-hang/lay-du-lieu",
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_client')
+                        }
+                    }
+                )
+                .then((res) => {
+                    if (res.data.status == 1) {
+                        this.khach_hang = res.data.data;
+                    }
+                })
+                .catch(() => {
+                    this.khach_hang = {};
+                });
+        },
+        loadKH() {
+            axios
+                .get('http://127.0.0.1:8000/api/khach-hang/load',
+                {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_client')
+                        }
+                    }
+                )
+                .then((res) => {
+                    this.khach_hang = res.data.data
+                })
+        },
+    }
 }
 </script>
-<style></style>
+<style>
+.scroll-wrapper {
+    display: flex;
+    flex-direction: column;
+    /* Chuyển từ cuộn ngang sang cuộn dọc */
+    overflow-y: auto;
+    /* Cho phép cuộn dọc */
+    max-height: 400px;
+    /* Chiều cao cố định của vùng cuộn, bạn có thể thay đổi */
+}
+
+.scroll-wrapper::-webkit-scrollbar {
+    width: 8px;
+    /* Chiều rộng thanh cuộn dọc */
+}
+
+.scroll-wrapper::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+</style>

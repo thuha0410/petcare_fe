@@ -41,10 +41,8 @@
                                 <img :src="value.hinh_anh" width="100" height="130" class="rounded-circle shadow"
                                     alt="">
                                 <h5 style="color: darkblue;" class="mb-0 mt-5">ThS. {{ value.ten_nv }}</h5>
-                                <p style="color: darkslateblue;">Yêu thú cưng như chính gia đình mình</p>
+                                <p style="color: darkslateblue;">{{ value.mo_ta }}</p>
                                 <hr>
-                                <div style="color: red;"><span class="fw-bold"> {{ value.tien_kham }} VND</span>
-                                </div>
                                 <br>
                                 <div class="d-grid"> <a href="#" class="btn btn-outline-primary radius-15">Đặt lịch
                                         ngay</a>
@@ -159,13 +157,13 @@
     <br>
     <hr>
     <!-- why chăm sóc-->
-    <h2 class="text-center text-danger fw-bold">TẠI SAO CẦN CHĂM SÓC THÚ CƯNG ĐÚNG CÁCH?</h2>\``
-    <p class="text-black" style="font-size: 20px;">Thú cưng không chỉ là một vật nuôi mà còn là người bạn trung thành,
+    <h2 class="text-center text-danger fw-bold">TẠI SAO CẦN CHĂM SÓC THÚ CƯNG ĐÚNG CÁCH?</h2>
+    <p class="text-black text-center" style="font-size: 20px;">Thú cưng không chỉ là một vật nuôi mà còn là người bạn trung thành,
         mang lại niềm vui và sự gắn kết trong gia
         đình. Tuy nhiên, để bé cưng luôn khỏe mạnh và hạnh phúc, bạn cần quan tâm đến chế độ chăm sóc hàng ngày. Dưới
         đây là những lý do bạn không nên bỏ qua việc chăm sóc thú cưng đúng cách</p>
     <div class="">
-        <div class="row">
+        <div class="row mt-4">
             <div class="col-lg-6 text-end">
                 <img class=""
                     src="https://res.cloudinary.com/dd1p908gm/image/upload/v1743239937/step3-dogimg_oqzgd5.avif" alt="">
@@ -296,12 +294,10 @@ export default {
         return {
             list_nhan_vien: [],
         };
-
     },
     mounted() {
         this.load()
     },
-
     methods: {
         load() {
             axios

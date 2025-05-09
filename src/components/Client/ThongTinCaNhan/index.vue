@@ -74,7 +74,7 @@
                     <div v-for="(value, index) in danh_sach_pet" :key="index" class="card shadow"
                         style="border-radius: 16px; background-color: #e6f2ff;">
                         <div class="text-end " style="background-color: white;">
-                            <button data-bs-toggle="modal" data-bs-target="#xoa" class="btn "><i
+                            <button v-on:click="Object.assign(xoa_pet, value)" data-bs-toggle="modal" data-bs-target="#xoa" class="btn "><i
                                     class="fa-solid fa-circle-xmark  "
                                     style="color: #ff0000; font-size: 25px;"></i></button>
                         </div>
@@ -94,7 +94,7 @@
                             </div>
                         </div>
                         <div class="card-footer bg-transparent text-center border-0 pb-4">
-                            <button data-bs-toggle="modal" data-bs-target="#capnhatttp"
+                            <button v-on:click="Object.assign(update_pet, value)" data-bs-toggle="modal" data-bs-target="#capnhatttp"
                                 class="btn btn-outline-primary px-4 rounded-pill">Cập nhật</button>
                         </div>
                     </div>

@@ -22,7 +22,6 @@
                             <th>Giới tính</th>
                             <th>Hình ảnh</th>
                             <th>Email</th>
-                            <th>Tiền khám</th>
                             <th>Mô tả</th>
                             <th>Tình trạng</th>
                             <th>Tên chức vụ</th>
@@ -39,10 +38,6 @@
                                         :src="value.hinh_anh">
                                 </td>
                                 <td>{{ value.email }}</td>
-                                <td>
-                                    <span v-if="value.ten_chuc_vu === 'Bác sĩ'">{{ value.tien_kham }}</span>
-                                    <span v-else>-</span>
-                                </td>
                                 <td class="text-center align-middle">
                                     <span data-bs-toggle="modal" data-bs-target="#mota"><i
                                             class="fa-solid fa-2x fa-circle-exclamation"
@@ -73,7 +68,7 @@
         <div class="modal-dialog ">
             <div class="modal-content">
                 <div class="modal-header bg-secondary">
-                    <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">MÔ TẢ DỊCH VỤ</h1>
+                    <h1 class="modal-title fs-5 text-white " id="exampleModalLabel">MÔ TẢ NHÂN VIÊN</h1>
                 </div>
                 <div class="modal-body">
                     {{ chi_tiet_nv.mo_ta }}
@@ -213,7 +208,6 @@ export default {
                 'ten_nv': '',
                 'gioi_tinh': '',
                 'email': '',
-                'tien_kham': '',
                 'password': '',
                 'mo_ta': '',
                 'hinh_anh': '',
@@ -274,7 +268,6 @@ export default {
                             'ten_nv': '',
                             'gioi_tinh': '',
                             'email': '',
-                            'tien_kham': '',
                             'password': '',
                             'mo_ta': '',
                             'hinh_anh': '',
