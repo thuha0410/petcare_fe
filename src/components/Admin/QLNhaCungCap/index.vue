@@ -131,14 +131,14 @@
     </div>
 </template>
 <script>
-import axios from 'axios'
+import api from 'axios'
 import { createToaster } from "@meforma/vue-toaster";
 
 const toaster = createToaster({ position: "top-right" });
 export default {
     methods: {
         load() {
-            axios
+            api
                 .get('http://127.0.0.1:8000/api/nha-cung-cap/load',
                     {
                         headers: {
@@ -151,7 +151,7 @@ export default {
                 })
         },
         them() {
-            axios
+            api
                 .post('http://127.0.0.1:8000/api/nha-cung-cap/them', this.nha_cung_cap)
                 .then((res) => {
                     if (res.data.status == true) {
@@ -174,7 +174,7 @@ export default {
                 })
         },
         xoa() {
-            axios
+            api
                 .post('http://127.0.0.1:8000/api/nha-cung-cap/xoa', this.del_nha_cung_cap)
                 .then((res) => {
                     if (res.data.status == true) {
@@ -186,7 +186,7 @@ export default {
                 })
         },
         update() {
-            axios
+            api
                 .post('http://127.0.0.1:8000/api/nha-cung-cap/update', this.update_nha_cung_cap)
                 .then((res) => {
                     if (res.data.status == true) {
@@ -200,7 +200,7 @@ export default {
 
         },
         doiTT(x) {
-            axios
+            api
                 .post('http://127.0.0.1:8000/api/nha-cung-cap/doi-TT', x)
                 .then((res) => {
                     if (res.data.status == true) {
@@ -213,7 +213,7 @@ export default {
                 })
         },
         timkiem() {
-            axios
+            api
                 .post('http://127.0.0.1:8000/api/nha-cung-cap/tim-kiem', this.tim_kiem)
                 .then((res) => {
                     this.list_nha_cung_cap = res.data.data

@@ -37,15 +37,13 @@
                             <td>{{ hd.phuong_thuc == 1 ? 'Chuyển khoản' : 'Tiền mặt' }}</td>
                             <td>{{ formatTien(hd.tong_tien || 0) }}</td>
                             <td>
-                                <span :class="['badge', hd.tinh_trang ? 'bg-success' : 'bg-warning']">
+                                <span :class="[hd.tinh_trang ? 'text-primary' : 'text-warning']">
                                     {{ hd.tinh_trang ? 'Đã thanh toán' : 'Chưa thanh toán' }}
                                 </span>
                             </td>
                             <td>
-                                <button class="btn btn-primary btn-sm" v-if="!hd.tinh_trang"
-                                    @click="moModalCapNhat(hd)">Cập nhật</button> &nbsp;
-                                &nbsp;
-                                <button class="btn btn-info btn-sm" @click="xemChiTiet(hd)">Chi tiết</button>
+                                <button type="button" class="btn btn-outline-danger px-5"
+                                    @click="batModalThanhToan(hd)">Thanh toán</button>
                             </td>
                         </tr>
                         <tr v-if="list_hoa_don.length === 0">
@@ -55,33 +53,86 @@
                 </table>
             </div>
         </div>
-        <!-- Modal cập nhật hóa đơn -->
-        <div class="modal fade" id="modalCapNhat" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true"
-            ref="modalCapNhat">
+        <div class="modal fade" id="chitiet" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog ">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary">
+                        <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Chi tiết hóa đơn</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <label>Tiền đơn thuốc:</label>
+                            <div class="form-control bg-light">{{ chiTiet.tien_don_thuoc }} VND</div>
+                        </div>
+                        <div class="mb-2">
+                            <label>Tiền dịch vụ:</label>
+                            <div class="form-control bg-light">{{ chiTiet.tien_dich_vu }} VND</div>
+                        </div>
+                        <div class="mb-2">
+                            <label>Tiền khám:</label>
+                            <div class="form-control bg-light">{{ chiTiet.tien_kham }} VND</div>
+                        </div>
+                        <div class="mb-2">
+                            <label>Tiền cọc dịch vụ:</label>
+                            <div class="form-control bg-light">{{ chiTiet.tien_coc_dich_vu }} VND</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Thanh toán -->
+        <div class="modal fade" id="modalThanhToan" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title" id="modalLabel">Cập nhật hóa đơn</h5>
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">Xác nhận thanh toán</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <label class="form-label">Tên nhân viên</label>
-                        <select v-model="hoa_don_edit.id_nv" class="form-control mb-2 form-select" name="" id="">
-                            <template v-for="(value, index) in list_nhan_vien.filter(nv => nv.id_chucvu === 2)" :key="index">
-                                <option v-bind:value="value.id">{{ value.ten_nv }}</option>
-                            </template>
-                        </select>
-                        <label class="form-label">Phương thức thanh toán</label>
-                        <select class="form-select" v-model="hoa_don_edit.phuong_thuc">
-                            <option value="0">Tiền mặt</option>
-                            <option value="1">Chuyển khoản</option>
-                        </select>
-                        <label class="form-label mt-2">Tiền khám</label>
-                        <input type="number" class="form-control" v-model="hoa_don_edit.tien_kham" min="0" />
+                        <div class="mb-2">
+                            <label>Nhân viên thu:</label>
+                            <select v-model="hoa_don_edit.id_nv" class="form-control mb-2 form-select" name="" id="">
+                                <template v-for="(value, index) in list_nhan_vien.filter(nv => nv.id_chucvu === 2)"
+                                    :key="index">
+                                    <option v-bind:value="value.id">{{ value.ten_nv }}</option>
+                                </template>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label>Tiền đơn thuốc:</label>
+                            <div class="form-control bg-light">{{ chiTiet.tien_don_thuoc }} VND</div>
+                        </div>
+                        <div class="mb-2">
+                            <label>Tiền dịch vụ:</label>
+                            <div class="form-control bg-light">{{ chiTiet.tien_dich_vu }} VND</div>
+                        </div>
+                        <div class="mb-2">
+                            <label>Tiền cọc:</label>
+                            <div class="form-control bg-light">{{ chiTiet.tien_coc_dich_vu }} VND</div>
+                        </div>
+                        <div class="mb-2">
+                            <label>Tiền khám:</label>
+                            <input class="form-control" v-model="hoa_don_edit.tien_kham" type="number" />
+                        </div>
+                        <div class="mb-2">
+                            <label class="fw-bold text-danger">Tổng tiền:</label>
+                            <div class="form-control bg-light fw-bold text-danger">
+                                {{ formatTien(tinhTongTien()) }}
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label>Phương thức:</label>
+                            <select v-model="hoa_don_edit.phuong_thuc" class="form-select">
+                                <option value="0">Tiền mặt</option>
+                                <option value="1">Chuyển khoản</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button class="btn btn-primary" @click="capNhatHoaDon">Lưu</button>
+                        <button class="btn btn-success" v-on:click="xacNhanThanhToan()">Xác nhận thanh toán</button>
                     </div>
                 </div>
             </div>
@@ -104,6 +155,12 @@ export default {
             hoa_don_edit: {
                 phuong_thuc: 0,
                 tien_kham: 0
+            },
+            chiTiet: {
+                tien_don_thuoc: 0,
+                tien_dich_vu: 0,
+                tien_kham: 0,
+                tien_coc_dich_vu: 0
             }
         };
     },
@@ -112,6 +169,63 @@ export default {
         this.loaddataNV();
     },
     methods: {
+        xacNhanThanhToan() {
+            axios.post('http://127.0.0.1:8000/api/hoa-don/thanh-toan', this.hoa_don_edit)
+                .then(res => {
+                    if (res.data.status) {
+                        toaster.success('Thanh toán thành công');
+                        this.taiDanhSach();
+                        document.querySelector('#modalThanhToan .btn-close').click();
+                    } else {
+                        toaster.error(res.data.message || 'Thanh toán thất bại');
+                    }
+                })
+                .catch(() => {
+                    toaster.error('Lỗi khi gửi yêu cầu thanh toán');
+                });
+        },
+        batModalThanhToan(hd) {
+            this.hoa_don_edit = {
+                id: hd.id,
+                id_nv: '', // chọn trong modal
+                phuong_thuc: 0,
+                tien_kham: 0
+            };
+
+            axios.get(`http://127.0.0.1:8000/api/hoa-don/chi-tiet-tien/${hd.id}`)
+                .then(res => {
+                    if (res.data.status) {
+                        this.chiTiet = res.data.data;
+                        const modal = new bootstrap.Modal(document.getElementById('modalThanhToan'));
+                        modal.show();
+                    }
+                });
+            console.log('CHI TIẾT:', res.data.data);
+        },
+        tinhTongTien() {
+            const a = parseFloat(this.chiTiet.tien_don_thuoc) || 0;
+            const b = parseFloat(this.chiTiet.tien_dich_vu) || 0;
+            const c = Number(this.hoa_don_edit.tien_kham) || 0;
+            const d = parseFloat(this.chiTiet.tien_coc_dich_vu) || 0;
+
+            return (a + b + c) - d;
+        },
+        formatTien(val) {
+            return val ? val.toLocaleString('vi-VN') + ' VND' : '0 VND';
+        },
+        xemChiTiet(hd) {
+            axios.get(`http://127.0.0.1:8000/api/hoa-don/chi-tiet-tien/${hd.id}`)
+                .then(res => {
+                    if (res.data.status) {
+                        this.chiTiet = res.data.data;
+                        const modal = new bootstrap.Modal(document.getElementById('chitiet'));
+                        modal.show();
+                    } else {
+                        toaster.error('Không lấy được chi tiết hóa đơn');
+                    }
+                })
+                .catch(() => toaster.error('Lỗi khi lấy chi tiết hóa đơn'));
+        },
         loaddataNV() {
             axios
                 .get("http://127.0.0.1:8000/api/nhan-vien/load", {
@@ -154,9 +268,6 @@ export default {
                 })
                 .catch(() => toaster.error('Không thể tải dữ liệu'));
         },
-        formatTien(val) {
-            return val ? val.toLocaleString('vi-VN') + ' ₫' : '0 ₫';
-        },
         formatDate(date) {
             return new Date(date).toLocaleDateString('vi-VN');
         },
@@ -166,9 +277,6 @@ export default {
                 hd.ten_khach_hang?.toLowerCase().includes(term)
             );
         },
-        xemChiTiet(hd) {
-            console.log(hd);
-        }
     }
 };
 </script>

@@ -39,7 +39,9 @@
           </router-link>
         </li>
         <li class="nav-item me-2 text-nowrap">
-          <a class="nav-link" href="javascript:;" @click="xuLyDatLich">Đặt lịch</a>
+          <router-link to="/client/dat-lich">
+            <a class="nav-link" href="#">Đặt lịch</a>
+          </router-link>
         </li>
       </ul>
       <!-- Menu chính -->
@@ -71,7 +73,7 @@
             </li>
             <li>
               <a v-on:click="dangXuat()" class="dropdown-item" href="javascript:;"><i
-                  class="bx bx-log-out-circle "></i><span style="color: black;">Đăng Xuất</span></a>
+                  class="bx bx-log-out-circle " ></i><span style="color: black;">Đăng Xuất</span></a>
             </li>
             <li>
               <a v-on:click="dangXuatAll()" class="dropdown-item" href="javascript:;"><i
@@ -93,7 +95,7 @@
 <script>
 import apiClient from "@/services/apiClient";
 import { createToaster } from "@meforma/vue-toaster";
-const toaster = createToaster({ position: 'top-right' });
+const toaster = createToaster({ position: 'top-left' });
 export default {
   data() {
     return {
@@ -115,9 +117,7 @@ export default {
         this.khach_hang = {};
         return;
       }
-      apiClient.get("/api/khach-hang/lay-du-lieu", {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      apiClient.get("/api/khach-hang/lay-du-lieu")
         .then((res) => {
           if (res.data.status === 1) {
             this.khach_hang = res.data.data;
@@ -158,59 +158,6 @@ export default {
           toaster.error('Đã xảy ra lỗi khi đăng xuất tất cả');
         });
     },
-    loadPet() {
-      const token = localStorage.getItem("token_client");
-      if (!token) {
-        console.warn("Thiếu token đăng nhập.");
-        return;
-      }
-      apiClient.get("/api/khach-hang/lay-du-lieu", {
-        headers: {
-          Authorization: "Bearer " + token
-        }
-      }).then(res => {
-        const id_kh = res.data.data.id;
-        localStorage.setItem("id_khach_hang", id_kh);
-
-        return apiClient.get(`/api/pets/${id_kh}`, {
-          headers: {
-            Authorization: "Bearer " + token
-          }
-        });
-      }).then(res => {
-        this.list_pet = res.data.pets;
-      }).catch(err => {
-        console.error("Lỗi khi lấy danh sách thú cưng:", err);
-      });
-
-    },
-    xuLyDatLich() {
-      const token = localStorage.getItem("token_client");
-      if (!token) {
-        this.$router.push("/client/dang-nhap-dang-ky");
-        return;
-      }
-
-      apiClient.get("/api/khach-hang/lay-du-lieu", {
-        headers: { Authorization: `Bearer ${token}` }
-      }).then(res => {
-        const id_kh = res.data.data.id;
-        return apiClient.get(`/api/pets/${id_kh}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-      }).then(res => {
-        const pets = res.data.pets;
-        if (pets && pets.length > 0) {
-          this.$router.push("/client/dat-lich");
-        } else {
-          toaster.error("Bạn chưa có thú cưng nào. Vui lòng thêm thú cưng trước khi đặt lịch.");
-          this.$router.push("/client/thong-tin-ca-nhan");
-        }
-      }).catch(err => {
-        console.error("Lỗi khi kiểm tra thú cưng:", err);
-        this.$router.push("/client/thong-tin-ca-nhan");
-      });
-    }
   },
 };
 </script>
@@ -266,25 +213,17 @@ export default {
 .btn-search:hover {
   background-color: #0055aa;
 }
-
 .dropdown-menu {
-  font-size: 16px;
-  /* Tăng kích thước chữ */
-  padding: 10px 0;
-  /* Tăng khoảng cách trên dưới */
+  font-size: 16px; /* Tăng kích thước chữ */
+  padding: 10px 0; /* Tăng khoảng cách trên dưới */
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
-
 .dropdown-menu .dropdown-item:hover {
-  background-color: #f0f8ff;
-  /* xanh nhạt nhẹ nhàng */
-  color: #003366;
-  /* chữ xanh đậm */
-  border-radius: 5px;
-  /* bo nhẹ góc */
+  background-color: #f0f8ff; /* xanh nhạt nhẹ nhàng */
+  color: #003366; /* chữ xanh đậm */
+  border-radius: 5px; /* bo nhẹ góc */
 }
-
 .dropdown-menu {
   opacity: 0;
   transform: translateY(10px);
@@ -298,11 +237,8 @@ export default {
   transform: translateY(0);
   visibility: visible;
 }
-
 .dropdown-menu .dropdown-item {
-  font-size: 16px;
-  /* Tăng chữ trong từng dòng */
-  padding: 12px 20px;
-  /* Dễ bấm hơn */
+  font-size: 16px; /* Tăng chữ trong từng dòng */
+  padding: 12px 20px; /* Dễ bấm hơn */
 }
 </style>

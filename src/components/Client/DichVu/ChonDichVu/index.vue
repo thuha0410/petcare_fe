@@ -89,7 +89,7 @@
                 </div>
                 <div class="card-body d-flex flex-wrap justify-content-center">
                     <button v-for="(value, index) in availableTimes" :key="index" class="btn m-2"
-                        :disabled="isFull(value.id)" @click="selectTime(value)" :class="{
+                        :disabled="isFull(value.id) || isPastTime(value.khung_gio)" @click="selectTime(value)" :class="{
                             'btn-danger': isFull(value.id),
                             'btn-warning': isPastTime(value.khung_gio) && !isFull(value.id),
                             'btn-outline-primary': !isFull(value.id) && !isPastTime(value.khung_gio)

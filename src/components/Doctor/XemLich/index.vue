@@ -15,15 +15,15 @@
           <h3 class="text-black mb-0" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif;">
             LỊCH HẸN HÔM NAY <span class="text-primary">({{ formatDate(current_date) }})</span>
           </h3>
-          <span class="badge bg-primary" style="font-size: 16px;">{{ all_lich_hen.length }} lịch hẹn</span>
+          <span class="badge bg-primary" style="font-size: 16px;">{{ lich_hen_hom_nay.length }} lịch hẹn</span>
         </div>
         <div class="card-body">
-          <div v-if="all_lich_hen.length === 0" class="text-center py-4">
+          <div v-if="lich_hen_hom_nay.length === 0" class="text-center py-4">
             <i class="fa-regular fa-calendar-check fa-3x text-muted mb-3"></i>
             <h5 class="text-muted">Không có lịch hẹn nào hôm nay</h5>
           </div>
           <div v-else class="row">
-            <div v-for="(item, index) in all_lich_hen" :key="index" class="col-lg-4 col-md-6 mb-3">
+            <div v-for="(item, index) in lich_hen_hom_nay" :key="index" class="col-lg-4 col-md-6 mb-3">
               <div class="card h-100 border border-dark card-glow" :class="{
                 'border-primary bg-primary bg-opacity-10': item.trang_thai === 1,
                 'border-danger bg-danger bg-opacity-10': item.trang_thai === 0

@@ -48,7 +48,6 @@
                             <th>Tên nhân viên</th>
                             <th>Tiền cọc </th>
                             <th>Tình trạng</th>
-                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -63,15 +62,12 @@
                                 <td>{{ getTenNV(value.id_nv) }}</td>
                                 <td>{{ value.tien_coc }}</td>
                                 <td class="text-center align-middle">
-                                    <button v-if="value.tinh_trang == 1" v-on:click="doi_trang_thai(value)"
-                                        class="btn btn-success me-2">Đã duyệt</button>
-                                    <button v-else class="btn btn-warning " v-on:click="doi_trang_thai(value)">Chờ
-                                        duyệt</button>
-                                </td>
-                                <td>
-                                    <button @click="showModal(value)" data-bs-toggle="modal"
-                                        data-bs-target="#capnhat" style="width:100px;" class="btn btn-primary me-2">Cập
-                                        nhật</button>
+                                    <button v-if="value.tinh_trang == 1" class="btn btn-success me-2" disabled>
+                                        Đã điều trị
+                                    </button>
+                                    <button v-else class="btn btn-warning" @click="doi_trang_thai(value)">
+                                        Chờ điều trị
+                                    </button>
                                 </td>
                             </tr>
                         </template>
@@ -80,6 +76,24 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="modalXacNhanDieuTri" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title">XÁC NHẬN</h5>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn chuyển trạng thái lịch hẹn này sang <strong>"Đã điều trị"</strong>?<br>
+                    Hệ thống sẽ tạo hóa đơn tương ứng.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+                    <button @click="xacNhanDieuTri" class="btn btn-success" data-bs-dismiss="modal">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="capnhat" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -119,6 +133,7 @@ export default {
             pet: [],
             nhan_vien: [],
             dich_vu: [],
+            lich_muon_dieu_tri: null,
         }
     },
     mounted() {
@@ -129,20 +144,47 @@ export default {
         this.loadDichVu();
     },
     computed: {
-    isServiceEditable() {
-        const service = this.dich_vu.find(dv => dv.id == this.update_lich.id_dv);
-        return service ? Number(service.id_loaidv) === 4 : false;
-    }
-},
+        isServiceEditable() {
+            const service = this.dich_vu.find(dv => dv.id == this.update_lich.id_dv);
+            return service ? Number(service.id_loaidv) === 4 : false;
+        }
+    },
 
     methods: {
+        doi_trang_thai(lich) {
+            this.lich_muon_dieu_tri = lich;
+            const modal = new bootstrap.Modal(document.getElementById('modalXacNhanDieuTri'));
+            modal.show();
+        },
+        xacNhanDieuTri() {
+            if (!this.lich_muon_dieu_tri) return;
+            axios
+                .post('http://127.0.0.1:8000/api/lich-hen/doi-tt-va-tao-hoa-don', {
+                    id: this.lich_muon_dieu_tri.id
+                })
+                .then((res) => {
+                    if (res.data.status) {
+                        toaster.success(res.data.message);
+                        this.loadLichHen();
+                        setTimeout(() => {
+                            window.location.href = '/admin/hoa-don'; 
+                        }, 1000);
+                    } else {
+                        toaster.error(res.data.message || 'Thất bại khi xác nhận');
+                    }
+                })
+                .catch(() => {
+                    toaster.error('Đã xảy ra lỗi khi xác nhận điều trị');
+                });
+        },
+
         showModal(value) {
-            this.update_lich = { ...value }; 
+            this.update_lich = { ...value };
         },
 
         loadLichHen() {
             axios
-                .get('http://127.0.0.1:8000/api/lich-hen/load')
+                .get('http://127.0.0.1:8000/api/lich-hen-pet/load')
                 .then((res) => {
                     this.list_lich = res.data.data
                 })
@@ -194,24 +236,14 @@ export default {
         },
         getTenNV(id_nv) {
             const nv = this.nhan_vien.find(nv => nv.id == id_nv);
-            return nv ? nv.ten_nv : 'Nhân viên chăm sóc';
+            if (!nv) return 'Nhân viên chăm sóc';
+            if (nv.id_chucvu == 1) return nv.ten_nv + ' (Bác sĩ)';
         },
         getTenDV(id_dv) {
             const dv = this.dich_vu.find(dv => dv.id == id_dv);
             return dv ? dv.ten_dv : 'Chưa có';
         },
-        doi_trang_thai(x) {
-            axios
-                .post("http://127.0.0.1:8000/api/lich-hen/doi", x)
-                .then((res) => {
-                    if (res.data.status == true) {
-                        toaster.success(res.data.message);
-                        this.loadLichHen();
-                    } else {
-                        toaster.error("Đổi trạng thái dịch vụ thất bại!")
-                    }
-                });
-        },
+
         loadDichVu() {
             axios
                 .get('http://127.0.0.1:8000/api/dich-vu/load')
