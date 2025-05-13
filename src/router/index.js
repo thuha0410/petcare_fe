@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import kiemTraAdmin from './kiemTraAdmin';
 import { kiemTraQuyen } from '../utils/kiemTraQuyen';
 import api from '@/services/api';
+import PaymentSuccess from '@/pages/Payment/PaymentSuccess.vue'
+import PaymentError from '@/pages/Payment/PaymentError.vue'
 
 const routes = [
     {
@@ -257,6 +259,16 @@ const routes = [
         path : '/client/thanh-toan',
         component: ()=>import('../components/Client/ThanhToan/index.vue'),
         meta: {layout:'client'},
+    },
+    {
+        path: '/payment/success',
+        name: 'PaymentSuccess',
+        component: PaymentSuccess
+    },
+    {
+        path: '/payment/error',
+        name: 'PaymentError',
+        component: PaymentError
     },
 ]
 
