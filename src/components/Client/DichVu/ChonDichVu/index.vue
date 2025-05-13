@@ -323,37 +323,30 @@ export default {
         },
     },
     watch: {
-        id_pet(value) {
-            const selectedPet = this.list_pet.find(pet => pet.id === value);
-            if (!selectedPet) return;
+    id_pet(value) {
+        const selectedPet = this.list_pet.find(pet => pet.id === value);
+        if (!selectedPet) return;
 
-            const canNang = selectedPet.can_nang;
-            const { can_nang_min, can_nang_max, id_loaidv } = this.list_dv;
+        const canNang = selectedPet.can_nang;
+        const { can_nang_min, can_nang_max } = this.list_dv;
 
-            if (can_nang_min != null && can_nang_max != null) {
-                if (canNang < can_nang_min || canNang > can_nang_max) {
-                    toaster.error(`Thú cưng này không phù hợp với dịch vụ (cân nặng yêu cầu: ${can_nang_min}kg - ${can_nang_max}kg).`);
-                    this.id_pet = '';
-                    return;
-                }
-            }
-            if (id_loaidv === 2) {
-                let heSo = 1;
-                if (canNang > 30) {
-                    heSo = 1.6;
-                } else if (canNang > 20) {
-                    heSo = 1.4;
-                } else if (canNang > 10) {
-                    heSo = 1.2;
-                }
-                this.list_dv.gia = Math.round(this.giaGoc * heSo); 
-                this.tienCoc = Math.round(this.list_dv.gia * 0.25);
-            } else {
-                this.list_dv.gia = this.giaGoc;
-                
+        // Kiểm tra cân nặng nếu có giới hạn
+        const needWeightCheck = can_nang_min != null && can_nang_max != null;
+
+        if (needWeightCheck) {
+            if (canNang < can_nang_min || canNang > can_nang_max) {
+                toaster.error(`Thú cưng này không phù hợp với dịch vụ (cân nặng yêu cầu: ${can_nang_min}kg - ${can_nang_max}kg).`);
+                this.id_pet = '';
+                return;
             }
         }
+
+        // Luôn giữ giá gốc và tính tiền cọc
+        this.list_dv.gia = this.giaGoc;
+        this.tienCoc = Math.round(this.list_dv.gia * 0.25);
     }
+}
+
 };
 </script>
 
