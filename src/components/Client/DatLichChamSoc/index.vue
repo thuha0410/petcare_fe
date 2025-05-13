@@ -65,9 +65,14 @@
                         <!-- Cột nội dung -->
                         <div class="col-lg-8">
                             <h5 class="card-title text-primary mt-3">{{ value.ten_dv }}</h5>
-                            <div class="row mt-2">
+                            <div class="row mt-4">
                                 <p style="font-size: 20px;" class=" fw-bold">
                                     Mô tả: <span>{{ value.mo_ta }}</span>
+                                </p>
+                            </div>
+                            <div class="row">
+                                <p style="font-size: 20px;" class="">
+                                    Cân nặng phù hợp: <span>{{ value.can_nang_min }}kg - {{ value.can_nang_max }}kg</span>
                                 </p>
                             </div>
                             <div class="row mt-2">
