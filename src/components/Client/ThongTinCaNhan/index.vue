@@ -62,10 +62,72 @@
             </div>
         </div>
     </div>
+
+    <!-- Phần lịch hẹn đã đặt -->
+    <div class="row mt-5">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8">
+            <h2 class="text-center fw-bold" style="color: darkblue;">Lịch hẹn đã đặt <i class="fa-solid fa-calendar-check" style="color: darkblue;"></i></h2>
+            <br>
+            <div class="card shadow" style="border-radius: 16px;">
+                <div class="card-header" style="background-color: #2c4b85; color: white; border-radius: 16px 16px 0 0;">
+                    <h4 class="mb-0">Danh sách lịch hẹn</h4>
+                </div>
+                <div class="card-body">
+                    <div v-if="lichHenList.length === 0" class="text-center p-4">
+                        <p class="text-muted">Bạn chưa có lịch hẹn nào</p>
+                    </div>
+                    <div v-else class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Dịch vụ</th>
+                                    <th>Thú cưng</th>
+                                    <th>Ngày hẹn</th>
+                                    <th>Giờ hẹn</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thanh toán</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item, index) in lichHenList" :key="index">
+                                    <td>{{ index + 1 }}</td>
+                                    <td>{{ item.ten_dv }}</td>
+                                    <td>{{ item.ten_pet }}</td>
+                                    <td>{{ item.ngay }}</td>
+                                    <td>{{ item.gio }}</td>
+                                    <td>{{ formatCurrency(item.gia) }}</td>
+                                    <td>
+                                        <span :class="getStatusClass(item.tinh_trang)">
+                                            {{ getStatusText(item.tinh_trang) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button 
+                                            v-if="canPayOnline(item)" 
+                                            @click="thanhToanVNPay(item)"
+                                            class="btn btn-success btn-sm">
+                                            <i class="fa-solid fa-credit-card me-1"></i> Thanh toán ngay
+                                        </button>
+                                        <span v-else-if="item.tinh_trang === '1'" class="badge bg-success">Đã thanh toán</span>
+                                        <span v-else class="text-muted">-</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2"></div>
+    </div>
+    
     <div class="row ">
         <div class="col-lg-2"></div>
         <div class="col-lg-8">
-            <h2 class="text-center fw-bold" style="color: darkblue;">Thú cưng của tôi <i
+            <h2 class="text-center fw-bold mt-5" style="color: darkblue;">Thú cưng của tôi <i
                     class="fa-solid fa-paw fa-bounce" style="color: darkblue;"></i></h2>
             <br>
             <div class="row">
@@ -338,12 +400,94 @@ export default {
                 mat_khau_moi: '',
                 xac_nhan_mat_khau: ''
             },
+            lichHenList: [], // Danh sách lịch hẹn
         };
     },
     mounted() {
         this.getUserInfo();
+        this.getLichHen(); // Load lịch hẹn khi component mount
     },
     methods: {
+        getLichHen() {
+            const token = localStorage.getItem("token_client");
+            if (!token) {
+                return;
+            }
+            
+            apiClient.get("/api/lich-hen/danh-sach-lich-hen", {
+                headers: {
+                    Authorization: "Bearer " + token
+                }
+            })
+            .then(res => {
+                if (res.data.status === 1) {
+                    this.lichHenList = res.data.data;
+                } else {
+                    toaster.error(res.data.message || "Không thể tải lịch hẹn");
+                }
+            })
+            .catch(error => {
+                console.error("Lỗi khi lấy danh sách lịch hẹn:", error);
+                toaster.error("Có lỗi xảy ra khi tải danh sách lịch hẹn");
+            });
+        },
+        
+        getStatusText(status) {
+            const statusMap = {
+                '0': 'Chờ xác nhận',
+                '1': 'Đã xác nhận',
+                '2': 'Đã hoàn thành',
+                '3': 'Đã hủy'
+            };
+            return statusMap[status] || 'Không xác định';
+        },
+        
+        getStatusClass(status) {
+            const classMap = {
+                '0': 'badge bg-warning',
+                '1': 'badge bg-primary',
+                '2': 'badge bg-success',
+                '3': 'badge bg-danger'
+            };
+            return classMap[status] || '';
+        },
+        
+        formatCurrency(value) {
+            return new Intl.NumberFormat('vi-VN', { 
+                style: 'currency', 
+                currency: 'VND',
+                maximumFractionDigits: 0
+            }).format(value);
+        },
+        
+        canPayOnline(lichHen) {
+            // Chỉ cho phép thanh toán nếu lịch hẹn chưa được thanh toán và đã xác nhận
+            return lichHen.tinh_trang === '0' || (lichHen.tinh_trang === '1' && !lichHen.da_thanh_toan);
+        },
+        
+        thanhToanVNPay(lichHen) {
+            apiClient.post('/api/vnpay/tao-url-thanh-toan', {
+                id_lich_hen: lichHen.id,
+                so_tien: lichHen.gia,
+                noi_dung: `Thanh toán đặt lịch: ${lichHen.ten_dv} - ${lichHen.ten_pet}`
+            }, {
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem('token_client')
+                }
+            })
+            .then(res => {
+                if (res.data.status === 1 && res.data.payment_url) {
+                    // Chuyển hướng đến trang thanh toán VNPay
+                    window.location.href = res.data.payment_url;
+                } else {
+                    toaster.error(res.data.message || "Không thể tạo liên kết thanh toán");
+                }
+            })
+            .catch(error => {
+                console.error("Lỗi khi tạo URL thanh toán:", error);
+                toaster.error("Có lỗi xảy ra khi tạo liên kết thanh toán");
+            });
+        },
         doiMatKhau() {
             apiClient.post('/api/khach-hang/doi-mat-khau-tcn', this.matkhau)
                 .then(res => {
@@ -501,3 +645,17 @@ export default {
     }
 };
 </script>
+
+<style>
+@import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css';
+@import 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css';
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+.badge {
+    font-size: 0.85rem;
+    padding: 0.35em 0.65em;
+}
+</style>

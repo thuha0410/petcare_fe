@@ -358,6 +358,9 @@ export default {
 </script>
 
 <style>
+@import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css';
+@import 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css';
+
 .btn-hover:hover {
     background-color: #dc3545 !important;
     border-color: #dc3545 !important;
@@ -369,6 +372,4 @@ export default {
     border-radius: 4px;
     margin-right: 6px;
 }
-@import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css';
-@import 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css';
 </style>
