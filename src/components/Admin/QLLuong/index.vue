@@ -184,6 +184,17 @@ export default {
                         this.loadData();
                     }
                 )
+                .catch((err) => {
+                    // Hiển thị lỗi validation từ Laravel
+                    if (err.response && err.response.status === 422) {
+                        const errors = err.response.data.errors;
+                        for (let key in errors) {
+                            toaster.error(errors[key][0]);
+                        }
+                    } else {
+                        toaster.error('Đã xảy ra lỗi, vui lòng thử lại.');
+                    }
+                });
         },
         xoa() {
             axios
@@ -209,6 +220,17 @@ export default {
                     }
 
                 })
+                .catch((err) => {
+                    // Hiển thị lỗi validation từ Laravel
+                    if (err.response && err.response.status === 422) {
+                        const errors = err.response.data.errors;
+                        for (let key in errors) {
+                            toaster.error(errors[key][0]);
+                        }
+                    } else {
+                        toaster.error('Đã xảy ra lỗi, vui lòng thử lại.');
+                    }
+                });
 
         },
         loadData() {

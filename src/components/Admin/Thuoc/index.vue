@@ -150,8 +150,8 @@
     </div>
 </template>
 <script>
-import axios from 'axios'
 import { createToaster } from "@meforma/vue-toaster";
+import axios from "axios";
 const toaster = createToaster({ position: "top-right" });
 export default {
     methods: {
@@ -180,9 +180,18 @@ export default {
                         toaster.error('Thêm mới thất bại')
                     }
                 })
-                .catch((res) => {
-                    toaster.error(res.response.data.message);
-                })
+                .catch((error) => {
+                    if (error.response.status === 422) {
+                        let errors = error.response.data.errors;
+                        for (let field in errors) {
+                            errors[field].forEach(err => {
+                                toaster.error(err);
+                            });
+                        }
+                    } else {
+                        toaster.error('Đã xảy ra lỗi máy chủ.');
+                    }
+                });
         },
         xoa() {
             axios

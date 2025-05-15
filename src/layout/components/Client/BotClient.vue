@@ -133,14 +133,17 @@ export default {
         }
     },
     mounted() {
-        this.load();
         this.loadDG();
-        this.loadKH();
     },
     methods: {
         them() {
             if (!this.khach_hang.id) {
                 toaster.error("Bạn cần đăng nhập để gửi đánh giá.");
+                return;
+            }
+
+            if (!this.comment || this.comment.trim() === '') {
+                toaster.error("Bạn phải nhập nội dung đánh giá.");
                 return;
             }
 
@@ -170,7 +173,8 @@ export default {
             }).catch((err) => {
                 toaster.error(err.response?.data?.message || "Lỗi gửi đánh giá");
             });
-        },
+        }
+        ,
 
         loadDG() {
             axios
@@ -185,41 +189,10 @@ export default {
                     });
                 });
         },
-        load() {
-            axios
-                .get("http://127.0.0.1:8000/api/khach-hang/lay-du-lieu",
-                    {
-                        headers: {
-                            Authorization: 'Bearer ' + localStorage.getItem('token_client')
-                        }
-                    }
-                )
-                .then((res) => {
-                    if (res.data.status == 1) {
-                        this.khach_hang = res.data.data;
-                    }
-                })
-                .catch(() => {
-                    this.khach_hang = {};
-                });
-        },
-        loadKH() {
-            axios
-                .get('http://127.0.0.1:8000/api/khach-hang/load',
-                    {
-                        headers: {
-                            Authorization: 'Bearer ' + localStorage.getItem('token_client')
-                        }
-                    }
-                )
-                .then((res) => {
-                    this.khach_hang = res.data.data
-                })
-        },
     }
 }
 </script>
-<style>
+<style scoped>
 .scroll-wrapper {
     display: flex;
     flex-direction: column;

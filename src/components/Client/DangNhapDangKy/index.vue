@@ -68,7 +68,8 @@
         </div>
         <div class="input-group flex-nowrap mt-3">
           <span class="input-group-text" id="addon-wrapping"><i class="fa-regular fa-keyboard"></i></span>
-          <input v-model="khach_hang.password_confirmation" class="form-control" placeholder="Nhập lại mật khẩu" :type="showPassword ? 'text' : 'password'" />
+          <input v-model="khach_hang.password_confirmation" class="form-control" placeholder="Nhập lại mật khẩu"
+            :type="showPassword ? 'text' : 'password'" />
         </div>
         <button style="
             font-size: 18px;
@@ -83,9 +84,10 @@
   </div>
 </template>
 <script>
-import axios from "axios";
 import { createToaster } from "@meforma/vue-toaster";
-const toaster = createToaster({ position: "top-right" });
+import apiClient from "../../../services/apiClient";
+const toaster = createToaster({ position: "top-left" });
+
 export default {
   data() {
     return {
@@ -97,44 +99,71 @@ export default {
         password: "",
         password_confirmation: "",
       },
+      isLoading: false,
+      showPassword: false
     };
   },
   methods: {
+    togglePassword() {
+      this.showPassword = !this.showPassword;
+    },
     dangNhap() {
-      axios
-        .post("http://127.0.0.1:8000/api/khach-hang/dang-nhap", this.khach_hang)
+      this.isLoading = true;
+      apiClient.post("/api/khach-hang/dang-nhap", this.khach_hang)
         .then((res) => {
           if (res.data.status == 1) {
             toaster.success(res.data.message);
+            
+            // Store token and other user information
             localStorage.setItem("token_client", res.data.token);
             
-            this.$router.push("/");
+            // Trigger the storage event manually for TopClient to detect
+            window.dispatchEvent(new StorageEvent('storage', {
+              key: 'token_client',
+              newValue: res.data.token
+            }));
+            
+            // Navigate to homepage or previous page if available
+            const returnUrl = this.$route.query.returnUrl || '/';
+            this.$router.push(returnUrl);
           } else {
             toaster.error(res.data.message);
           }
+        })
+        .catch((err) => {
+          // Error handling is already managed by apiClient interceptors
+          console.error("Login error:", err);
+        })
+        .finally(() => {
+          this.isLoading = false;
         });
     },
     dangKy() {
-      if (this.khach_hang.password !== this.khach_hang.password_confirmation) {
-        toaster.error("Mật khẩu không khớp");
-        return;
-      }else{
-        axios
-        .post(
-          "http://127.0.0.1:8000/api/khach-hang/dang-ky", this.khach_hang)
+      this.isLoading = true;
+      apiClient.post("/api/khach-hang/dang-ky", this.khach_hang)
         .then((res) => {
+          // Hiển thị thông báo thành công
           toaster.success(res.data.message);
+
+          // Reset dữ liệu form sau khi đăng ký thành công
           this.khach_hang = {
-            mail: "",
-            password: "",
             ho_va_ten: "",
+            email: "",
             so_dien_thoai: "",
-            password_confirmation: "",
+            password: "",
+            password_confirmation: ""
           };
+
+          // Hiển thị form đăng nhập sau khi đăng ký thành công
           this.showLogin();
-          this.loaddata();
+        })
+        .catch((err) => {
+          // Error handling is already managed by apiClient interceptors
+          console.error("Registration error:", err);
+        })
+        .finally(() => {
+          this.isLoading = false;
         });
-      }
     },
     showLogin() {
       document.getElementById("login-form").style.display = "block";
