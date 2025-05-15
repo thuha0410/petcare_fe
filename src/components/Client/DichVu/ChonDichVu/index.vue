@@ -21,7 +21,7 @@
                     <select class="form-select form-control" v-model="id_pet" name="" id="">
                         <option disabled value="">--Chọn pet cần khám--</option>
                         <option v-for="(value, index) in list_pet" :key="index" v-bind:value="value.id">{{ value.ten_pet
-                            }}</option>
+                        }}</option>
                     </select>
 
                     <p class="fw-bold mt-2" style="font-size: 20px;"><i class="fa-solid fa-calendar-days"></i> Ngày:</p>
@@ -116,6 +116,55 @@
             </div>
         </div>
         <div class="col-lg-1"></div>
+    </div>
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="confirmModalLabel">Xác nhận thông tin đặt lịch</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Dịch vụ:</strong> {{ list_dv.ten_dv }}</p>
+                    <p><strong>Giá:</strong> {{ list_dv.gia }} VNĐ</p>
+                    <p><strong>Tiền cọc:</strong> {{ tienCoc }} VNĐ</p>
+                    <p><strong>Pet:</strong> {{list_pet.find(p => p.id === id_pet)?.ten_pet || '...'}}</p>
+                    <p><strong>Ngày:</strong> {{ selectedDate }}</p>
+                    <p><strong>Giờ:</strong> {{ selectedTime }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-success" @click="xacNhanLichHenFinal">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="info" tabindex="-1" aria-labelledby="chiTietLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="confirmModalLabel">Chi tiết dịch vụ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Dịch vụ:</strong> {{ list_dv.ten_dv }}</p>
+                    <p><strong>Loại dịch vụ:</strong>
+                        {{
+                            list_dv.id_loaidv === 1 ? 'Tiêm chủng' :
+                            list_dv.id_loaidv === 2 ? 'Spa' :
+                            list_dv.id_loaidv === 3 ? 'Gửi thú cưng' :
+                            list_dv.id_loaidv === 4 ? 'Khám bệnh' :
+                            'Không xác định'
+                        }}
+                    </p>
+                    <p><strong>Mô tả:</strong> {{ list_dv.mo_ta }}</p>
+                    <p><strong>Giá tiền:</strong> {{ list_dv.gia }}</p>
+                    <img class="img-fluid" :src="list_dv.hinh_anh" alt="">
+                    <p class="mt-2"><strong>Phù hơp cân nặng:</strong> {{ list_dv.can_nang_min }} - {{
+                        list_dv.can_nang_max }}</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- PayPal Payment Modal -->
@@ -342,6 +391,15 @@ export default {
                 return;
             }
 
+            if (!this.selectedDate || !this.selectedTime) {
+                toaster.error("Vui lòng chọn ngày và giờ khám.");
+                return;
+            }
+
+            const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+            confirmModal.show();
+        },
+        xacNhanLichHenFinal() {
             if (!this.selectedDate || !this.selectedTime) return;
 
             const id_kh = localStorage.getItem("id_khach_hang");
@@ -349,6 +407,8 @@ export default {
                 alert("Không tìm thấy thông tin khách hàng. Vui lòng đăng nhập lại.");
                 return;
             }
+
+            const data = {
 
             // Prepare appointment data
             this.appointmentData = {
@@ -361,6 +421,8 @@ export default {
                 tien_coc: this.tienCoc,
                 ngay: this.selectedDate,
                 gio: this.selectedTime,
+            };
+
                 payment_method: "paypal"
             };
 
@@ -387,12 +449,16 @@ export default {
             };
 
             apiClient
+
                 .post('/api/lich-hen/them', data, {
                     headers: {
                         Authorization: 'Bearer ' + localStorage.getItem('token_client')
                     }
                 })
                 .then((res) => {
+                    toaster.success("Đặt lịch thành công!");
+                    const confirmModal = bootstrap.Modal.getInstance(document.getElementById('confirmModal'));
+                    confirmModal.hide();
                     // Close modal
                     const modalElement = document.getElementById('paypalModal');
                     const modal = bootstrap.Modal.getInstance(modalElement);
@@ -404,6 +470,7 @@ export default {
                 })
                 .catch((err) => {
                     console.error(err);
+                    toaster.error(err.response?.data?.message || "Có lỗi xảy ra khi đặt lịch.");
                     this.isProcessingPayment = false;
 
                     if (err.response && err.response.data && err.response.data.message) {
@@ -413,6 +480,7 @@ export default {
                     }
                 });
         },
+
 
         isPastTime(khungGio) {
             if (!this.selectedDate) return false;
@@ -473,15 +541,22 @@ export default {
             if (!selectedPet) return;
 
             const canNang = selectedPet.can_nang;
-            const { can_nang_min, can_nang_max, id_loaidv } = this.list_dv;
+            const { can_nang_min, can_nang_max } = this.list_dv;
 
-            if (can_nang_min != null && can_nang_max != null) {
+            // Kiểm tra cân nặng nếu có giới hạn
+            const needWeightCheck = can_nang_min != null && can_nang_max != null;
+
+            if (needWeightCheck) {
                 if (canNang < can_nang_min || canNang > can_nang_max) {
                     toaster.error(`Thú cưng này không phù hợp với dịch vụ (cân nặng yêu cầu: ${can_nang_min}kg - ${can_nang_max}kg).`);
                     this.id_pet = '';
                     return;
                 }
             }
+
+            // Luôn giữ giá gốc và tính tiền cọc
+            this.list_dv.gia = this.giaGoc;
+            this.tienCoc = Math.round(this.list_dv.gia * 0.25);
             if (id_loaidv === 2) {
                 let heSo = 1;
                 if (canNang > 30) {
@@ -499,6 +574,7 @@ export default {
             }
         }
     }
+
 };
 </script>
 
@@ -509,6 +585,7 @@ export default {
     border-color: #dc3545 !important;
 }
 
+
 .legend-box {
     display: inline-block;
     width: 16px;
@@ -516,6 +593,7 @@ export default {
     border-radius: 4px;
     margin-right: 6px;
 }
+
 
 @import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css';
 @import 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css';

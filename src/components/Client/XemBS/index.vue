@@ -3,9 +3,10 @@
         <div class="card">
             <div class="row g-0">
                 <div class="col-md-2 border-end">
-                    <img style="height: 450px; width: 650px;" :src="list_nvct.hinh_anh" class="img-fluid rounded-4" alt="...">
+                    <img style="height: 450px; width: 650px;" :src="list_nvct.hinh_anh" class="img-fluid rounded-4"
+                        alt="...">
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-7">
                     <div class="card-body">
                         <h1 style="color: darkblue;" class="card-title">Ths BS. {{ list_nvct.ten_nv }}</h1>
                         <dl style="font-size:20px;" class="row">
@@ -15,13 +16,13 @@
                             <dt class="col-sm-2">Mô tả </dt>
                             <dd class="col-sm-9">{{ list_nvct.mo_ta }}</dd>
 
-                            <dt class="col-sm-2">Lịch khám</dt>
-                            <dd class="col-sm-9">Hẹn khám</dd>
+                            <dt class="col-sm-2">Giới tính </dt>
+                            <dd class="col-sm-9">{{ list_nvct.gioi_tinh == 1 ? 'Nam' : 'Nữ' }}</dd>
+
+                            <dt class="col-sm-2">Tình trạng </dt>
+                            <dd class="col-sm-9">{{ list_nvct.tinh_trang == 1 ? 'Đang hoạt động' : 'Không rảnh lịch' }}</dd>
                         </dl>
                     </div>
-                </div>
-                <div class="card-footer text-end">
-                    <button class="btn btn-info btn-lg custom-btn">Đặt khám ngay</button>
                 </div>
             </div>
         </div>
@@ -42,20 +43,16 @@
                                 <router-link :to="`/client/xem-bs/${value.id}`">
                                     <h4 style="color: darkblue;" class="card-title">Ths BS {{ value.ten_nv }}</h4>
                                 </router-link>
-
                                 <hr>
                                 <div style="font-size:20px;" class="row">
                                     <div class="col-lg-5">
                                         <b>Chuyên khoa</b><br>
                                     </div>
                                     <div class="col-lg-7">
-                                        <span>Chẩn đoán hình ảnh</span><br>
+                                        <span>Thú y</span><br>
                                     </div>
                                 </div>
                                 <hr>
-                                <div class="text-end">
-                                    <button class="btn btn-outline-info btn-lg custom-btn">Đặt lịch ngay</button>
-                                </div>
                             </div>
                         </div>
                     </div>
