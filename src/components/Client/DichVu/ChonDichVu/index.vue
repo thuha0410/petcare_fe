@@ -165,6 +165,18 @@ export default {
     },
 
     mounted() {
+        // Nếu truy cập từ chatbot, kiểm tra đăng nhập bằng POST
+        if (this.$route.query.from === 'chatbot') {
+            this.$apiClient = this.$apiClient || require('../../../../services/apiClient').default;
+            this.$apiClient.post('/api/khach-hang/Kiem-tra-dang-nhap', {})
+                .then(res => {
+                    // Nếu cần xử lý gì thêm khi đăng nhập hợp lệ, thêm ở đây
+                })
+                .catch(err => {
+                    // Nếu không hợp lệ, chuyển về trang đăng nhập
+                    this.$router.push('/client/dang-nhap-dang-ky');
+                });
+        }
         this.loadDichVu();
         this.loadLich();
         this.loadPet();

@@ -361,6 +361,15 @@ export default {
         this.isSearching = false;
 
         if (response.data && response.data.success && response.data.message) {
+          // Nếu có direct_navigation thì chuyển trang luôn
+          if (response.data.direct_navigation) {
+            this.$router.push({
+              path: response.data.direct_navigation,
+              query: { from: 'chatbot' }
+            });
+            return;
+          }
+          
           // Kiểm tra có phải phản hồi lỗi không
           const isErrorResponse = response.data.isError || false;
           

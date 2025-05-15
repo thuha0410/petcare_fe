@@ -53,7 +53,7 @@
         </form>
 
         <!-- Nút CTA -->
-        <template v-if="khach_hang.ho_va_ten != null">
+        <template v-if="khach_hang && khach_hang.id">
           <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button"
             data-bs-toggle="dropdown" aria-expanded="false">
             <img
@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import apiClient from "@/services/apiClient";
+import axios from "axios";
 import { createToaster } from "@meforma/vue-toaster";
 const toaster = createToaster({ position: 'top-right' });
 export default {
@@ -103,31 +103,44 @@ export default {
     };
   },
   mounted() {
-    this.load();
+    this.kiemTraKH();
   },
   methods: {
     toggleNavbar() {
       this.isOpen = !this.isOpen;
     },
-    load() {
+    kiemTraKH() {
       const token = localStorage.getItem("token_client");
       if (!token) {
         this.khach_hang = {};
         return;
       }
-      apiClient.get("/api/khach-hang/lay-du-lieu", {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      
+      axios
+        .get("http://127.0.0.1:8000/api/khach-hang/lay-du-lieu", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
         .then((res) => {
-          if (res.data.status === 1) {
+          if (res.data.status == 1) {
             this.khach_hang = res.data.data;
           } else {
             this.khach_hang = {};
           }
+        })
+        .catch(() => {
+          this.khach_hang = {};
         });
     },
     dangXuat() {
-      apiClient.get("/api/khach-hang/dang-xuat")
+      const token = localStorage.getItem("token_client");
+      axios
+        .get("http://127.0.0.1:8000/api/khach-hang/dang-xuat", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
         .then((res) => {
           if (res.data.status) {
             toaster.success(res.data.message);
@@ -143,7 +156,13 @@ export default {
         });
     },
     dangXuatAll() {
-      apiClient.get("/api/khach-hang/dang-xuat-all")
+      const token = localStorage.getItem("token_client");
+      axios
+        .get("http://127.0.0.1:8000/api/khach-hang/dang-xuat-all", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
         .then((res) => {
           if (res.data.status) {
             toaster.success(res.data.message);
@@ -164,25 +183,30 @@ export default {
         console.warn("Thiếu token đăng nhập.");
         return;
       }
-      apiClient.get("/api/khach-hang/lay-du-lieu", {
-        headers: {
-          Authorization: "Bearer " + token
-        }
-      }).then(res => {
-        const id_kh = res.data.data.id;
-        localStorage.setItem("id_khach_hang", id_kh);
-
-        return apiClient.get(`/api/pets/${id_kh}`, {
+      
+      axios
+        .get("http://127.0.0.1:8000/api/khach-hang/lay-du-lieu", {
           headers: {
-            Authorization: "Bearer " + token
+            Authorization: `Bearer ${token}`
           }
-        });
-      }).then(res => {
-        this.list_pet = res.data.pets;
-      }).catch(err => {
-        console.error("Lỗi khi lấy danh sách thú cưng:", err);
-      });
+        })
+        .then(res => {
+          const id_kh = res.data.data.id;
+          localStorage.setItem("id_khach_hang", id_kh);
 
+          return axios
+            .get(`http://127.0.0.1:8000/api/pets/${id_kh}`, {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            });
+        })
+        .then(res => {
+          this.list_pet = res.data.pets;
+        })
+        .catch(err => {
+          console.error("Lỗi khi lấy danh sách thú cưng:", err);
+        });
     },
     xuLyDatLich() {
       const token = localStorage.getItem("token_client");
@@ -191,25 +215,34 @@ export default {
         return;
       }
 
-      apiClient.get("/api/khach-hang/lay-du-lieu", {
-        headers: { Authorization: `Bearer ${token}` }
-      }).then(res => {
-        const id_kh = res.data.data.id;
-        return apiClient.get(`/api/pets/${id_kh}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-      }).then(res => {
-        const pets = res.data.pets;
-        if (pets && pets.length > 0) {
-          this.$router.push("/client/dat-lich");
-        } else {
-          toaster.error("Bạn chưa có thú cưng nào. Vui lòng thêm thú cưng trước khi đặt lịch.");
+      axios
+        .get("http://127.0.0.1:8000/api/khach-hang/lay-du-lieu", {
+          headers: { 
+            Authorization: `Bearer ${token}` 
+          }
+        })
+        .then(res => {
+          const id_kh = res.data.data.id;
+          return axios
+            .get(`http://127.0.0.1:8000/api/pets/${id_kh}`, {
+              headers: { 
+                Authorization: `Bearer ${token}` 
+              }
+            });
+        })
+        .then(res => {
+          const pets = res.data.pets;
+          if (pets && pets.length > 0) {
+            this.$router.push("/client/dat-lich");
+          } else {
+            toaster.error("Bạn chưa có thú cưng nào. Vui lòng thêm thú cưng trước khi đặt lịch.");
+            this.$router.push("/client/thong-tin-ca-nhan");
+          }
+        })
+        .catch(err => {
+          console.error("Lỗi khi kiểm tra thú cưng:", err);
           this.$router.push("/client/thong-tin-ca-nhan");
-        }
-      }).catch(err => {
-        console.error("Lỗi khi kiểm tra thú cưng:", err);
-        this.$router.push("/client/thong-tin-ca-nhan");
-      });
+        });
     }
   },
 };

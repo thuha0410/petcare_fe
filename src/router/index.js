@@ -1,8 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router"; 
 import { kiemTraAdminVaQuyen} from './kiemTraAdmin';
 import KiemTraKH from './KiemTraKH';
-import PaymentSuccess from '@/pages/Payment/PaymentSuccess.vue'
-import PaymentError from '@/pages/Payment/PaymentError.vue'
 
 const routes = [
     {
@@ -144,16 +142,6 @@ const routes = [
         props: true
     },
     {
-        path : '/client/dat-lich',
-        component: ()=>import('../components/Client/DatLich/index.vue'),
-        meta: {layout:'client'},
-    },
-    {
-        path : '/client/dat-lich-theo-bac-si',
-        component: ()=>import('../components/Client/DatLichTheoBacSi/index.vue'),
-        meta: {layout:'client'},
-    },
-    {
         path : '/client/dat-lich-tiem-chung',
         component: ()=>import('../components/Client/DatLichTiemChung/index.vue'),
         meta: {layout:'client'},
@@ -234,7 +222,6 @@ const routes = [
         component: ()=>import('../components/Client/DichVu/ChonDichVu/index.vue'),
         meta: {layout:'client'},
         props : true,
-        beforeEnter: KiemTraKH,
     },
     {
         path : '/doctor/xem-ho-so-benh-an',
@@ -264,16 +251,6 @@ const routes = [
         component: ()=>import('../components/Client/ThongTinCaNhan/pet.vue'),
         meta: {layout:'client'},
         beforeEnter: KiemTraKH,
-    },
-    {
-        path: '/payment/success',
-        name: 'PaymentSuccess',
-        component: PaymentSuccess
-    },
-    {
-        path: '/payment/error',
-        name: 'PaymentError',
-        component: PaymentError
     },
 ]
 

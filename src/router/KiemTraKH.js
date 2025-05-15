@@ -3,9 +3,9 @@ import { createToaster } from "@meforma/vue-toaster";
 
 const toaster = createToaster({ position: 'top-left' });
 
-export default function(from, to, next) {
+export default function(to, from, next) {
     apiClient
-        .get("/api/khach-hang/Kiem-tra-dang-nhap")
+        .post("/api/khach-hang/Kiem-tra-dang-nhap", {})
         .then((res) => {
             if (res.data.status) {
                 localStorage.setItem("name_kh", res.data.name);
