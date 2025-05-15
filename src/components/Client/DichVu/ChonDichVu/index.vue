@@ -117,6 +117,36 @@
         </div>
         <div class="col-lg-1"></div>
     </div>
+
+    <!-- PayPal Payment Modal -->
+    <div class="modal fade" id="paypalModal" tabindex="-1" aria-labelledby="paypalModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content shadow-lg border-0 rounded-4">
+                <div class="modal-header bg-primary text-white py-3 px-4">
+                    <h4 class="modal-title fw-bold" id="paypalModalLabel">
+                        <i class="fa-solid fa-wallet me-2"></i>Thanh toán tiền cọc
+                    </h4>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 py-4">
+                    <div class="text-center mb-4">
+                        <h5 class="fw-bold text-secondary fs-4">Thông tin dịch vụ</h5>
+                        <p class="fs-5 mb-2"><strong>Tên dịch vụ:</strong> {{ list_dv.ten_dv }}</p>
+                        <p class="fs-5 mb-2"><strong>Giá dịch vụ:</strong> <span class="text-success fw-bold">{{
+                                list_dv.gia }} VNĐ</span></p>
+                        <p class="fs-5 mb-3"><strong>Tiền cọc (25%):</strong> <span class="text-danger fw-bold">{{
+                                tienCoc }} VNĐ</span></p>
+                        <div class="border-top pt-3">
+                            <p class="text-muted fst-italic fs-6">Vui lòng thanh toán tiền cọc để hoàn tất đặt lịch.</p>
+                        </div>
+                    </div>
+                    <div id="paypal-button-container" class="d-flex justify-content-center"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </template>
 <script>
 import FullCalendar from '@fullcalendar/vue3';
@@ -149,11 +179,11 @@ export default {
                 contentHeight: 'auto',
                 dateClick: this.handleDateClick,
                 validRange: {
-                    start: new Date(), 
+                    start: new Date(),
                     end: (() => {
                         const today = new Date();
                         const future = new Date(today);
-                        future.setDate(today.getDate() + 51); 
+                        future.setDate(today.getDate() + 51);
                         return future.toISOString().split('T')[0];
                     })()
                 },
@@ -161,6 +191,9 @@ export default {
             list_pet: [],
             id_pet: '',
             slotInfo: {},
+            paypalLoaded: false,
+            isProcessingPayment: false,
+            appointmentData: null
         };
     },
 
@@ -169,11 +202,73 @@ export default {
         this.loadLich();
         this.loadPet();
         window.scrollTo(0, 0);
+        this.loadPayPalScript();
     },
     methods: {
+        loadPayPalScript() {
+            // Load PayPal script if not already loaded
+            if (!document.querySelector('script[src*="paypal"]')) {
+                const script = document.createElement('script');
+                script.src = "https://www.paypal.com/sdk/js?client-id=Aa_Kfwz45T3UyBv2Zmb0xsyK0VhxtgY-uWbHde6JhW4YcM4LJ7VzeR89EHzqIiBqJveqD1J3h7VWZQNv&currency=USD";
+                script.addEventListener('load', this.setupPayPal);
+                document.body.appendChild(script);
+            } else if (!this.paypalLoaded) {
+                this.setupPayPal();
+            }
+        },
+
+        setupPayPal() {
+            this.paypalLoaded = true;
+            // PayPal will be initialized when the modal is shown
+        },
+
+        initializePayPalButtons() {
+            if (!window.paypal || this.isProcessingPayment) return;
+
+            // Clear existing buttons
+            const container = document.getElementById('paypal-button-container');
+            if (container) container.innerHTML = '';
+
+            // Convert VND to USD for PayPal (approximate conversion for demo)
+            const amountUSD = (this.tienCoc / 23000).toFixed(2);
+
+            window.paypal.Buttons({
+                createOrder: (data, actions) => {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: amountUSD,
+                                currency_code: 'USD'
+                            },
+                            description: `Đặt cọc dịch vụ: ${this.list_dv.ten_dv}`
+                        }]
+                    });
+                },
+                onApprove: (data, actions) => {
+                    this.isProcessingPayment = true;
+
+                    // Capture the payment
+                    return actions.order.capture().then(details => {
+                        // Call API to create appointment after successful payment
+                        this.createAppointment(details.id);
+                    });
+                },
+                onCancel: () => {
+                    toaster.error("Thanh toán đã bị hủy");
+                    this.isProcessingPayment = false;
+                },
+                onError: (err) => {
+                    console.error("Lỗi thanh toán:", err);
+                    toaster.error("Có lỗi xảy ra trong quá trình thanh toán");
+                    this.isProcessingPayment = false;
+                }
+            }).render('#paypal-button-container');
+        },
+
         isFull(id_lich) {
             return (this.slotInfo[id_lich] || 0) >= 2;
         },
+
         loadLich() {
             apiClient
                 .get("/api/lich/load")
@@ -181,14 +276,17 @@ export default {
                     this.availableTimes = res.data.data;
                 });
         },
+
         loadDichVu() {
             apiClient
                 .get("/api/dich-vu/load-chi-tiet/" + this.id)
                 .then((res) => {
                     this.list_dv = res.data.data;
                     this.giaGoc = res.data.data.gia;
+                    this.tienCoc = Math.round(this.giaGoc * 0.25);
                 });
         },
+
         toggleCalendar() {
             if (this.showCalendar) {
                 this.showCalendar = false;
@@ -198,10 +296,12 @@ export default {
                 this.showCalendar = true;
             }
         },
+
         selectTime(timeObj) {
             this.selectedTime = timeObj.khung_gio;
             this.id_lich = timeObj.id;
         },
+
         handleDateClick(info) {
             const selected = new Date(info.dateStr);
             const today = new Date();
@@ -223,20 +323,23 @@ export default {
             this.selectedTime = null;
             this.loadSlot(info.dateStr);
         },
-        xacNhanLichHen(id) {
+
+        xacNhanLichHen() {
             if (!this.id_pet) {
                 toaster.error("Vui lòng chọn thú cưng cần khám để đặt lịch!");
                 return;
             }
 
-            console.log(this.availableTimes);
             if (!this.selectedDate || !this.selectedTime) return;
+
             const id_kh = localStorage.getItem("id_khach_hang");
             if (!id_kh) {
                 alert("Không tìm thấy thông tin khách hàng. Vui lòng đăng nhập lại.");
                 return;
             }
-            const data = {
+
+            // Prepare appointment data
+            this.appointmentData = {
                 id_lich: this.id_lich,
                 id_kh: id_kh,
                 id_dv: this.list_dv.id,
@@ -246,21 +349,50 @@ export default {
                 tien_coc: this.tienCoc,
                 ngay: this.selectedDate,
                 gio: this.selectedTime,
+                payment_method: "paypal"
             };
+
+            // Show PayPal modal
+            const paypalModal = new bootstrap.Modal(document.getElementById('paypalModal'));
+            paypalModal.show();
+
+            // Initialize PayPal buttons when modal is shown
+            document.getElementById('paypalModal').addEventListener('shown.bs.modal', () => {
+                this.initializePayPalButtons();
+            });
+        },
+
+        createAppointment(paymentId) {
+            if (!this.appointmentData) {
+                toaster.error("Dữ liệu đặt lịch không hợp lệ");
+                return;
+            }
+
+            // Add payment information
+            const data = {
+                ...this.appointmentData,
+                payment_id: paymentId
+            };
+
             apiClient
-                .post('/api/lich-hen/them', data,
-                    {
-                        headers: {
-                            Authorization: 'Bearer ' + localStorage.getItem('token_client')
-                        }
+                .post('/api/lich-hen/them', data, {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('token_client')
                     }
-                )
+                })
                 .then((res) => {
-                    toaster.success("Đặt lịch thành công!");
+                    // Close modal
+                    const modalElement = document.getElementById('paypalModal');
+                    const modal = bootstrap.Modal.getInstance(modalElement);
+                    if (modal) modal.hide();
+
+                    toaster.success("Thanh toán thành công! Đặt lịch thành công!");
                     this.toggleCalendar();
+                    this.isProcessingPayment = false;
                 })
                 .catch((err) => {
                     console.error(err);
+                    this.isProcessingPayment = false;
 
                     if (err.response && err.response.data && err.response.data.message) {
                         toaster.error(err.response.data.message);
@@ -268,8 +400,8 @@ export default {
                         toaster.error("Có lỗi xảy ra khi đặt lịch.");
                     }
                 });
-
         },
+
         isPastTime(khungGio) {
             if (!this.selectedDate) return false;
 
@@ -286,6 +418,7 @@ export default {
 
             return slotTime < now;
         },
+
         loadSlot(ngay) {
             apiClient.get('/api/lich-hen/thong-tin-slot', {
                 params: { ngay }
@@ -295,6 +428,7 @@ export default {
                 }
             });
         },
+
         loadPet() {
             const token = localStorage.getItem("token_client");
             if (!token) {
@@ -319,7 +453,6 @@ export default {
             }).catch(err => {
                 console.error("Lỗi khi lấy danh sách thú cưng:", err);
             });
-
         },
     },
     watch: {
@@ -346,11 +479,11 @@ export default {
                 } else if (canNang > 10) {
                     heSo = 1.2;
                 }
-                this.list_dv.gia = Math.round(this.giaGoc * heSo); 
+                this.list_dv.gia = Math.round(this.giaGoc * heSo);
                 this.tienCoc = Math.round(this.list_dv.gia * 0.25);
             } else {
                 this.list_dv.gia = this.giaGoc;
-                
+                this.tienCoc = Math.round(this.list_dv.gia * 0.25);
             }
         }
     }
@@ -362,6 +495,7 @@ export default {
     background-color: #dc3545 !important;
     border-color: #dc3545 !important;
 }
+
 .legend-box {
     display: inline-block;
     width: 16px;
@@ -369,6 +503,7 @@ export default {
     border-radius: 4px;
     margin-right: 6px;
 }
+
 @import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css';
 @import 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css';
 </style>

@@ -60,6 +60,7 @@ const routes = [
         path : '/admin/doanh-thu',
         component: ()=>import('../components/Admin/QLBaoCao/index.vue'),
         meta: {layout:'admin'},
+        beforeEnter: [ kiemTraAdmin, kiemTraQuyen(14) ]
     },
     {
         path : '/admin/ql-pet',
@@ -207,6 +208,10 @@ const routes = [
         path : '/admin/hoa-don',
         component: ()=>import('../components/Admin/QLThanhToan/index.vue'),
         meta: {layout:'admin'},
+    },
+    {
+        path : '/admin/in-hoa-don',
+        component: ()=>import('../components/Admin/QLThanhToan/InHoaDon/index.vue'),
     },
     {
         path : '/client/bang-gia',
