@@ -405,6 +405,7 @@ export default {
     },
     mounted() {
         this.getUserInfo();
+        window.scrollTo(0, 0);
         this.getLichHen(); // Load lịch hẹn khi component mount
     },
     methods: {

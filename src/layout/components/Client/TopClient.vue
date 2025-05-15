@@ -39,7 +39,9 @@
           </router-link>
         </li>
         <li class="nav-item me-2 text-nowrap">
-          <a class="nav-link" href="javascript:;" @click="xuLyDatLich">Đặt lịch</a>
+          <router-link to="/client/dat-lich">
+            <a class="nav-link" href="#">Đặt lịch</a>
+          </router-link>
         </li>
       </ul>
       <!-- Menu chính -->
@@ -71,7 +73,7 @@
             </li>
             <li>
               <a v-on:click="dangXuat()" class="dropdown-item" href="javascript:;"><i
-                  class="bx bx-log-out-circle "></i><span style="color: black;">Đăng Xuất</span></a>
+                  class="bx bx-log-out-circle " ></i><span style="color: black;">Đăng Xuất</span></a>
             </li>
             <li>
               <a v-on:click="dangXuatAll()" class="dropdown-item" href="javascript:;"><i
@@ -93,7 +95,7 @@
 <script>
 import axios from "axios";
 import { createToaster } from "@meforma/vue-toaster";
-const toaster = createToaster({ position: 'top-right' });
+const toaster = createToaster({ position: 'top-left' });
 export default {
   data() {
     return {
@@ -299,25 +301,17 @@ export default {
 .btn-search:hover {
   background-color: #0055aa;
 }
-
 .dropdown-menu {
-  font-size: 16px;
-  /* Tăng kích thước chữ */
-  padding: 10px 0;
-  /* Tăng khoảng cách trên dưới */
+  font-size: 16px; /* Tăng kích thước chữ */
+  padding: 10px 0; /* Tăng khoảng cách trên dưới */
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
-
 .dropdown-menu .dropdown-item:hover {
-  background-color: #f0f8ff;
-  /* xanh nhạt nhẹ nhàng */
-  color: #003366;
-  /* chữ xanh đậm */
-  border-radius: 5px;
-  /* bo nhẹ góc */
+  background-color: #f0f8ff; /* xanh nhạt nhẹ nhàng */
+  color: #003366; /* chữ xanh đậm */
+  border-radius: 5px; /* bo nhẹ góc */
 }
-
 .dropdown-menu {
   opacity: 0;
   transform: translateY(10px);
@@ -331,11 +325,8 @@ export default {
   transform: translateY(0);
   visibility: visible;
 }
-
 .dropdown-menu .dropdown-item {
-  font-size: 16px;
-  /* Tăng chữ trong từng dòng */
-  padding: 12px 20px;
-  /* Dễ bấm hơn */
+  font-size: 16px; /* Tăng chữ trong từng dòng */
+  padding: 12px 20px; /* Dễ bấm hơn */
 }
 </style>

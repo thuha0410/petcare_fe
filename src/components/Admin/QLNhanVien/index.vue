@@ -90,9 +90,9 @@
                     <label for="">Họ và tên</label>
                     <input v-model="nhan_vien.ten_nv" class="form-control mb-2" type="text">
                     <label for="">Giới tính</label>
-                    <select v-model="nhan_vien.gioi_tinh" class="form-control mb-2 form-select" name="" id="">
-                        <option value="0">Nam</option>
-                        <option value="1">Nữ</option>
+                    <select v-model.number="nhan_vien.gioi_tinh" class="form-control mb-2 form-select" name="" id="">
+                        <option :value="0">Nam</option>
+                        <option :value="1">Nữ</option>
                     </select>
                     <label for="">Hình ảnh</label>
                     <input v-model="nhan_vien.hinh_anh" class="form-control mb-2" type="text">
@@ -155,9 +155,9 @@
                     <label for="">Họ và tên</label>
                     <input v-model="update_nhan_vien.ten_nv" class="form-control mb-2" type="text">
                     <label for="">Giới tính</label>
-                    <select v-model="update_nhan_vien.gioi_tinh" class="form-control mb-2" name="" id="">
-                        <option value="0">Nam</option>
-                        <option value="1">Nữ</option>
+                    <select v-model.number="update_nhan_vien.gioi_tinh" class="form-control mb-2" name="" id="">
+                        <option :value="0">Nam</option>
+                        <option :value="1">Nữ</option>
                     </select>
                     <label for="">Hình ảnh</label>
                     <input v-model="update_nhan_vien.hinh_anh" class="form-control mb-2" type="text">
@@ -206,7 +206,7 @@ export default {
         return {
             nhan_vien: {
                 'ten_nv': '',
-                'gioi_tinh': '',
+                'gioi_tinh': 0,
                 'email': '',
                 'password': '',
                 'mo_ta': '',
@@ -265,7 +265,7 @@ export default {
                         this.load()
                         this.nhan_vien = {
                             'ten_nv': '',
-                            'gioi_tinh': '',
+                            'gioi_tinh': 0,
                             'email': '',
                             'password': '',
                             'mo_ta': '',
