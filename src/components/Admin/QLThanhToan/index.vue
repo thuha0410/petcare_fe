@@ -300,11 +300,9 @@ export default {
                         this.chiTiet = res.data.data;
                         const modal = new bootstrap.Modal(document.getElementById('modalThanhToan'));
                         modal.show();
-                        console.log("Link QR:", this.qrImageUrl);
 
                     }
                 });
-            console.log('CHI TIẾT:', res.data.data);
         },
         tinhTongTien() {
             const a = parseFloat(this.chiTiet.tien_don_thuoc) || 0;
