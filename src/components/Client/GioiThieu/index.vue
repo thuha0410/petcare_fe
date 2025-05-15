@@ -78,12 +78,14 @@
         </div>
     </div>
 
-    <h3 style="color: #002855;" class="text-center mb-3">MỘT SỐ HÌNH ẢNH TẠI PETCARE <i class="fa-solid fa-shield-heart" style="color: #0d3e63;"></i></h3>
+    <h3 style="color: #002855;" class="text-center mb-3">MỘT SỐ HÌNH ẢNH TẠI PETCARE <i class="fa-solid fa-shield-heart"
+            style="color: #0d3e63;"></i></h3>
     <div class="row position-relative">
-        
+
         <div class="col-lg-4">
             <img class="img-fluid rounded-5 mb-2 fade-in"
-                src="https://www.zoomingroomin.com/wp-content/uploads/2021/09/mobile-pet-grooming-franchise-gallery-11.jpg" alt="" />
+                src="https://www.zoomingroomin.com/wp-content/uploads/2021/09/mobile-pet-grooming-franchise-gallery-11.jpg"
+                alt="" />
         </div>
         <div class="col-lg-4">
             <img class="img-fluid rounded-5 mb-2 fade-in"
@@ -93,16 +95,18 @@
             <img class="img-fluid rounded-5 mb-2 fade-in"
                 src="https://www.ekologia.pl/wp-content/uploads/2023/03/groomer-psi-fryzjer_1000x667-1.jpg" alt="" />
         </div>
-        
-    </div>
-    
 
-    <h3 style="color: #002855;" class="text-center mt-3">GIẤY CHỨNG NHẬN ĐẢM BẢO AN TOÀN <i class="fa-solid fa-shield-dog" style="color: #0d3e63;"></i></h3>
+    </div>
+
+
+    <h3 style="color: #002855;" class="text-center mt-3">GIẤY CHỨNG NHẬN ĐẢM BẢO AN TOÀN <i
+            class="fa-solid fa-shield-dog" style="color: #0d3e63;"></i></h3>
     <p class="text-center">Chúng tôi cam kết cung cấp dịch vụ chăm sóc thú cưng an toàn và chất lượng nhất.</p>
 
-    <div  class="text-center mb-5">
+    <div class="text-center mb-5">
         <img style="width: 1200px;" class="img-fluid rounded-3 mb-2 fade-in"
-            src="https://luatsux.vn/wp-content/uploads/2022/07/luat-cap-chung-chi-hanh-nghe-y-duoc-quy-dinh-nhu-the-nao.png" alt="" />
+            src="https://luatsux.vn/wp-content/uploads/2022/07/luat-cap-chung-chi-hanh-nghe-y-duoc-quy-dinh-nhu-the-nao.png"
+            alt="" />
     </div>
 
 </template>
