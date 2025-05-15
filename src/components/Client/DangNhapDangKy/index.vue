@@ -84,9 +84,10 @@
   </div>
 </template>
 <script>
-import axios from "axios";
 import { createToaster } from "@meforma/vue-toaster";
-const toaster = createToaster({ position: "top-right" });
+import apiClient from "../../../services/apiClient";
+const toaster = createToaster({ position: "top-left" });
+
 export default {
   data() {
     return {
@@ -98,41 +99,48 @@ export default {
         password: "",
         password_confirmation: "",
       },
+      isLoading: false,
+      showPassword: false
     };
   },
   methods: {
+    togglePassword() {
+      this.showPassword = !this.showPassword;
+    },
     dangNhap() {
-      axios
-        .post("http://127.0.0.1:8000/api/khach-hang/dang-nhap", this.khach_hang)
+      this.isLoading = true;
+      apiClient.post("/api/khach-hang/dang-nhap", this.khach_hang)
         .then((res) => {
           if (res.data.status == 1) {
             toaster.success(res.data.message);
+            
+            // Store token and other user information
             localStorage.setItem("token_client", res.data.token);
-
-            this.$router.push("/");
+            
+            // Trigger the storage event manually for TopClient to detect
+            window.dispatchEvent(new StorageEvent('storage', {
+              key: 'token_client',
+              newValue: res.data.token
+            }));
+            
+            // Navigate to homepage or previous page if available
+            const returnUrl = this.$route.query.returnUrl || '/';
+            this.$router.push(returnUrl);
           } else {
             toaster.error(res.data.message);
           }
         })
         .catch((err) => {
-          if (err.response && err.response.status === 422) {
-            const errors = err.response.data.errors;
-            for (const key in errors) {
-              if (errors.hasOwnProperty(key)) {
-                toaster.error(errors[key][0]);
-              }
-            }
-          } else if (err.response && err.response.data.message) {
-            toaster.error(err.response.data.message);
-          } else {
-            toaster.error("Đã xảy ra lỗi, vui lòng thử lại.");
-          }
+          // Error handling is already managed by apiClient interceptors
+          console.error("Login error:", err);
+        })
+        .finally(() => {
+          this.isLoading = false;
         });
     },
     dangKy() {
-      // Gửi request đăng ký tới backend
-      axios
-        .post("http://127.0.0.1:8000/api/khach-hang/dang-ky", this.khach_hang)
+      this.isLoading = true;
+      apiClient.post("/api/khach-hang/dang-ky", this.khach_hang)
         .then((res) => {
           // Hiển thị thông báo thành công
           toaster.success(res.data.message);
@@ -140,30 +148,21 @@ export default {
           // Reset dữ liệu form sau khi đăng ký thành công
           this.khach_hang = {
             ho_va_ten: "",
-            email: "",  // Sửa lại tên trường để khớp với backend
+            email: "",
             so_dien_thoai: "",
             password: "",
-            password_confirmation: ""  // Thêm trường này nếu cần
+            password_confirmation: ""
           };
 
           // Hiển thị form đăng nhập sau khi đăng ký thành công
           this.showLogin();
-
-          // Tải lại dữ liệu nếu cần
-          this.loaddata();
         })
         .catch((err) => {
-          // Kiểm tra nếu có lỗi
-          if (err.response && err.response.data.errors) {
-            const errors = err.response.data.errors;
-            // Duyệt qua các lỗi và hiển thị thông báo cho từng trường
-            for (let field in errors) {
-              toaster.error(errors[field].join(", ")); // Hiển thị thông báo lỗi
-            }
-          } else {
-            // Nếu không có lỗi đặc biệt, hiển thị lỗi chung
-            toaster.error("Đăng ký thất bại, vui lòng thử lại.");
-          }
+          // Error handling is already managed by apiClient interceptors
+          console.error("Registration error:", err);
+        })
+        .finally(() => {
+          this.isLoading = false;
         });
     },
     showLogin() {

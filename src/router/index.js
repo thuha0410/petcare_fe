@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router"; 
 import { kiemTraAdminVaQuyen} from './kiemTraAdmin';
-import KiemTraKH from './KiemTraKH';
+import apiClient from '../services/apiClient';
 
 const routes = [
     {
@@ -160,12 +160,7 @@ const routes = [
         path : '/client/danh-gia',
         component: ()=>import('../components/Client/DanhGia/index.vue'),
         meta: {layout:'client'},
-    },
-    {
-        path : '/client/chon-dich-vu',
-        component: ()=>import('../components/Client/DichVu/ChonDichVu/index.vue'),
-        meta: {layout:'client'},
-        beforeEnter: KiemTraKH,
+        
     },
     {
         path : '/client/xem-dich-vu',
@@ -176,7 +171,7 @@ const routes = [
         path : '/client/thong-tin-ca-nhan',
         component: ()=>import('../components/Client/ThongTinCaNhan/index.vue'),
         meta: {layout:'client'},
-        beforeEnter: KiemTraKH,
+        beforeEnter: apiClient.kiemTraDangNhap,
     },
     {
         path : '/',
@@ -213,14 +208,10 @@ const routes = [
         beforeEnter: kiemTraAdminVaQuyen(13)
     },
     {
-        path : '/client/bang-gia',
-        component: ()=>import('../components/Client/BangGia/index.vue'),
-        meta: {layout:'client'},
-    },
-    {
         path : '/client/chon-dich-vu/:id',
         component: ()=>import('../components/Client/DichVu/ChonDichVu/index.vue'),
         meta: {layout:'client'},
+        beforeEnter: apiClient.kiemTraDangNhap,
         props : true,
     },
     {
@@ -250,7 +241,7 @@ const routes = [
         path : '/client/pet',
         component: ()=>import('../components/Client/ThongTinCaNhan/pet.vue'),
         meta: {layout:'client'},
-        beforeEnter: KiemTraKH,
+        beforeEnter: apiClient.kiemTraDangNhap,
     },
 ]
 

@@ -28,12 +28,6 @@
           </router-link>
         </li>
         <li class="nav-item me-2 text-nowrap">
-          <router-link to="/client/bang-gia">
-            <a class="nav-link" href="#">Bảng giá</a>
-          </router-link>
-        </li>
-
-        <li class="nav-item me-2 text-nowrap">
           <router-link to="/client/xem-dich-vu">
             <a class="nav-link" href="#">Dịch vụ</a>
           </router-link>
@@ -93,9 +87,10 @@
 </template>
 
 <script>
-import axios from "axios";
 import { createToaster } from "@meforma/vue-toaster";
+import apiClient from "../../../services/apiClient";
 const toaster = createToaster({ position: 'top-left' });
+
 export default {
   data() {
     return {
@@ -106,8 +101,20 @@ export default {
   },
   mounted() {
     this.kiemTraKH();
+    // Listen for storage events
+    window.addEventListener('storage', this.handleStorageChange);
+  },
+  beforeUnmount() {
+    // Clean up
+    window.removeEventListener('storage', this.handleStorageChange);
   },
   methods: {
+    handleStorageChange(event) {
+      // If token changed, check authentication again
+      if (event.key === 'token_client') {
+        this.kiemTraKH();
+      }
+    },
     toggleNavbar() {
       this.isOpen = !this.isOpen;
     },
@@ -118,15 +125,14 @@ export default {
         return;
       }
       
-      axios
-        .get("http://127.0.0.1:8000/api/khach-hang/lay-du-lieu", {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
+      apiClient.get("/api/khach-hang/lay-du-lieu")
         .then((res) => {
           if (res.data.status == 1) {
             this.khach_hang = res.data.data;
+            // Store user info
+            localStorage.setItem("name_kh", res.data.data.ho_va_ten || '');
+            localStorage.setItem("mail_kh", res.data.data.email || '');
+            localStorage.setItem("id_khach_hang", res.data.data.id || '');
           } else {
             this.khach_hang = {};
           }
@@ -136,17 +142,15 @@ export default {
         });
     },
     dangXuat() {
-      const token = localStorage.getItem("token_client");
-      axios
-        .get("http://127.0.0.1:8000/api/khach-hang/dang-xuat", {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
+      apiClient.get("/api/khach-hang/dang-xuat")
         .then((res) => {
           if (res.data.status) {
             toaster.success(res.data.message);
             localStorage.removeItem("token_client");
+            localStorage.removeItem("token_kh");
+            localStorage.removeItem("mail_kh");
+            localStorage.removeItem("name_kh");
+            localStorage.removeItem("id_khach_hang");
             this.khach_hang = {};
             this.$router.push("/client/dang-nhap-dang-ky");
           } else {
@@ -158,17 +162,15 @@ export default {
         });
     },
     dangXuatAll() {
-      const token = localStorage.getItem("token_client");
-      axios
-        .get("http://127.0.0.1:8000/api/khach-hang/dang-xuat-all", {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
+      apiClient.get("/api/khach-hang/dang-xuat-all")
         .then((res) => {
           if (res.data.status) {
             toaster.success(res.data.message);
             localStorage.removeItem("token_client");
+            localStorage.removeItem("token_kh");
+            localStorage.removeItem("mail_kh");
+            localStorage.removeItem("name_kh");
+            localStorage.removeItem("id_khach_hang");
             this.khach_hang = {};
             this.$router.push("/client/dang-nhap-dang-ky");
           } else {
@@ -179,37 +181,6 @@ export default {
           toaster.error('Đã xảy ra lỗi khi đăng xuất tất cả');
         });
     },
-    loadPet() {
-      const token = localStorage.getItem("token_client");
-      if (!token) {
-        console.warn("Thiếu token đăng nhập.");
-        return;
-      }
-      
-      axios
-        .get("http://127.0.0.1:8000/api/khach-hang/lay-du-lieu", {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
-        .then(res => {
-          const id_kh = res.data.data.id;
-          localStorage.setItem("id_khach_hang", id_kh);
-
-          return axios
-            .get(`http://127.0.0.1:8000/api/pets/${id_kh}`, {
-              headers: {
-                Authorization: `Bearer ${token}`
-              }
-            });
-        })
-        .then(res => {
-          this.list_pet = res.data.pets;
-        })
-        .catch(err => {
-          console.error("Lỗi khi lấy danh sách thú cưng:", err);
-        });
-    },
     xuLyDatLich() {
       const token = localStorage.getItem("token_client");
       if (!token) {
@@ -217,20 +188,11 @@ export default {
         return;
       }
 
-      axios
-        .get("http://127.0.0.1:8000/api/khach-hang/lay-du-lieu", {
-          headers: { 
-            Authorization: `Bearer ${token}` 
-          }
-        })
+      apiClient.get("/api/khach-hang/lay-du-lieu")
         .then(res => {
           const id_kh = res.data.data.id;
-          return axios
-            .get(`http://127.0.0.1:8000/api/pets/${id_kh}`, {
-              headers: { 
-                Authorization: `Bearer ${token}` 
-              }
-            });
+          localStorage.setItem("id_khach_hang", id_kh);
+          return apiClient.get(`/api/pets/${id_kh}`);
         })
         .then(res => {
           const pets = res.data.pets;

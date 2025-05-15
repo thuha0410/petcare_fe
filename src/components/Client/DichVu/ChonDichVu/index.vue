@@ -21,7 +21,7 @@
                     <select class="form-select form-control" v-model="id_pet" name="" id="">
                         <option disabled value="">--Chọn pet cần khám--</option>
                         <option v-for="(value, index) in list_pet" :key="index" v-bind:value="value.id">{{ value.ten_pet
-                        }}</option>
+                            }}</option>
                     </select>
 
                     <p class="fw-bold mt-2" style="font-size: 20px;"><i class="fa-solid fa-calendar-days"></i> Ngày:</p>
@@ -92,7 +92,8 @@
                         :disabled="isFull(value.id) || isPastTime(value.khung_gio)" @click="selectTime(value)" :class="{
                             'btn-danger': isFull(value.id),
                             'btn-warning': isPastTime(value.khung_gio) && !isFull(value.id),
-                            'btn-outline-primary': !isFull(value.id) && !isPastTime(value.khung_gio)
+                            'btn-primary': selectedTime === value.khung_gio,
+                            'btn-outline-primary': !isFull(value.id) && !isPastTime(value.khung_gio) && selectedTime !== value.khung_gio
                         }">
                         {{ value.khung_gio }}
                         <br> ({{ slotInfo[value.id] || 0 }}/2 đã đặt)
@@ -131,10 +132,14 @@
                     <p><strong>Pet:</strong> {{list_pet.find(p => p.id === id_pet)?.ten_pet || '...'}}</p>
                     <p><strong>Ngày:</strong> {{ selectedDate }}</p>
                     <p><strong>Giờ:</strong> {{ selectedTime }}</p>
+                    <p><strong>Phương thức thanh toán:</strong> PayPal</p>
+                    <div class="alert alert-info mt-3">
+                        <small>Bạn sẽ được chuyển đến màn hình thanh toán PayPal sau khi xác nhận. Vui lòng hoàn tất thanh toán tiền cọc để xác nhận lịch hẹn.</small>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-success" @click="xacNhanLichHen()">Xác nhận</button>
+                    <button type="button" class="btn btn-success" @click="processPayment()">Tiếp tục thanh toán</button>
                 </div>
             </div>
         </div>
@@ -151,10 +156,10 @@
                     <p><strong>Loại dịch vụ:</strong>
                         {{
                             list_dv.id_loaidv === 1 ? 'Tiêm chủng' :
-                            list_dv.id_loaidv === 2 ? 'Spa' :
-                            list_dv.id_loaidv === 3 ? 'Gửi thú cưng' :
-                            list_dv.id_loaidv === 4 ? 'Khám bệnh' :
-                            'Không xác định'
+                                list_dv.id_loaidv === 2 ? 'Spa' :
+                                    list_dv.id_loaidv === 3 ? 'Gửi thú cưng' :
+                                        list_dv.id_loaidv === 4 ? 'Khám bệnh' :
+                                            'Không xác định'
                         }}
                     </p>
                     <p><strong>Mô tả:</strong> {{ list_dv.mo_ta }}</p>
@@ -183,9 +188,15 @@
                         <h5 class="fw-bold text-secondary fs-4">Thông tin dịch vụ</h5>
                         <p class="fs-5 mb-2"><strong>Tên dịch vụ:</strong> {{ list_dv.ten_dv }}</p>
                         <p class="fs-5 mb-2"><strong>Giá dịch vụ:</strong> <span class="text-success fw-bold">{{
-                                list_dv.gia }} VNĐ</span></p>
-                        <p class="fs-5 mb-3"><strong>Tiền cọc (25%):</strong> <span class="text-danger fw-bold">{{
-                                tienCoc }} VNĐ</span></p>
+                            list_dv.gia }} VNĐ</span></p>
+                        <p class="fs-5 mb-2"><strong>Tiền cọc (25%):</strong> <span class="text-danger fw-bold">{{
+                            tienCoc }} VNĐ</span></p>
+                        <div class="alert alert-secondary p-3 mt-3">
+                            <h6 class="fw-bold">Chi tiết lịch hẹn:</h6>
+                            <p class="mb-1"><strong>Thú cưng:</strong> {{list_pet.find(p => p.id === id_pet)?.ten_pet || '...'}}</p>
+                            <p class="mb-1"><strong>Ngày khám:</strong> {{ selectedDate }}</p>
+                            <p class="mb-1"><strong>Giờ khám:</strong> {{ selectedTime }}</p>
+                        </div>
                         <div class="border-top pt-3">
                             <p class="text-muted fst-italic fs-6">Vui lòng thanh toán tiền cọc để hoàn tất đặt lịch.</p>
                         </div>
@@ -264,6 +275,21 @@ export default {
         this.loadPet();
         window.scrollTo(0, 0);
         this.loadPayPalScript();
+        
+        // Add modal event listeners
+        const confirmModal = document.getElementById('confirmModal');
+        if (confirmModal) {
+            confirmModal.addEventListener('hidden.bs.modal', () => {
+                this.$forceUpdate();
+            });
+        }
+        
+        const paypalModal = document.getElementById('paypalModal');
+        if (paypalModal) {
+            paypalModal.addEventListener('hidden.bs.modal', () => {
+                this.$forceUpdate();
+            });
+        }
     },
     methods: {
         loadPayPalScript() {
@@ -361,6 +387,9 @@ export default {
         selectTime(timeObj) {
             this.selectedTime = timeObj.khung_gio;
             this.id_lich = timeObj.id;
+            
+            // Force component re-render to update button styling
+            this.$forceUpdate();
         },
 
         handleDateClick(info) {
@@ -387,39 +416,18 @@ export default {
         xacNhanLichHenFinal() {
             if (!this.selectedDate || !this.selectedTime) return;
 
-            const id_kh = localStorage.getItem("id_khach_hang");
-            if (!id_kh) {
-                alert("Không tìm thấy thông tin khách hàng. Vui lòng đăng nhập lại.");
-                return;
-            }
-            const data = {
-                id_lich: this.id_lich,
-                id_kh: id_kh,
-                id_dv: this.list_dv.id,
-                id_pet: this.id_pet,
-                tinh_trang: "0",
-                gia: this.list_dv.gia,
-                tien_coc: this.tienCoc,
-                ngay: this.selectedDate,
-                gio: this.selectedTime,
-            }
-        },
-
-        xacNhanLichHen() {
             if (!this.id_pet) {
                 toaster.error("Vui lòng chọn thú cưng cần khám để đặt lịch!");
                 return;
             }
 
-            if (!this.selectedDate || !this.selectedTime) return;
-
             const id_kh = localStorage.getItem("id_khach_hang");
             if (!id_kh) {
                 alert("Không tìm thấy thông tin khách hàng. Vui lòng đăng nhập lại.");
                 return;
             }
-
-            // Prepare appointment data
+            
+            // Prepare data for appointment
             this.appointmentData = {
                 id_lich: this.id_lich,
                 id_kh: id_kh,
@@ -432,6 +440,25 @@ export default {
                 gio: this.selectedTime,
                 payment_method: "paypal"
             };
+            
+            // Force component re-render to ensure time slot highlighting persists
+            this.$forceUpdate();
+            
+            // Show confirmation modal instead of directly processing payment
+            const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+            confirmModal.show();
+        },
+
+        // New method to process payment after confirmation
+        processPayment() {
+            if (!this.appointmentData) {
+                toaster.error("Dữ liệu đặt lịch không hợp lệ");
+                return;
+            }
+
+            // Close confirmation modal
+            const confirmModal = bootstrap.Modal.getInstance(document.getElementById('confirmModal'));
+            if (confirmModal) confirmModal.hide();
 
             // Show PayPal modal
             const paypalModal = new bootstrap.Modal(document.getElementById('paypalModal'));
@@ -443,6 +470,12 @@ export default {
             });
         },
 
+        xacNhanLichHen() {
+            // This method is now just a legacy method for compatibility
+            // Actual functionality moved to processPayment()
+            this.processPayment();
+        },
+        
         createAppointment(paymentId) {
             if (!this.appointmentData) {
                 toaster.error("Dữ liệu đặt lịch không hợp lệ");
@@ -456,28 +489,32 @@ export default {
             };
 
             apiClient
-
                 .post('/api/lich-hen/them', data, {
                     headers: {
                         Authorization: 'Bearer ' + localStorage.getItem('token_client')
                     }
                 })
                 .then((res) => {
-                    toaster.success("Đặt lịch thành công!");
+                    // Close the confirmModal if it exists
                     const confirmModal = bootstrap.Modal.getInstance(document.getElementById('confirmModal'));
-                    confirmModal.hide();
-                    // Close modal
+                    if (confirmModal) confirmModal.hide();
+                    
+                    // Close the paypal modal
                     const modalElement = document.getElementById('paypalModal');
                     const modal = bootstrap.Modal.getInstance(modalElement);
                     if (modal) modal.hide();
 
-                    toaster.success("Thanh toán thành công! Đặt lịch thành công!");
+                    // Show success messages
+                    toaster.success("Thanh toán thành công!");
+                    setTimeout(() => {
+                        toaster.success("Đặt lịch khám thành công!");
+                    }, 300);
+                    
                     this.toggleCalendar();
                     this.isProcessingPayment = false;
                 })
                 .catch((err) => {
                     console.error(err);
-                    toaster.error(err.response?.data?.message || "Có lỗi xảy ra khi đặt lịch.");
                     this.isProcessingPayment = false;
 
                     if (err.response && err.response.data && err.response.data.message) {
@@ -564,7 +601,7 @@ export default {
             // Luôn giữ giá gốc và tính tiền cọc
             this.list_dv.gia = this.giaGoc;
             this.tienCoc = Math.round(this.list_dv.gia * 0.25);
-            if (id_loaidv === 2) {
+            if (this.list_dv.id_loaidv === 2) {
                 let heSo = 1;
                 if (canNang > 30) {
                     heSo = 1.6;
@@ -579,12 +616,19 @@ export default {
                 this.list_dv.gia = this.giaGoc;
                 this.tienCoc = Math.round(this.list_dv.gia * 0.25);
             }
+        },
+        
+        // Add watcher for selectedTime to ensure UI updates
+        selectedTime() {
+            this.$forceUpdate();
         }
     }
-    }
+}
 </script>
 
 <style>
+@import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css';
+@import 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css';
 
 .btn-hover:hover {
     background-color: #dc3545 !important;
@@ -599,8 +643,4 @@ export default {
     border-radius: 4px;
     margin-right: 6px;
 }
-
-
-@import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css';
-@import 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css';
 </style>

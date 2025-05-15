@@ -133,9 +133,7 @@ export default {
         }
     },
     mounted() {
-        this.load();
         this.loadDG();
-        this.loadKH();
     },
     methods: {
         them() {
