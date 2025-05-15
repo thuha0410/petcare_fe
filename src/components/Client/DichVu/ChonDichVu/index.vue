@@ -384,21 +384,6 @@ export default {
             this.selectedTime = null;
             this.loadSlot(info.dateStr);
         },
-
-        xacNhanLichHen() {
-            if (!this.id_pet) {
-                toaster.error("Vui lòng chọn thú cưng cần khám để đặt lịch!");
-                return;
-            }
-
-            if (!this.selectedDate || !this.selectedTime) {
-                toaster.error("Vui lòng chọn ngày và giờ khám.");
-                return;
-            }
-
-            const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
-            confirmModal.show();
-        },
         xacNhanLichHenFinal() {
             if (!this.selectedDate || !this.selectedTime) return;
 
@@ -407,8 +392,21 @@ export default {
                 alert("Không tìm thấy thông tin khách hàng. Vui lòng đăng nhập lại.");
                 return;
             }
+        },
 
-            const data = {
+        xacNhanLichHen() {
+            if (!this.id_pet) {
+                toaster.error("Vui lòng chọn thú cưng cần khám để đặt lịch!");
+                return;
+            }
+
+            if (!this.selectedDate || !this.selectedTime) return;
+
+            const id_kh = localStorage.getItem("id_khach_hang");
+            if (!id_kh) {
+                alert("Không tìm thấy thông tin khách hàng. Vui lòng đăng nhập lại.");
+                return;
+            }
 
             // Prepare appointment data
             this.appointmentData = {
@@ -421,8 +419,6 @@ export default {
                 tien_coc: this.tienCoc,
                 ngay: this.selectedDate,
                 gio: this.selectedTime,
-            };
-
                 payment_method: "paypal"
             };
 
@@ -574,8 +570,7 @@ export default {
             }
         }
     }
-
-};
+    }
 </script>
 
 <style>
