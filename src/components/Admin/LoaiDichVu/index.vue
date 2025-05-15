@@ -157,10 +157,20 @@ export default {
                         toaster.error('Thêm mới loại dịch vụ thất bại')
                     }
                 })
-                .catch((res) => {
-                    toaster.error(res.response.data.message);
+                .catch((error) => {
+                    if (error.response.status === 422) {
+                        let errors = error.response.data.errors;
+                        for (let field in errors) {
+                            errors[field].forEach(err => {
+                                toaster.error(err);
+                            });
+                        }
+                    } else {
+                        toaster.error('Đã xảy ra lỗi máy chủ.');
+                    }
                 });
         },
+
         xoa() {
             axios
                 .post("http://127.0.0.1:8000/api/loai-dich-vu/xoa", this.del_loai_dv)
@@ -183,8 +193,21 @@ export default {
                     } else {
                         toaster.error("Cập nhật loại dịch vụ thất bại!")
                     }
+                })
+                .catch((error) => {
+                    if (error.response.status === 422) {
+                        let errors = error.response.data.errors;
+                        for (let field in errors) {
+                            errors[field].forEach(err => {
+                                toaster.error(err);
+                            });
+                        }
+                    } else {
+                        toaster.error('Đã xảy ra lỗi máy chủ.');
+                    }
                 });
         },
+
         loaddata() {
             axios
                 .get("http://127.0.0.1:8000/api/loai-dich-vu/load")

@@ -52,8 +52,9 @@
 <script>
 import axios from 'axios';
 import { createToaster } from "@meforma/vue-toaster";
-const toaster = createToaster({ position: 'top-left' });
+
 import api from '@/services/api';
+const toaster = createToaster({ position: 'top-right' });
 export default {
     data() {
         return {
@@ -70,16 +71,16 @@ export default {
                     'http://127.0.0.1:8000/api/nhan-vien/dang-nhap',
                     this.nhan_vien
                 );
+
                 if (data.status === 1) {
                     toaster.success(data.message);
                     localStorage.setItem('token_admin', data.token);
                     localStorage.setItem('name_admin', data.name);
                     localStorage.setItem('email_admin', data.email);
 
-                    // Get permissions from the response
+
                     const permissions = data.permissions || [];
 
-                    // Map permission IDs to routes
                     const routeMap = {
                         1: '/admin/nhap-thuoc',
                         2: '/admin/ql-ton-kho',
@@ -99,11 +100,9 @@ export default {
                         16: '/admin/phan-quyen',
                     };
 
-                    // Check if user has permission 17 (doctor)
                     if (permissions.includes(17) || permissions.includes('17')) {
                         this.$router.push('/doctor');
                     } else {
-                        // Check for other valid permissions
                         const firstAllowed = permissions.find(id => routeMap[parseInt(id)]);
                         if (firstAllowed) {
                             this.$router.push(routeMap[parseInt(firstAllowed)]);
@@ -114,11 +113,20 @@ export default {
                 } else {
                     toaster.error(data.message);
                 }
+
             } catch (error) {
-                console.error(error);
-                toaster.error('Đã có lỗi xảy ra!');
+                if (error.response && error.response.status === 422) {
+                    const errors = error.response.data.errors;
+                    for (let key in errors) {
+                        toaster.error(errors[key][0]); // Hiển thị từng lỗi (hiện 1 dòng lỗi đầu tiên cho mỗi trường)
+                    }
+                } else {
+                    console.error(error);
+                    toaster.error('Đã có lỗi xảy ra! Vui lòng thử lại.');
+                }
             }
         }
+
     },
 }
 </script>
