@@ -240,20 +240,40 @@ export default {
             });
         },
         fetchTongHop() {
-            // Dữ liệu mẫu tạm thời thay vì gọi API
-            // Giả lập dữ liệu khác nhau theo tháng nếu có chọn tháng
-            let tong_doanh_thu = 123000000;
-            let tong_dich_vu = 85000000;
-            let tong_thuoc = 38000000;
-            let so_hoa_don = 132;
+            // Sử dụng dữ liệu mẫu từ 12 tháng để tính toán cho 4 card
+            const sampleData = [
+                { thang: 1, tong_dich_vu: 9000000, tong_thuoc: 5000000, so_hoa_don: 12 },
+                { thang: 2, tong_dich_vu: 11000000, tong_thuoc: 6000000, so_hoa_don: 15 },
+                { thang: 3, tong_dich_vu: 14000000, tong_thuoc: 7000000, so_hoa_don: 18 },
+                { thang: 4, tong_dich_vu: 16000000, tong_thuoc: 8000000, so_hoa_don: 20 },
+                { thang: 5, tong_dich_vu: 18000000, tong_thuoc: 9000000, so_hoa_don: 22 },
+                { thang: 6, tong_dich_vu: 20000000, tong_thuoc: 10000000, so_hoa_don: 23 },
+                { thang: 7, tong_dich_vu: 21000000, tong_thuoc: 11000000, so_hoa_don: 24 },
+                { thang: 9, tong_dich_vu: 25000000, tong_thuoc: 13000000, so_hoa_don: 26 },
+                { thang: 10, tong_dich_vu: 26000000, tong_thuoc: 14000000, so_hoa_don: 27 },
+                { thang: 11, tong_dich_vu: 27000000, tong_thuoc: 15000000, so_hoa_don: 28 },
+                { thang: 12, tong_dich_vu: 30000000, tong_thuoc: 16000000, so_hoa_don: 30 }
+            ];
 
+            // Lọc dữ liệu theo tháng nếu có chọn tháng cụ thể
+            let filteredData = sampleData;
             if (this.selectedMonth > 0) {
-                const multiplier = this.selectedMonth / 6; // Làm cho dữ liệu thay đổi theo tháng
-                tong_doanh_thu = Math.round(tong_doanh_thu * multiplier);
-                tong_dich_vu = Math.round(tong_dich_vu * multiplier);
-                tong_thuoc = Math.round(tong_thuoc * multiplier);
-                so_hoa_don = Math.round(so_hoa_don * multiplier);
+                filteredData = sampleData.filter(item => item.thang === this.selectedMonth);
             }
+
+            // Tính tổng các giá trị từ dữ liệu đã lọc
+            let tong_dich_vu = 0;
+            let tong_thuoc = 0;
+            let so_hoa_don = 0;
+
+            filteredData.forEach(item => {
+                tong_dich_vu += item.tong_dich_vu;
+                tong_thuoc += item.tong_thuoc;
+                so_hoa_don += item.so_hoa_don;
+            });
+
+            // Tổng doanh thu = tổng dịch vụ + tổng thuốc
+            const tong_doanh_thu = tong_dich_vu + tong_thuoc;
 
             this.cards = [
                 { title: 'Tổng doanh thu', value: this.formatCurrency(tong_doanh_thu), bg: 'bg-success' },
