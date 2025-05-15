@@ -109,7 +109,7 @@
                     </div>
                 </div>
                 <div class="text-center mb-3">
-                    <button class="btn btn-success mt-2" @click="xacNhanLichHen()" :disabled="!selectedTime">
+                    <button class="btn btn-success mt-2" @click="xacNhanLichHenFinal()" :disabled="!selectedTime">
                         Xác nhận lịch hẹn
                     </button>
                 </div>
@@ -134,7 +134,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-success" @click="xacNhanLichHenFinal">Xác nhận</button>
+                    <button type="button" class="btn btn-success" @click="xacNhanLichHen()">Xác nhận</button>
                 </div>
             </div>
         </div>
@@ -391,6 +391,17 @@ export default {
             if (!id_kh) {
                 alert("Không tìm thấy thông tin khách hàng. Vui lòng đăng nhập lại.");
                 return;
+            }
+            const data = {
+                id_lich: this.id_lich,
+                id_kh: id_kh,
+                id_dv: this.list_dv.id,
+                id_pet: this.id_pet,
+                tinh_trang: "0",
+                gia: this.list_dv.gia,
+                tien_coc: this.tienCoc,
+                ngay: this.selectedDate,
+                gio: this.selectedTime,
             }
         },
 
