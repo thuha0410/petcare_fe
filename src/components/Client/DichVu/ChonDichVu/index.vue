@@ -56,7 +56,6 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th class="text-center align-middle">#</th>
                                 <th class="text-center align-middle">Tên dịch vụ</th>
                                 <th class="text-center align-middle">Giá tiền</th>
                                 <th class="text-center align-middle">Tiền cọc</th>
@@ -65,7 +64,6 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="text-center align-middle">1</td>
                                 <td class="text-center align-middle">{{ list_dv.ten_dv || '...' }}</td>
                                 <td class="text-center align-middle">{{ list_dv.gia || '...' }} VNĐ</td>
                                 <td class="text-center align-middle">{{ (list_dv.gia * 25) / 100 || '...' }} VNĐ</td>
@@ -488,7 +486,14 @@ export default {
             // Add payment information
             const data = {
                 ...this.appointmentData,
-                payment_id: paymentId
+                payment_id: paymentId,
+                send_email: true, // Flag to indicate frontend is requesting email sending
+                payment_method: 'paypal', // Explicitly indicate payment method
+                payment_details: {
+                    id: paymentId,
+                    status: 'COMPLETED',
+                    create_time: new Date().toISOString()
+                }
             };
 
             apiClient
@@ -530,7 +535,6 @@ export default {
                     }
                 });
         },
-
 
         isPastTime(khungGio) {
             if (!this.selectedDate) return false;
