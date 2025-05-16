@@ -2,11 +2,7 @@
   <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
       <h4 class="text-black fw-bold mb-0">DANH SÁCH PHIẾU NHẬP THUỐC</h4>
-      <button
-        class="btn btn-dark"
-        data-bs-toggle="modal"
-        data-bs-target="#modalTaoPhieu"
-      >
+      <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalTaoPhieu">
         <i class="fa fa-plus"></i> Tạo phiếu mới
       </button>
     </div>
@@ -25,11 +21,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="(value, index) in listPhieu"
-              :key="index"
-              class="text-center align-middle"
-            >
+            <tr v-for="(value, index) in listPhieu" :key="index" class="text-center align-middle">
               <td>{{ index + 1 }}</td>
               <td>{{ value.kho?.ten_kho || "[N/A]" }}</td>
               <td>{{ value.ncc?.ten_ncc || "[N/A]" }}</td>
@@ -53,24 +45,16 @@
         <div class="modal-content">
           <div class="modal-header bg-primary text-white">
             <h5 class="modal-title">Tạo phiếu nhập thuốc</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
 
           <div class="modal-body">
             <div class="row mb-3">
               <div class="col-md-4">
                 <label class="form-label">Kho nhập</label>
-                <select
-                  v-model="phieuNhap.id_kho"
-                  class="form-select"
-                  :class="{
-                    'is-invalid': highlightWarning && !phieuNhap.id_kho,
-                  }"
-                >
+                <select v-model="phieuNhap.id_kho" class="form-select" :class="{
+                  'is-invalid': highlightWarning && !phieuNhap.id_kho,
+                }">
                   <option disabled value="">-- Chọn kho --</option>
                   <option v-for="k in listKho" :key="k.id" :value="k.id">
                     {{ k.ten_kho }}
@@ -79,13 +63,9 @@
               </div>
               <div class="col-md-4">
                 <label class="form-label">Nhà cung cấp</label>
-                <select
-                  v-model="phieuNhap.id_ncc"
-                  class="form-select"
-                  :class="{
-                    'is-invalid': highlightWarning && !phieuNhap.id_ncc,
-                  }"
-                >
+                <select v-model="phieuNhap.id_ncc" class="form-select" :class="{
+                  'is-invalid': highlightWarning && !phieuNhap.id_ncc,
+                }">
                   <option disabled value="">-- Chọn nhà cung cấp --</option>
                   <option v-for="n in listNCC" :key="n.id" :value="n.id">
                     {{ n.ten_ncc }}
@@ -94,11 +74,7 @@
               </div>
               <div class="col-md-4">
                 <label class="form-label">Ngày nhập</label>
-                <input
-                  type="date"
-                  v-model="phieuNhap.ngay_nhap"
-                  class="form-control"
-                />
+                <input type="date" v-model="phieuNhap.ngay_nhap" class="form-control" />
               </div>
             </div>
 
@@ -115,48 +91,26 @@
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  v-for="(item, index) in chiTiet"
-                  :key="index"
-                  class="text-center align-middle"
-                >
+                <tr v-for="(item, index) in chiTiet" :key="index" class="text-center align-middle">
                   <td>
                     <select v-model="item.id_thuoc" class="form-select">
                       <option disabled value="">-- Chọn thuốc --</option>
-                      <option
-                        v-for="thuoc in listThuoc"
-                        :key="thuoc.id"
-                        :value="thuoc.id"
-                        :disabled="isThuocDaChon(thuoc.id, index)"
-                      >
+                      <option v-for="thuoc in listThuoc" :key="thuoc.id" :value="thuoc.id"
+                        :disabled="isThuocDaChon(thuoc.id, index)">
                         {{ thuoc.ten_thuoc }}
                       </option>
                     </select>
                   </td>
                   <td>
-                    <input
-                      type="number"
-                      v-model.number="item.so_luong"
-                      min="1"
-                      class="form-control"
-                      @input="triggerUpdate"
-                    />
+                    <input type="number" v-model.number="item.so_luong" min="1" class="form-control"
+                      @input="triggerUpdate" />
                   </td>
                   <td>
-                    <input
-                      type="number"
-                      v-model.number="item.gia_nhap"
-                      min="1"
-                      class="form-control"
-                      @input="triggerUpdate"
-                    />
+                    <input type="number" v-model.number="item.gia_nhap" min="1" class="form-control"
+                      @input="triggerUpdate" />
                   </td>
                   <td>
-                    <input
-                      type="date"
-                      v-model="item.han_su_dung"
-                      class="form-control"
-                    />
+                    <input type="date" v-model="item.han_su_dung" class="form-control" />
                   </td>
                   <td>
                     {{
@@ -166,10 +120,7 @@
                     }}
                   </td>
                   <td>
-                    <button
-                      class="btn btn-danger btn-sm"
-                      @click="xoaDong(index)"
-                    >
+                    <button class="btn btn-danger btn-sm" @click="xoaDong(index)">
                       Xoá
                     </button>
                   </td>
@@ -226,7 +177,13 @@ export default {
   methods: {
     loaddataKhoNCCThuoc() {
       axios
-        .get("http://127.0.0.1:8000/api/phieu-nhap/load-kho-ncc-thuoc")
+        .get("http://127.0.0.1:8000/api/phieu-nhap/load-kho-ncc-thuoc",
+          {
+            headers: {
+              Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+            }
+          }
+        )
         .then((res) => {
           this.listKho = res.data.kho;
           this.listNCC = res.data.ncc;
@@ -234,7 +191,13 @@ export default {
         });
     },
     loadPhieuNhap() {
-      axios.get("http://127.0.0.1:8000/api/phieu-nhap").then((res) => {
+      axios.get("http://127.0.0.1:8000/api/phieu-nhap",
+        {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+          }
+        }
+      ).then((res) => {
         this.listPhieu = res.data.data;
       });
     },
@@ -315,7 +278,13 @@ export default {
       };
 
       axios
-        .post("http://127.0.0.1:8000/api/phieu-nhap/tao", data)
+        .post("http://127.0.0.1:8000/api/phieu-nhap/tao", data,
+          {
+            headers: {
+              Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+            }
+          }
+        )
         .then((res) => {
           if (res.data.status) {
             toaster.success(res.data.message);

@@ -157,14 +157,26 @@ export default {
     methods: {
         load() {
             axios
-                .get('http://127.0.0.1:8000/api/thuoc/load')
+                .get('http://127.0.0.1:8000/api/thuoc/load',
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.list_thuoc = res.data.data
                 })
         },
         them() {
             axios
-                .post('http://127.0.0.1:8000/api/thuoc/them', this.thuoc)
+                .post('http://127.0.0.1:8000/api/thuoc/them', this.thuoc,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -195,7 +207,13 @@ export default {
         },
         xoa() {
             axios
-                .post('http://127.0.0.1:8000/api/thuoc/xoa', this.del_thuoc)
+                .post('http://127.0.0.1:8000/api/thuoc/xoa', this.del_thuoc,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -207,7 +225,13 @@ export default {
         },
         update() {
             axios
-                .post('http://127.0.0.1:8000/api/thuoc/update', this.update_thuoc)
+                .post('http://127.0.0.1:8000/api/thuoc/update', this.update_thuoc,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -221,7 +245,13 @@ export default {
         },
         doiTT(x) {
             axios
-                .post('http://127.0.0.1:8000/api/thuoc/doi-TT', x)
+                .post('http://127.0.0.1:8000/api/thuoc/doi-TT', x,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -234,7 +264,13 @@ export default {
         },
         timkiem() {
             axios
-                .post('http://127.0.0.1:8000/api/thuoc/tim-kiem', this.tim_kiem)
+                .post('http://127.0.0.1:8000/api/thuoc/tim-kiem', this.tim_kiem,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.list_thuoc = res.data.data
                 })

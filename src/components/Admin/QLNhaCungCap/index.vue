@@ -152,7 +152,13 @@ export default {
         },
         them() {
             api
-                .post('http://127.0.0.1:8000/api/nha-cung-cap/them', this.nha_cung_cap)
+                .post('http://127.0.0.1:8000/api/nha-cung-cap/them', this.nha_cung_cap,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -175,7 +181,13 @@ export default {
         },
         xoa() {
             api
-                .post('http://127.0.0.1:8000/api/nha-cung-cap/xoa', this.del_nha_cung_cap)
+                .post('http://127.0.0.1:8000/api/nha-cung-cap/xoa', this.del_nha_cung_cap,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -187,7 +199,13 @@ export default {
         },
         update() {
             api
-                .post('http://127.0.0.1:8000/api/nha-cung-cap/update', this.update_nha_cung_cap)
+                .post('http://127.0.0.1:8000/api/nha-cung-cap/update', this.update_nha_cung_cap,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -201,7 +219,13 @@ export default {
         },
         doiTT(x) {
             api
-                .post('http://127.0.0.1:8000/api/nha-cung-cap/doi-TT', x)
+                .post('http://127.0.0.1:8000/api/nha-cung-cap/doi-TT', x,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -214,7 +238,13 @@ export default {
         },
         timkiem() {
             api
-                .post('http://127.0.0.1:8000/api/nha-cung-cap/tim-kiem', this.tim_kiem)
+                .post('http://127.0.0.1:8000/api/nha-cung-cap/tim-kiem', this.tim_kiem,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.list_nha_cung_cap = res.data.data
                 })

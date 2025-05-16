@@ -144,7 +144,13 @@ export default {
     methods: {
         them() {
             axios
-                .post('http://127.0.0.1:8000/api/loai-dich-vu/them', this.loai_dv)
+                .post('http://127.0.0.1:8000/api/loai-dich-vu/them', this.loai_dv,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -173,7 +179,13 @@ export default {
 
         xoa() {
             axios
-                .post("http://127.0.0.1:8000/api/loai-dich-vu/xoa", this.del_loai_dv)
+                .post("http://127.0.0.1:8000/api/loai-dich-vu/xoa", this.del_loai_dv,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message);
@@ -185,7 +197,13 @@ export default {
         },
         update() {
             axios
-                .post("http://127.0.0.1:8000/api/loai-dich-vu/update", this.update_loai_dv)
+                .post("http://127.0.0.1:8000/api/loai-dich-vu/update", this.update_loai_dv,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message);
@@ -210,7 +228,13 @@ export default {
 
         loaddata() {
             axios
-                .get("http://127.0.0.1:8000/api/loai-dich-vu/load")
+                .get("http://127.0.0.1:8000/api/loai-dich-vu/load",
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.list_loai_dv = res.data.data
                 });

@@ -142,7 +142,13 @@ export default {
     methods: {
         them() {
             axios
-                .post('http://127.0.0.1:8000/api/kho/them', this.kho)
+                .post('http://127.0.0.1:8000/api/kho/them', this.kho,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -176,14 +182,26 @@ export default {
         },
         timkiem() {
             axios
-                .post('http://127.0.0.1:8000/api/kho/tim-kiem', this.tim_kiem)
+                .post('http://127.0.0.1:8000/api/kho/tim-kiem', this.tim_kiem,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.list_kho = res.data.data
                 })
         },
         xoa() {
             axios
-                .post("http://127.0.0.1:8000/api/kho/del", this.del_kho)
+                .post("http://127.0.0.1:8000/api/kho/del", this.del_kho,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message);
@@ -197,7 +215,13 @@ export default {
 
         update() {
             axios
-                .post("http://127.0.0.1:8000/api/kho/update", this.update_kho)
+                .post("http://127.0.0.1:8000/api/kho/update", this.update_kho,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message);
@@ -225,7 +249,13 @@ export default {
         },
         doi_trang_thai(x) {
             axios
-                .post("http://127.0.0.1:8000/api/kho/doi", x)
+                .post("http://127.0.0.1:8000/api/kho/doi", x,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message);
@@ -237,7 +267,13 @@ export default {
         },
         loaddata() {
             axios
-                .get("http://127.0.0.1:8000/api/kho/load")
+                .get("http://127.0.0.1:8000/api/kho/load",
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.list_kho = res.data.data
                 });

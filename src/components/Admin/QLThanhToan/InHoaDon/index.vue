@@ -87,7 +87,13 @@ export default {
     created() {
         const id = this.$route.query.id;
         if (id) {
-            axios.get(`http://127.0.0.1:8000/api/hoa-don/in/${id}`).then(res => {
+            axios.get(`http://127.0.0.1:8000/api/hoa-don/in/${id}`,
+                {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+            ).then(res => {
                 if (res.data.status) {
                     this.hoaDon = res.data.data.hoa_don;
                     this.chiTiet = res.data.data.chi_tiet;
