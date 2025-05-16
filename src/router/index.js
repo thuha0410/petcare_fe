@@ -26,6 +26,7 @@ const routes = [
         meta: {layout:'admin'},
         beforeEnter: kiemTraAdminVaQuyen(1)
     },
+
     {
         path : '/admin/ql-ton-kho',
         component: ()=>import('../components/Admin/QLTonKho/index.vue'),
@@ -208,6 +209,12 @@ const routes = [
         beforeEnter: kiemTraAdminVaQuyen(13)
     },
     {
+        path : '/admin/in-hoa-don',
+        component: ()=>import('../components/Admin/QLThanhToan/InHoaDon/index.vue'),
+        meta: {layout:'admin'},
+        beforeEnter: kiemTraAdminVaQuyen(13)
+    },
+    {
         path : '/client/chon-dich-vu/:id',
         component: ()=>import('../components/Client/DichVu/ChonDichVu/index.vue'),
         meta: {layout:'client'},
@@ -229,7 +236,8 @@ const routes = [
     {
         path : '/doctor/in-don-thuoc',
         component: ()=>import('../components/Doctor/InDonThuoc/index.vue'),
-        beforeEnter: kiemTraAdminVaQuyen(17)
+        beforeEnter: kiemTraAdminVaQuyen(17),
+        meta: {layout:'doctor'}
     },
     {
         path : '/doctor/ke-don-thuoc',

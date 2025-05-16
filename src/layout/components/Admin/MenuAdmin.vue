@@ -4,6 +4,15 @@
 		<nav class="navbar navbar-expand-xl w-100">
 			<ul class="navbar-nav justify-content-start flex-grow-1 gap-1">
 				<li class="nav-item">
+					<router-link to="/admin/ql-lich-hen">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-calendar-days"></i>
+							</div>
+							<div class="menu-title">QL Lịch Hẹn</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
 					<router-link to="/admin/nhap-thuoc">
 						<a class="nav-link" href="/">
 							<div class="parent-icon"><i class="fa-solid fa-prescription-bottle-medical"></i>
@@ -22,11 +31,11 @@
 					</router-link>
 				</li>
 				<li class="nav-item">
-					<router-link to="/admin/ql-lich-hen">
+					<router-link to="/admin/ql-thuoc">
 						<a class="nav-link" href="/">
-							<div class="parent-icon"><i class="fa-solid fa-calendar-days"></i>
+							<div class="parent-icon"><i class="fa-solid fa-capsules"></i>
 							</div>
-							<div class="menu-title">QL Lịch Hẹn</div>
+							<div class="menu-title">QL Thuốc</div>
 						</a>
 					</router-link>
 				</li>
@@ -57,15 +66,7 @@
 						</a>
 					</router-link>
 				</li>
-				<li class="nav-item">
-					<router-link to="/admin/ql-nhan-vien">
-						<a class="nav-link" href="/">
-							<div class="parent-icon"><i class="fa-solid fa-user-doctor"></i>
-							</div>
-							<div class="menu-title">QL Nhân Viên</div>
-						</a>
-					</router-link>
-				</li>
+				
 				<li class="nav-item">
 					<router-link to="/admin/ql-khach-hang">
 						<a class="nav-link" href="/">
@@ -84,21 +85,22 @@
 						</a>
 					</router-link>
 				</li>
-				<li class="nav-item">
-					<router-link to="/admin/ql-thuoc">
-						<a class="nav-link" href="/">
-							<div class="parent-icon"><i class="fa-solid fa-capsules"></i>
-							</div>
-							<div class="menu-title">QL Thuốc</div>
-						</a>
-					</router-link>
-				</li>
+				
 				<li class="nav-item">
 					<router-link to="/admin/ql-nha-cung-cap">
 						<a class="nav-link" href="/">
 							<div class="parent-icon"><i class="fa-solid fa-truck"></i>
 							</div>
 							<div class="menu-title">QL Nhà Cung Cấp</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
+					<router-link to="/admin/ql-nhan-vien">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-user-doctor"></i>
+							</div>
+							<div class="menu-title">QL Nhân Viên</div>
 						</a>
 					</router-link>
 				</li>
@@ -142,7 +144,7 @@
 				<li class="nav-item">
 					<router-link to="/admin/doanh-thu">
 						<a class="nav-link" href="/">
-							<div class="parent-icon"><i class="fa-solid fa-flag-checkered"></i>
+							<div class="parent-icon"><i class="fa-solid fa-chart-simple"></i>
 							</div>
 							<div class="menu-title">Doanh thu</div>
 						</a>

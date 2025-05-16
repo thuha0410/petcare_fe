@@ -16,7 +16,7 @@
       <button class="navbar-toggler" type="button" @click="toggleNavbar">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <ul class="navbar-nav mx-auto me-3">
+      <ul class="navbar-nav me-3 mx-auto">
         <li class="nav-item me-2 text-nowrap">
           <router-link to="/">
             <a class="nav-link" href="#">Trang chủ</a>
@@ -231,7 +231,9 @@ export default {
 .nav-link:hover {
   color: #0077cc;
 }
-
+.navbar-nav {
+  text-align: center;
+}
 .btn-custom {
   background-color: #003366;
   color: white;

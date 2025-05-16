@@ -32,24 +32,22 @@
     <br>
     <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-4">
         <!-- template bac si -->
-        <template v-for="(value, index) in list_nhan_vien" :key="index">
-            <div class="col">
-                <router-link :to="'/client/xem-bs/' + value.id">
-                    <div class="card card-hv radius-15 h-100">
-                        <div class="card-body d-flex text-center">
-                            <div class="p-4 border radius-15">
-                                <img :src="value.hinh_anh" width="100" height="130" class="rounded-circle shadow"
-                                    alt="">
-                                <h5 style="color: darkblue;" class="mb-0 mt-5">ThS. {{ value.ten_nv }}</h5>
-                                <p style="color: darkslateblue;">{{ value.mo_ta }}</p>
-                                <hr>
-                                <br>
-                            </div>
+        <div class="col" v-for="(value, index) in list_nhan_vien.slice(0, 4)" :key="index">
+            <router-link :to="'/client/xem-bs/' + value.id">
+                <div class="card card-hv radius-15 h-100">
+                    <div class="card-body  text-center">
+                        <div class="p-4 border radius-15">
+                            <img :src="value.hinh_anh" width="100" height="130" class="rounded-circle shadow"
+                                alt="">
+                            <h5 style="color: darkblue;" class="mb-0 mt-5">ThS. {{ value.ten_nv }}</h5>
+                            <p style="color: darkslateblue; min-height: 120px;">{{ value.mo_ta }}</p>
+                            <hr>
+                            <br>
                         </div>
                     </div>
-                </router-link>
-            </div>
-        </template>
+                </div>
+            </router-link>
+        </div>
     </div>
     <a class="text-center hover:text-dark" style="font-size: 25px;" href="/client/dat-lich-theo-bac-si"><button
             class="btn btn-outline-primary rounded-pill mt-4">Xem thêm</button></a>
