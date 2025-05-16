@@ -101,18 +101,20 @@
           <!-- Lựa chọn loại khách hàng -->
           <div class="mb-3">
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="customerType" id="existingCustomer" value="existing" v-model="customerType">
+              <input class="form-check-input" type="radio" name="customerType" id="existingCustomer" value="existing"
+                v-model="customerType">
               <label class="form-check-label" for="existingCustomer">Khách hàng đã có</label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="customerType" id="newCustomer" value="new" v-model="customerType">
+              <input class="form-check-input" type="radio" name="customerType" id="newCustomer" value="new"
+                v-model="customerType">
               <label class="form-check-label" for="newCustomer">Khách hàng mới</label>
             </div>
           </div>
 
           <!-- Bước 1: Khách hàng -->
           <h6 class="fw-bold">1. Thông tin khách hàng</h6>
-          
+
           <!-- Nếu là khách hàng đã có -->
           <div v-if="customerType === 'existing'" class="row mb-3">
             <div class="col-md-12">
@@ -140,7 +142,7 @@
 
           <!-- Bước 2: Thú cưng -->
           <h6 class="fw-bold">2. Thông tin thú cưng</h6>
-          
+
           <!-- Nếu là khách hàng đã có -->
           <div v-if="customerType === 'existing'" class="row mb-3">
             <div class="col-md-12">
@@ -475,7 +477,7 @@ export default {
       }
     },
     resetNewRecordForm() {
-      this.newRecord = { 
+      this.newRecord = {
         ten_khach: '',
         sdt: '',
         ten_thu_cung: '',
@@ -676,9 +678,9 @@ export default {
       this.selectedPetId = '';
       this.customerPets = [];
       this.selectedPetInfo = null;
-      
+
       if (!this.selectedCustomerId) return;
-      
+
       axios
         .get(`http://127.0.0.1:8000/api/pet/load-by-customer/${this.selectedCustomerId}`)
         .then((res) => {
@@ -694,7 +696,7 @@ export default {
     },
     selectPet() {
       if (!this.selectedPetId) return;
-      
+
       // Find the selected pet from customerPets
       const selectedPet = this.customerPets.find(pet => pet.id == this.selectedPetId);
       if (selectedPet) {
@@ -703,8 +705,9 @@ export default {
     },
     loadCustomers() {
       axios
-        .get('http://127.0.0.1:8000/api/khach-hang/load')
+        .get('http://127.0.0.1:8000/api/khach-hang/load',)
         .then((res) => {
+          console.log('Khach hang response:', res.data);
           if (res.data.status) {
             this.customers = res.data.data;
           } else {
@@ -720,7 +723,7 @@ export default {
     this.load();
     this.loadDanhSachBacSi();
     this.loadCustomers();
-    
+
     // Set today's date as default for ngay_kham
     const today = new Date();
     const year = today.getFullYear();

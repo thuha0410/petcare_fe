@@ -7,10 +7,10 @@
         </div>
         <div class="card-body">
             <div class="input-group mb-3">
-                <input v-model="tim_kiem.noi_dung" type="text" class="form-control" placeholder="Tìm kiếm" aria-label="Recipient's username"
-                    aria-describedby="button-addon2">
-                <button v-on:click="timkiem()" class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i
-                        class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
+                <input v-model="tim_kiem.noi_dung" type="text" class="form-control" placeholder="Tìm kiếm"
+                    aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button v-on:click="timkiem()" class="btn btn-outline-secondary text-dark" type="button"
+                    id="button-addon2"><i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
             </div>
             <div class="table table-resposive">
                 <table class="table table-bordered">
@@ -48,10 +48,17 @@ export default {
     methods: {
         load() {
             axios
-                .get('http://127.0.0.1:8000/api/khach-hang/load')
+                .get('http://127.0.0.1:8000/api/khach-hang/loadkh-ql-kh' )
                 .then((res) => {
-                    this.list_khach_hang = res.data.data
+                    if (Array.isArray(res.data.data)) {
+                        this.list_khach_hang = res.data.data;
+                    } else {
+                        toaster.error('Dữ liệu không hợp lệ');
+                    }
                 })
+                .catch((err) => {
+                    toaster.error('Không thể tải danh sách khách hàng: ' + err.message);
+                });
         },
         timkiem() {
             axios
@@ -81,5 +88,4 @@ export default {
     },
 }
 </script>
-<style>
-</style>
+<style></style>

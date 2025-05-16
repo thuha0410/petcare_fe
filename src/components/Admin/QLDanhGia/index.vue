@@ -90,7 +90,7 @@ export default {
                 });
         },
         loadKH() {
-            axios.get("http://127.0.0.1:8000/api/khach-hang/load")
+            axios.get("http://127.0.0.1:8000/api/khach-hang/loadkh-ql-dgia")
                 .then((res) => {
                     this.list_khach_hang = res.data.data;
                     console.log("Dữ liệu khách hàng:", this.list_khach_hang);

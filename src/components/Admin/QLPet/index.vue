@@ -285,7 +285,7 @@ export default {
         },
         loadKhachHang() {
             axios
-                .get("http://127.0.0.1:8000/api/khach-hang/load", {
+                .get("http://127.0.0.1:8000/api/khach-hang/loadkh-ql-pet", {
                 })
                 .then((res) => {
                     this.list_khach_hang = res.data.data
