@@ -24,7 +24,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(value, index) in list_danh_gia" :key="value.id">
+                        <template v-for="(value, index) in list_danh_gia" :key="index">
+                            <tr>
                             <td class="text-center align-middle">{{ index + 1 }}</td>
                             <td class="text-center align-middle">{{ value.ho_va_ten }}</td>
                             <td class="text-center align-middle">{{ value.noi_dung }}</td>
@@ -40,6 +41,7 @@
                                 </button>
                             </td>
                         </tr>
+                        </template>
                     </tbody>
 
                 </table>
@@ -48,16 +50,11 @@
     </div>
 </template>
 <script>
-import api from '@'
 import { createToaster } from "@meforma/vue-toaster";
-
+import axios from 'axios';  
 const toaster = createToaster({ position: "top-right" });
 
 export default {
-    mounted() {
-        this.load();
-        this.loadKH();
-    },
     data() {
         return {
             danh_gia: {
@@ -74,9 +71,14 @@ export default {
             del_danh_gia: {}, 
         }
     },
+    mounted() {
+        this.load();
+        this.loadKH();
+    },
     methods: {
         load() {
-            axios.get('http://127.0.0.1:8000/api/danh-gia/load2',
+            axios
+            .get('http://127.0.0.1:8000/api/danh-gia/load',
                 {
                         headers: {
                             Authorization: 'Bearer ' + localStorage.getItem('token_admin')
@@ -84,9 +86,9 @@ export default {
                     }
             )
                 .then((res) => {
+                    console.log("API load trả về:", res.data);
                     if (res.data.status) {
                         this.list_danh_gia = res.data.data;
-                        console.log("Đánh giá:", this.list_danh_gia);
                     } else {
                         console.error("Không có dữ liệu đánh giá");
                     }
@@ -96,7 +98,7 @@ export default {
                 });
         },
         loadKH() {
-            axios.get("http://127.0.0.1:8000/api/khach-hang/load",
+            axios.get("http://127.0.0.1:8000/api/khach-hang/loadkha",
                 {
                         headers: {
                             Authorization: 'Bearer ' + localStorage.getItem('token_admin')
@@ -160,7 +162,7 @@ export default {
                 })
                 .catch(() => console.error('Lỗi khi tìm kiếm'));
         }
-    }
+    },
 }
 
 </script>
