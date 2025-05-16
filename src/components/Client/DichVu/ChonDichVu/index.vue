@@ -355,7 +355,7 @@ export default {
         isFull(id_lich) {
             return (this.slotInfo[id_lich] || 0) >= 2;
         },
-
+        
         loadLich() {
             apiClient
                 .get("/api/lich/load")

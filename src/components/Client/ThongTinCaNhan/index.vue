@@ -67,7 +67,8 @@
     <div class="row mt-5">
         <div class="col-lg-2"></div>
         <div class="col-lg-8">
-            <h2 class="text-center fw-bold" style="color: darkblue;">Lịch hẹn đã đặt <i class="fa-solid fa-calendar-check" style="color: darkblue;"></i></h2>
+            <h2 class="text-center fw-bold" style="color: darkblue;">Lịch hẹn đã đặt <i
+                    class="fa-solid fa-calendar-check" style="color: darkblue;"></i></h2>
             <br>
             <div class="card shadow" style="border-radius: 16px;">
                 <div class="card-header" style="background-color: #2c4b85; color: white; border-radius: 16px 16px 0 0;">
@@ -77,7 +78,7 @@
                     <div v-if="lichHenList.length === 0" class="text-center p-4">
                         <p class="text-muted">Bạn chưa có lịch hẹn nào</p>
                     </div>
-                    <div v-else class="table-responsive">
+                    <div v-else class="table-responsive" style="max-height: 400px; overflow-y: auto;">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
@@ -88,31 +89,23 @@
                                     <th>Giờ hẹn</th>
                                     <th>Tổng tiền</th>
                                     <th>Trạng thái</th>
-                                    <th>Thanh toán</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(item, index) in lichHenList" :key="index">
+                                <tr v-for="(value, index) in lichHenList" :key="index">
                                     <td>{{ index + 1 }}</td>
-                                    <td>{{ item.ten_dv }}</td>
-                                    <td>{{ item.ten_pet }}</td>
-                                    <td>{{ item.ngay }}</td>
-                                    <td>{{ item.gio }}</td>
-                                    <td>{{ formatCurrency(item.gia) }}</td>
-                                    <td>
-                                        <span :class="getStatusClass(item.tinh_trang)">
-                                            {{ getStatusText(item.tinh_trang) }}
+                                    <td>{{ value.ten_dv }}</td>
+                                    <td>{{ value.ten_pet }}</td>
+                                    <td>{{ value.ngay }}</td>
+                                    <td>{{ value.gio }}</td>
+                                    <td>{{ value.gia }}</td>
+                                    <!-- <td>
+                                        <span :class="getStatusClass(value.tinh_trang)">
+                                            {{ getStatusText(value.tinh_trang) }}
                                         </span>
-                                    </td>
+                                    </td> -->
                                     <td>
-                                        <button 
-                                            v-if="canPayOnline(item)" 
-                                            @click="thanhToanVNPay(item)"
-                                            class="btn btn-success btn-sm">
-                                            <i class="fa-solid fa-credit-card me-1"></i> Thanh toán ngay
-                                        </button>
-                                        <span v-else-if="item.tinh_trang === '1'" class="badge bg-success">Đã thanh toán</span>
-                                        <span v-else class="text-muted">-</span>
+                                        <button class="btn">{{ value.tinh_trang }}</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -123,7 +116,7 @@
         </div>
         <div class="col-lg-2"></div>
     </div>
-    
+
     <div class="row ">
         <div class="col-lg-2"></div>
         <div class="col-lg-8">
@@ -367,6 +360,7 @@
 <script>
 import { createToaster } from "@meforma/vue-toaster";
 import apiClient from "@/services/apiClient";
+import axios from "axios";
 const toaster = createToaster({ position: "top-right" });
 
 export default {
@@ -393,6 +387,8 @@ export default {
                 can_nang: ''
 
             },
+            pets: [],
+            dich_vu: [],
             update_pet: {},
             xoa_pet: {},
             danh_sach_pet: [],
@@ -407,33 +403,59 @@ export default {
     mounted() {
         this.getUserInfo();
         window.scrollTo(0, 0);
-        this.getLichHen(); // Load lịch hẹn khi component mount
+        this.loadLichHen();
+        this.loadPet();
+        this.loadDichVu();
+        // this.getLichHen(); 
     },
     methods: {
+        loadLichHen() {
+            axios
+                .get('http://127.0.0.1:8000/api/lich-hen/loadd')
+                .then((res) => {
+                    this.lichHenList = res.data.data
+                })
+        },
+        loadPet() {
+            axios
+                .get("http://127.0.0.1:8000/api/pet/loadd", {
+                })
+                .then((res) => {
+                    this.pets = res.data.data
+                    console.log(this.pets);
+                });
+        },
+        loadDichVu() {
+            axios
+                .get('http://127.0.0.1:8000/api/dich-vu/load')
+                .then((res) => {
+                    this.dich_vu = res.data.data
+                })
+        },
         getLichHen() {
             const token = localStorage.getItem("token_client");
             if (!token) {
                 return;
             }
-            
-            apiClient.get("/api/lich-hen/danh-sach-lich-hen", {
+
+            apiClient.get("/api/lich-hen/loadd", {
                 headers: {
                     Authorization: "Bearer " + token
                 }
             })
-            .then(res => {
-                if (res.data.status === 1) {
-                    this.lichHenList = res.data.data;
-                } else {
-                    toaster.error(res.data.message || "Không thể tải lịch hẹn");
-                }
-            })
-            .catch(error => {
-                console.error("Lỗi khi lấy danh sách lịch hẹn:", error);
-                toaster.error("Có lỗi xảy ra khi tải danh sách lịch hẹn");
-            });
+                .then(res => {
+                    if (res.data.status === 1) {
+                        this.lichHenList = res.data.data;
+                    } else {
+                        toaster.error(res.data.message || "Không thể tải lịch hẹn");
+                    }
+                })
+                .catch(error => {
+                    console.error("Lỗi khi lấy danh sách lịch hẹn:", error);
+                    toaster.error("Có lỗi xảy ra khi tải danh sách lịch hẹn");
+                });
         },
-        
+
         getStatusText(status) {
             const statusMap = {
                 '0': 'Chờ xác nhận',
@@ -443,7 +465,7 @@ export default {
             };
             return statusMap[status] || 'Không xác định';
         },
-        
+
         getStatusClass(status) {
             const classMap = {
                 '0': 'badge bg-warning',
@@ -453,42 +475,18 @@ export default {
             };
             return classMap[status] || '';
         },
-        
+
         formatCurrency(value) {
-            return new Intl.NumberFormat('vi-VN', { 
-                style: 'currency', 
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
                 currency: 'VND',
                 maximumFractionDigits: 0
             }).format(value);
         },
-        
+
         canPayOnline(lichHen) {
             // Chỉ cho phép thanh toán nếu lịch hẹn chưa được thanh toán và đã xác nhận
             return lichHen.tinh_trang === '0' || (lichHen.tinh_trang === '1' && !lichHen.da_thanh_toan);
-        },
-        
-        thanhToanVNPay(lichHen) {
-            apiClient.post('/api/vnpay/tao-url-thanh-toan', {
-                id_lich_hen: lichHen.id,
-                so_tien: lichHen.gia,
-                noi_dung: `Thanh toán đặt lịch: ${lichHen.ten_dv} - ${lichHen.ten_pet}`
-            }, {
-                headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem('token_client')
-                }
-            })
-            .then(res => {
-                if (res.data.status === 1 && res.data.payment_url) {
-                    // Chuyển hướng đến trang thanh toán VNPay
-                    window.location.href = res.data.payment_url;
-                } else {
-                    toaster.error(res.data.message || "Không thể tạo liên kết thanh toán");
-                }
-            })
-            .catch(error => {
-                console.error("Lỗi khi tạo URL thanh toán:", error);
-                toaster.error("Có lỗi xảy ra khi tạo liên kết thanh toán");
-            });
         },
         doiMatKhau() {
             apiClient.post('/api/khach-hang/doi-mat-khau-tcn', this.matkhau)
@@ -700,7 +698,8 @@ export default {
 @import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css';
 @import 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css';
 
-.table th, .table td {
+.table th,
+.table td {
     vertical-align: middle;
 }
 

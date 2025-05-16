@@ -184,14 +184,14 @@ export default {
 
         loadLichHen() {
             axios
-                .get('http://127.0.0.1:8000/api/lich-hen-pet/load')
+                .get('http://127.0.0.1:8000/api/lich-hen/loadd')
                 .then((res) => {
                     this.list_lich = res.data.data
                 })
         },
         loadKhachHang() {
             axios
-                .get("http://127.0.0.1:8000/api/lich-hen/khach-hang-load", {
+                .get("http://127.0.0.1:8000/api/khach-hang/loadd", {
                 })
                 .then((res) => {
                     this.khach_hang = res.data.data
@@ -200,7 +200,7 @@ export default {
         },
         loadPet() {
             axios
-                .get("http://127.0.0.1:8000/api/load-pet", {
+                .get("http://127.0.0.1:8000/api/pet/loadd", {
                 })
                 .then((res) => {
                     this.pet = res.data.data
