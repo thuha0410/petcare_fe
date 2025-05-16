@@ -1,127 +1,202 @@
 <template>
-    <div class="row">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between">
-                <div>
-                    <h3>QUẢN LÝ BÁO CÁO</h3>
-                </div>
-                <div class="form-floating">
-                    <select class="form-select" id="floatingSelect" v-model="thangChon"
-                        aria-label="Floating label select example">
-                        <option value="0">Toàn bộ</option>
-                        <option value="1">Tháng 1</option>
-                        <option value="2">Tháng 2</option>
-                        <option value="3">Tháng 3</option>
-                        <option value="4">Tháng 4</option>
-                        <option value="5">Tháng 5</option>
-                        <option value="6">Tháng 6</option>
-                        <option value="7">Tháng 7</option>
-                        <option value="8">Tháng 8</option>
-                        <option value="9">Tháng 9</option>
-                        <option value="10">Tháng 10</option>
-                        <option value="11">Tháng 11</option>
-                        <option value="12">Tháng 12</option>
-                    </select>
-                    <label for="floatingSelect">Chọn tháng</label>
-                </div>
+    <div class="">
+        <!-- LỌC THỐNG KÊ -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="text-black fw-bold" style="font-family: 'Tahoma', sans-serif; font-size: 25px">BỘ LỌC THỐNG
+                    KÊ</h3>
             </div>
             <div class="card-body">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Tìm kiếm" aria-label="Recipient's username"
-                        aria-describedby="button-addon2">
-                    <button class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i
-                            class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
-                </div>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr class="text-center">
-                            <th>#</th>
-                            <th>Ngày thanh toán</th>
-                            <th>Số hóa đơn đã thanh toán</th>
-                            <th>Doanh thu thuốc</th>
-                            <th>Doanh thu dịch vụ</th>
-                            <th>Tổng doanh thu</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="text-center align-middle" v-for="(row, index) in list_bao_cao" :key="index">
-                            <th>{{ index + 1 }}</th>
-                            <td>{{ formatDate(row.ngay) }}</td>
-                            <td>{{ row.so_hoa_don }}</td>
-                            <td>{{ formatTien(row.doanh_thu_thuoc) }}</td>
-                            <td>{{ formatTien(row.doanh_thu_dich_vu) }}</td>
-                            <td class="fw-bold text-danger">{{ formatTien(row.tong_doanh_thu) }}</td>
-                            <td>
-                                <button class="btn btn-danger" @click="moModalXoa(row)">Xoá</button>
-                            </td>
-                        </tr>
-
-                    </tbody>
-                </table>
-                <div class="modal fade" id="xoa" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                Bạn mún xóa tht hã?
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button v-on:click="xoa()" type="button" data-bs-dismiss="modal"
-                                    class="btn btn-primary">Xóa</button>
-                            </div>
-                        </div>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Năm</label>
+                        <select class="form-select" v-model="selectedYear" @change="fetchData">
+                            <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+                        </select>
                     </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Tháng</label>
+                        <select class="form-select" v-model="selectedMonth" @change="fetchData">
+                            <option value="0">Tất cả các tháng</option>
+                            <option v-for="month in 12" :key="month" :value="month">Tháng {{ month }}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- THỐNG KÊ CARD -->
+        <div class="row mb-4">
+            <div class="col-md-3" v-for="card in cards" :key="card.title">
+                <div class="card shadow-sm rounded-3 border-0 text-white" :class="card.bg">
+                    <div class="card-body">
+                        <h6 class="card-title">{{ card.title }}</h6>
+                        <h4 class="fw-bold">{{ card.value }} <span v-if="card.showCurrency">VNĐ</span></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BIỂU ĐỒ -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="text-black fw-bold" style="font-family: 'Tahoma', sans-serif; font-size: 25px">BIỂU ĐỒ DOANH
+                    THU THEO THÁNG</h3>
+            </div>
+            <div class="card-body">
+                <div style="height: 400px">
+                    <canvas ref="revenueChart"></canvas>
                 </div>
             </div>
         </div>
     </div>
 </template>
+
 <script>
+import { Chart, registerables } from 'chart.js';
+import axios from 'axios';
+Chart.register(...registerables);
+
 export default {
     data() {
         return {
-            list_bao_cao: [],
-
+            selectedYear: new Date().getFullYear(),
+            selectedMonth: 0,
+            years: [],
+            cards: [],
+            revenueChart: null,
+            monthlyData: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Doanh thu dịch vụ',
+                        data: [],
+                        backgroundColor: '#74C0FC',
+                        borderColor: '#004880',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Doanh thu thuốc',
+                        data: [],
+                        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Số lượng hóa đơn',
+                        data: [],
+                        backgroundColor: '#E1D7FE',
+                        borderColor: '#876DD5',
+                        borderWidth: 1,
+                        yAxisID: 'y1'
+                    }
+                ]
+            }
         }
     },
     mounted() {
-
+        this.generateYears();
+        this.fetchData();
     },
     methods: {
-        formatTien(val) {
-            return parseInt(val || 0).toLocaleString('vi-VN') + ' VNĐ';
+        generateYears() {
+            const now = new Date().getFullYear();
+            this.years = Array.from({ length: 5 }, (_, i) => now - i);
         },
-        formatDate(dateStr) {
-            return new Date(dateStr).toLocaleDateString('vi-VN');
+        fetchData() {
+            this.fetchTongHop();
+            this.fetchMonthlyRevenue();
         },
-        locTheoThang() {
-            // Gọi API theo tháng đã chọn, ví dụ thangChon = 3
-            axios.get(`/api/bao-cao-doanh-thu?thang=${this.thangChon}`)
+        fetchTongHop() {
+            axios.get('http://127.0.0.1:8000/api/doanh-thu/tong-hop', {
+                params: { year: this.selectedYear, month: this.selectedMonth }
+            })
                 .then(res => {
-                    this.baoCaoList = res.data.data;
+                    const d = res.data;
+                    this.cards = [
+                        { title: 'Tổng doanh thu', value: this.formatCurrency(d.tong_tien || 0), showCurrency: true, bg: 'bg-success' },
+                        { title: 'Doanh thu dịch vụ', value: this.formatCurrency(d.tong_dich_vu || 0), showCurrency: true, bg: 'bg-info' },
+                        { title: 'Tổng tiền thuốc', value: this.formatCurrency(d.tong_thuoc || 0), showCurrency: true, bg: 'bg-warning' },
+                        { title: 'Số lượng hóa đơn', value: d.tong_hoa_don || 0, showCurrency: false, bg: 'bg-purple' }
+                    ];
+                })
+                .catch(err => {
+                    console.error(err);
                 });
         },
-        moModalXoa(row) {
-            this.itemXoa = row;
-            const modal = new bootstrap.Modal(document.getElementById('xoa'));
-            modal.show();
+        fetchMonthlyRevenue() {
+            axios.get('http://127.0.0.1:8000/api/doanh-thu/bieu-do', {
+                params: {
+                    year: this.selectedYear,
+                    month: this.selectedMonth // ✅ Gửi thêm month nếu muốn lọc
+                }
+            })
+                .then(res => {
+                    const data = res.data;
+
+                    // Nếu lọc tháng cụ thể => chỉ hiển thị tháng đó trên biểu đồ
+                    if (this.selectedMonth > 0) {
+                        this.monthlyData.labels = [`Tháng ${this.selectedMonth}`];
+                        const found = data.find(item => item.thang == this.selectedMonth);
+                        this.monthlyData.datasets[0].data = [found?.tong_dich_vu || 0];
+                        this.monthlyData.datasets[1].data = [found?.tong_thuoc || 0];
+                        this.monthlyData.datasets[2].data = [found?.so_hoa_don || 0];
+                    } else {
+                        // Nếu lọc cả năm
+                        this.monthlyData.labels = data.map(item => `Tháng ${item.thang}`);
+                        this.monthlyData.datasets[0].data = data.map(item => item.tong_dich_vu);
+                        this.monthlyData.datasets[1].data = data.map(item => item.tong_thuoc);
+                        this.monthlyData.datasets[2].data = data.map(item => item.so_hoa_don);
+                    }
+
+                    if (this.revenueChart) this.revenueChart.destroy();
+
+                    this.$nextTick(() => {
+                        const ctx = this.$refs.revenueChart.getContext('2d');
+                        this.revenueChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: this.monthlyData,
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: { position: 'top' },
+                                    title: { display: true, text: 'Doanh thu theo tháng' }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        title: { display: true, text: 'Doanh thu (VNĐ)' },
+                                        ticks: {
+                                            callback: val =>
+                                                new Intl.NumberFormat('vi-VN', {
+                                                    style: 'currency',
+                                                    currency: 'VND'
+                                                }).format(val)
+                                        }
+                                    },
+                                    y1: {
+                                        beginAtZero: true,
+                                        position: 'right',
+                                        grid: { drawOnChartArea: false },
+                                        title: { display: true, text: 'Số lượng hóa đơn' }
+                                    }
+                                }
+                            }
+                        });
+                    });
+                })
+                .catch(err => console.error(err));
         },
-        xoa() {
-            // Gọi API xóa theo ID
-            axios.delete(`/api/bao-cao-doanh-thu/${this.itemXoa.id}`)
-                .then(() => {
-                    this.locTheoThang(); // load lại
-                });
+
+
+        formatCurrency(val) {
+            return new Intl.NumberFormat('vi-VN').format(val);
         }
-    },
+    }
 }
 </script>
+
 <style scoped>
 .custom-color {
     color: #fff5e1;
@@ -130,5 +205,12 @@ export default {
 .custom-bg {
     background-color: #ff8a65;
     color: white;
+}
+.bg-purple {
+    background-color: #d3c6fb !important; /* Bootstrap purple */
+    color: white;
+}
+anvas {
+    min-width: 900px; /* giữ khung ngang */
 }
 </style>

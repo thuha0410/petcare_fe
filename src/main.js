@@ -5,6 +5,7 @@ import Admin from './layout/wrapper/index.vue'
 import Client from './layout/wrapper/client.vue'
 import Doctor from './layout/wrapper/doctor.vue'
 import dangNhap from './layout/wrapper/dangNhap.vue'
+
 import axios from 'axios'
 
 const token = localStorage.getItem('token_admin');

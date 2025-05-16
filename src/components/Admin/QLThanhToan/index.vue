@@ -419,7 +419,15 @@ export default {
                 tien_kham: 0
             };
 
-                        axios.get(`http://127.0.0.1:8000/api/hoa-don/chi-tiet-tien/${hd.id}`)                .then(res => {                    if (res.data.status) {                        this.chiTiet = res.data.data;                        const modal = new bootstrap.Modal(document.getElementById('modalThanhToan'));                        modal.show();                        console.log("Chi tiết:", res.data.data);                    }                })                .catch(error => {                    toaster.error('Lỗi khi lấy thông tin chi tiết');                });
+            axios.get(`http://127.0.0.1:8000/api/hoa-don/chi-tiet-tien/${hd.id}`)
+                .then(res => {
+                    if (res.data.status) {
+                        this.chiTiet = res.data.data;
+                        const modal = new bootstrap.Modal(document.getElementById('modalThanhToan'));
+                        modal.show();
+
+                    }
+                });
         },
         tinhTongTien() {
             const a = parseFloat(this.chiTiet.tien_don_thuoc) || 0;
