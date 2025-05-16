@@ -160,14 +160,19 @@ export default {
             if (!this.lich_muon_dieu_tri) return;
             axios
                 .post('http://127.0.0.1:8000/api/lich-hen/doi-tt-va-tao-hoa-don', {
-                    id: this.lich_muon_dieu_tri.id
-                })
+                    id: this.lich_muon_dieu_tri.id,
+                },
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    })
                 .then((res) => {
                     if (res.data.status) {
                         toaster.success(res.data.message);
                         this.loadLichHen();
                         setTimeout(() => {
-                            window.location.href = '/admin/hoa-don'; 
+                            window.location.href = '/admin/hoa-don';
                         }, 1000);
                     } else {
                         toaster.error(res.data.message || 'Thất bại khi xác nhận');
@@ -184,15 +189,25 @@ export default {
 
         loadLichHen() {
             axios
-                .get('http://127.0.0.1:8000/api/lich-hen/loadd')
+                .get('http://127.0.0.1:8000/api/lich-hen-pet/load',
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.list_lich = res.data.data
                 })
         },
         loadKhachHang() {
             axios
-                .get("http://127.0.0.1:8000/api/khach-hang/loadd", {
-                })
+                .get("http://127.0.0.1:8000/api/lich-hen/khach-hang-load",
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    })
                 .then((res) => {
                     this.khach_hang = res.data.data
                     console.log(this.khach_hang);
@@ -200,8 +215,13 @@ export default {
         },
         loadPet() {
             axios
-                .get("http://127.0.0.1:8000/api/pet/loadd", {
-                })
+                .get("http://127.0.0.1:8000/api/load-pet",
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.pet = res.data.data
                     console.log(this.pet);
@@ -209,7 +229,13 @@ export default {
         },
         loadDataNV() {
             axios
-                .get('http://127.0.0.1:8000/api/nhan-vien/load')
+                .get('http://127.0.0.1:8000/api/nhan-vien/load',
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then(
                     (res) => {
                         this.nhan_vien = res.data.data;
@@ -223,7 +249,13 @@ export default {
                 return;
             }
             axios
-                .post('http://127.0.0.1:8000/api/lich-hen/update', this.update_lich)
+                .post('http://127.0.0.1:8000/api/lich-hen/update', this.update_lich,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -246,7 +278,13 @@ export default {
 
         loadDichVu() {
             axios
-                .get('http://127.0.0.1:8000/api/dich-vu/load')
+                .get('http://127.0.0.1:8000/api/dich-vu/load',
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.dich_vu = res.data.data
                 })

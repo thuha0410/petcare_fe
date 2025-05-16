@@ -63,59 +63,64 @@
         </div>
     </div>
 
-    <!-- Phần lịch hẹn đã đặt -->
     <div class="row mt-5">
-        <div class="col-lg-2"></div>
-        <div class="col-lg-8">
-            <h2 class="text-center fw-bold" style="color: darkblue;">Lịch hẹn đã đặt <i
-                    class="fa-solid fa-calendar-check" style="color: darkblue;"></i></h2>
-            <br>
-            <div class="card shadow" style="border-radius: 16px;">
-                <div class="card-header" style="background-color: #2c4b85; color: white; border-radius: 16px 16px 0 0;">
-                    <h4 class="mb-0">Danh sách lịch hẹn</h4>
+    <div class="col-lg-2"></div>
+    <div class="col-lg-8">
+        <h2 class="text-center fw-bold text-dark mb-4">
+            Lịch hẹn đã đặt
+            <i class="fa-solid fa-calendar-check ms-2" style="color: #2c4b85;"></i>
+        </h2>
+
+        <div class="card shadow" style="border-radius: 16px;">
+            <div class="card-header text-white" style="background-color: #2c4b85; border-radius: 16px 16px 0 0;">
+                <h4 class="mb-0 text-center">Danh sách lịch hẹn</h4>
+            </div>
+
+            <div class="card-body px-4 py-3">
+                <div v-if="lichHenList.length === 0" class="text-center py-5">
+                    <p class="text-muted mb-0">Bạn chưa có lịch hẹn nào</p>
                 </div>
-                <div class="card-body">
-                    <div v-if="lichHenList.length === 0" class="text-center p-4">
-                        <p class="text-muted">Bạn chưa có lịch hẹn nào</p>
-                    </div>
-                    <div v-else class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Dịch vụ</th>
-                                    <th>Thú cưng</th>
-                                    <th>Ngày hẹn</th>
-                                    <th>Giờ hẹn</th>
-                                    <th>Tổng tiền</th>
-                                    <th>Trạng thái</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(value, index) in lichHenList" :key="index">
-                                    <td>{{ index + 1 }}</td>
-                                    <td>{{ value.ten_dv }}</td>
-                                    <td>{{ value.ten_pet }}</td>
-                                    <td>{{ value.ngay }}</td>
-                                    <td>{{ value.gio }}</td>
-                                    <td>{{ value.gia }}</td>
-                                    <!-- <td>
-                                        <span :class="getStatusClass(value.tinh_trang)">
-                                            {{ getStatusText(value.tinh_trang) }}
-                                        </span>
-                                    </td> -->
-                                    <td>
-                                        <button class="btn">{{ value.tinh_trang }}</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+
+                <div v-else class="d-flex flex-column gap-3" style="max-height: 500px; overflow-y: auto;">
+                    <div v-for="(value, index) in danh_sach_lich" :key="index" class="card border-0 shadow-sm">
+                        <div class="card-body px-4 py-3">
+                            <div class="row align-items-center">
+                                <!-- Tên dịch vụ -->
+                                <div class="col-md-4 mb-2 mb-md-0">
+                                    <h5 class="fw-bold text-primary mb-0">{{ value.ten_dv }}</h5>
+                                </div>
+
+                                <!-- Thông tin thú cưng, ngày, giờ -->
+                                <div class="col-md-4">
+                                    <p class="mb-1 text-muted">
+                                        <strong>Thú cưng:</strong> {{ value.ten_pet }}
+                                    </p>
+                                    <p class="mb-0 text-muted">
+                                        <strong>Ngày:</strong> {{ value.ngay }} —
+                                        <strong>Giờ:</strong> {{ value.gio }}
+                                    </p>
+                                </div>
+
+                                <!-- Giá và trạng thái -->
+                                <div class="col-md-4 text-md-end text-start mt-2 mt-md-0">
+                                    <p class="mb-1 text-success fw-bold">
+                                        Giá tiền: {{ value.gia }}
+                                    </p>
+                                    <span class="badge rounded-pill px-3 py-2 fs-6"
+                                          :class="value.tinh_trang == 0 ? 'bg-warning text-dark' : 'bg-success'">
+                                        {{ value.tinh_trang == 0 ? 'Chưa thanh toán' : 'Đã thanh toán' }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-2"></div>
     </div>
+    <div class="col-lg-2"></div>
+</div>
+
 
     <div class="row ">
         <div class="col-lg-2"></div>
@@ -392,6 +397,7 @@ export default {
             update_pet: {},
             xoa_pet: {},
             danh_sach_pet: [],
+            danh_sach_lich: [],
             matkhau: {
                 mat_khau_cu: '',
                 mat_khau_moi: '',
@@ -400,6 +406,7 @@ export default {
             lichHenList: [], // Danh sách lịch hẹn
         };
     },
+    
     mounted() {
         this.getUserInfo();
         window.scrollTo(0, 0);
@@ -411,14 +418,14 @@ export default {
     methods: {
         loadLichHen() {
             axios
-                .get('http://127.0.0.1:8000/api/lich-hen/loadd')
+                .get('http://127.0.0.1:8000/api/lich-hen/load')
                 .then((res) => {
                     this.lichHenList = res.data.data
                 })
         },
         loadPet() {
             axios
-                .get("http://127.0.0.1:8000/api/pet/loadd", {
+                .get("http://127.0.0.1:8000/api/pet/load", {
                 })
                 .then((res) => {
                     this.pets = res.data.data
@@ -540,6 +547,7 @@ export default {
                             updated_at: user.updated_at
                         };
                         this.getPets(user.id);
+                        this.getCals(user.id);
                     } else {
                         toaster.error(res.data.message);
                     }
@@ -660,6 +668,25 @@ export default {
                         this.$router.push("/client/dang-nhap-dang-ky");
                     } else {
                         toaster.error("Có lỗi xảy ra khi lấy danh sách thú cưng");
+                    }
+                });
+        },
+        getCals(id_kh) {
+            const token = localStorage.getItem("token_client");
+            if (!token) {
+                this.$router.push("/client/dang-nhap-dang-ky");
+                return;
+            }
+            apiClient.get(`/api/calendar/${id_kh}`)
+                .then((res) => {
+                    this.danh_sach_lich = res.data.pets;
+                })
+                .catch((error) => {
+                    if (error.response && error.response.status === 401) {
+                        localStorage.removeItem("token_client");
+                        this.$router.push("/client/dang-nhap-dang-ky");
+                    } else {
+                        toaster.error("Có lỗi xảy ra khi lấy danh sách lịch hẹn");
                     }
                 });
         },

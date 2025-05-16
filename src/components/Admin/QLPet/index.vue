@@ -199,7 +199,13 @@ export default {
     methods: {
         them() {
             axios
-                .post('http://127.0.0.1:8000/api/them-pet', this.pet)
+                .post('http://127.0.0.1:8000/api/them-pet', this.pet,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == 1) {
                         toaster.success(res.data.message);
@@ -230,16 +236,16 @@ export default {
                         toaster.error('Đã xảy ra lỗi máy chủ.');
                     }
                 });
-                
+
         },
         xoa() {
             axios
                 .post('http://127.0.0.1:8000/api/xoa-pet', this.xoa_pet,
-                    // {
-                    //     headers: {
-                    //         Authorization: 'Bearer ' + localStorage.getItem('token_admin')
-                    //     }
-                    // }
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
                 )
                 .then(
                     (res) => {
@@ -251,14 +257,20 @@ export default {
         },
         sua() {
             axios
-                .post('http://127.0.0.1:8000/api/sua-pet', this.sua_pet)
+                .post('http://127.0.0.1:8000/api/sua-pet', this.sua_pet,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == 1) {
-                        toaster.success(res.data.message);  
+                        toaster.success(res.data.message);
                     } else {
-                        toaster.error(res.data.message || "Cập nhật thất bại!");  
+                        toaster.error(res.data.message || "Cập nhật thất bại!");
                     }
-                    this.loadData();  
+                    this.loadData();
                 })
                 .catch((error) => {
                     if (error.response.status === 422) {
@@ -272,11 +284,17 @@ export default {
                         toaster.error('Đã xảy ra lỗi máy chủ.');
                     }
                 });
-                
+
         },
         loadData() {
             axios
-                .get('http://127.0.0.1:8000/api/load-pet')
+                .get('http://127.0.0.1:8000/api/load-pet',
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then(
                     (res) => {
                         this.ds_pet = res.data.data;
@@ -285,15 +303,26 @@ export default {
         },
         loadKhachHang() {
             axios
-                .get("http://127.0.0.1:8000/api/khach-hang/load", {
-                })
+                .get("http://127.0.0.1:8000/api/khach-hang/loadkh",
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.list_khach_hang = res.data.data
                 });
         },
         doitt(x) {
             axios
-                .post('http://127.0.0.1:8000/api/thay-doi-tt-pet', x)
+                .post('http://127.0.0.1:8000/api/thay-doi-tt-pet', x,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then(
                     (res) => {
                         if (res.data.status == 1)

@@ -229,7 +229,7 @@ export default {
         };
     },
     computed: {
-        
+
         tongTienHoaDonChiTiet() {
             const a = Number(this.chiTiet.tien_don_thuoc) || 0;
             const b = Number(this.chiTiet.tien_dich_vu) || 0;
@@ -258,7 +258,13 @@ export default {
             });
         },
         xacNhanThanhToan() {
-            axios.post('http://127.0.0.1:8000/api/hoa-don/thanh-toan', this.hoa_don_edit)
+            axios.post('http://127.0.0.1:8000/api/hoa-don/thanh-toan', this.hoa_don_edit,
+                {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    }
+                }
+            )
                 .then(res => {
                     if (res.data.status) {
                         toaster.success('Thanh toán thành công');
@@ -294,7 +300,13 @@ export default {
                 tien_kham: 0
             };
 
-            axios.get(`http://127.0.0.1:8000/api/hoa-don/chi-tiet-tien/${hd.id}`)
+            axios.get(`http://127.0.0.1:8000/api/hoa-don/chi-tiet-tien/${hd.id}`,
+                {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    }
+                }
+            )
                 .then(res => {
                     if (res.data.status) {
                         this.chiTiet = res.data.data;
@@ -316,7 +328,12 @@ export default {
             return parseInt(val).toLocaleString() + ' VND';
         },
         xemChiTiet(hd) {
-            axios.get(`http://127.0.0.1:8000/api/hoa-don/chi-tiet-tien/${hd.id}`)
+            axios.get(`http://127.0.0.1:8000/api/hoa-don/chi-tiet-tien/${hd.id}`,
+                {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    }
+                })
                 .then(res => {
                     if (res.data.status) {
                         this.chiTiet = res.data.data;
@@ -330,8 +347,13 @@ export default {
         },
         loaddataNV() {
             axios
-                .get("http://127.0.0.1:8000/api/nhan-vien/load", {
-                })
+                .get("http://127.0.0.1:8000/api/nhan-vien/load",
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.list_nhan_vien = res.data.data
                     console.log(this.list_nhan_vien);
@@ -347,7 +369,13 @@ export default {
         },
         async capNhatHoaDon() {
             try {
-                const res = await axios.post('http://127.0.0.1:8000/api/hoa-don/update', this.hoa_don_edit);
+                const res = await axios.post('http://127.0.0.1:8000/api/hoa-don/update', this.hoa_don_edit,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                );
                 if (res.data.status) {
                     toaster.success('Cập nhật thành công');
                     await this.taiDanhSach(); // gọi lại API để đồng bộ dữ liệu mới
@@ -361,7 +389,13 @@ export default {
         },
 
         taiDanhSach() {
-            axios.get('http://127.0.0.1:8000/api/hoa-don/danh-sach')
+            axios.get('http://127.0.0.1:8000/api/hoa-don/danh-sach',
+                {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    }
+                }
+            )
                 .then(res => {
                     if (res.data.status) {
                         this.list_hoa_don = res.data.data;

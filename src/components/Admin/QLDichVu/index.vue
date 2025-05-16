@@ -264,7 +264,13 @@ export default {
         },
         them() {
             axios
-                .post('http://127.0.0.1:8000/api/dich-vu/them', this.dich_vu)
+                .post('http://127.0.0.1:8000/api/dich-vu/them', this.dich_vu,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -301,7 +307,13 @@ export default {
 
         xoa() {
             axios
-                .post("http://127.0.0.1:8000/api/dich-vu/del", this.del_dich_vu)
+                .post("http://127.0.0.1:8000/api/dich-vu/del", this.del_dich_vu,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message);
@@ -315,7 +327,13 @@ export default {
 
         update() {
             axios
-                .post("http://127.0.0.1:8000/api/dich-vu/update", this.update_dich_vu)
+                .post("http://127.0.0.1:8000/api/dich-vu/update", this.update_dich_vu,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message);
@@ -340,7 +358,13 @@ export default {
 
         doi_trang_thai(x) {
             axios
-                .post("http://127.0.0.1:8000/api/dich-vu/doi", x)
+                .post("http://127.0.0.1:8000/api/dich-vu/doi", x,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message);
@@ -352,15 +376,26 @@ export default {
         },
         loaddata() {
             axios
-                .get("http://127.0.0.1:8000/api/dich-vu/load")
+                .get("http://127.0.0.1:8000/api/dich-vu/load",
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.list_dich_vu = res.data.data
                 });
         },
         loaddataLoaiDV() {
             axios
-                .get("http://127.0.0.1:8000/api/loai-dich-vu/load", {
-                })
+                .get("http://127.0.0.1:8000/api/loai-dich-vu/load",
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.list_loai_dv = res.data.data
                     console.log(this.list_loai_dv);

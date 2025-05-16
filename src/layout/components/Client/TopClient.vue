@@ -16,7 +16,7 @@
       <button class="navbar-toggler" type="button" @click="toggleNavbar">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <ul class="navbar-nav me-3">
+      <ul class="navbar-nav mx-auto me-3">
         <li class="nav-item me-2 text-nowrap">
           <router-link to="/">
             <a class="nav-link" href="#">Trang chủ</a>

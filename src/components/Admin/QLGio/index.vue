@@ -135,7 +135,13 @@ export default {
     methods: {
         them() {
             axios
-                .post('http://127.0.0.1:8000/api/gio/them', this.gio)
+                .post('http://127.0.0.1:8000/api/gio/them', this.gio,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == 1)
                         toaster.success(res.data.message)
@@ -163,11 +169,11 @@ export default {
         xoa() {
             axios
                 .post('http://127.0.0.1:8000/api/gio/del', this.xoa_gio,
-                    // {
-                    //     headers: {
-                    //         Authorization: 'Bearer ' + localStorage.getItem('token_admin')
-                    //     }
-                    // }
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
                 )
                 .then(
                     (res) => {
@@ -180,11 +186,11 @@ export default {
         sua() {
             axios
                 .post('http://127.0.0.1:8000/api/gio/update', this.sua_gio,
-                    // {
-                    //     headers: {
-                    //         Authorization: 'Bearer ' + localStorage.getItem('token_admin')
-                    //     }
-                    // }
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
                 )
                 .then(
                     (res) => {
@@ -213,7 +219,13 @@ export default {
         },
         loadData() {
             axios
-                .get('http://127.0.0.1:8000/api/gio/load')
+                .get('http://127.0.0.1:8000/api/gio/load-gio',
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then(
                     (res) => {
                         this.ds_gio = res.data.data;
@@ -222,7 +234,13 @@ export default {
         },
         doitt(x) {
             axios
-                .post('http://127.0.0.1:8000/api/gio/doi-TT', x)
+                .post('http://127.0.0.1:8000/api/gio/doi-TT', x,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then(
                     (res) => {
                         if (res.data.status == 1)

@@ -246,8 +246,13 @@ export default {
         },
         loadChucVu() {
             axios
-                .get("http://127.0.0.1:8000/api/phan-quyen/load-chuc-vu", {
-                })
+                .get("http://127.0.0.1:8000/api/phan-quyen/load-chuc-vu", 
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.list_chuc_vu = res.data.data
                 });
