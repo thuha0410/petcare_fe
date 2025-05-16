@@ -1,9 +1,12 @@
 <template>
   <div class="card">
-    <div class="card-header bg-white">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
       <h3 class="m-0" style="font-size: 25px;font-weight: bold;font-family: 'Tahoma', sans-serif; color: darkblue;">
         HỒ SƠ BỆNH ÁN
       </h3>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalThemHoSo">
+        <i class="fas fa-plus me-1"></i> Thêm mới hồ sơ bệnh án
+      </button>
     </div>
 
     <div class="card-body">
@@ -23,8 +26,8 @@
         </div>
         <div class="col-md-4">
           <div class="input-group">
-            <input v-model="tim_kiem.noi_dung" type="text" class="form-control"
-              placeholder="Tìm kiếm theo tên thú cưng" aria-label="Tìm kiếm" aria-describedby="button-addon2">
+            <input v-model="tim_kiem.noi_dung" type="text" class="form-control" placeholder="Tìm kiếm theo tên thú cưng"
+              aria-label="Tìm kiếm" aria-describedby="button-addon2">
             <button v-on:click="timkiem" class="btn btn-outline-secondary text-dark" type="button" id="button-addon2">
               <i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i> Tìm
             </button>
@@ -83,6 +86,130 @@
             </template>
           </tbody>
         </table>
+      </div>
+    </div>
+  </div>
+  <!-- Modal Thêm mới Hồ sơ bệnh án -->
+  <div class="modal fade" id="modalThemHoSo" tabindex="-1" aria-labelledby="modalThemHoSoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="modalThemHoSoLabel">Thêm mới hồ sơ bệnh án</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Lựa chọn loại khách hàng -->
+          <div class="mb-3">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="customerType" id="existingCustomer" value="existing" v-model="customerType">
+              <label class="form-check-label" for="existingCustomer">Khách hàng đã có</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="customerType" id="newCustomer" value="new" v-model="customerType">
+              <label class="form-check-label" for="newCustomer">Khách hàng mới</label>
+            </div>
+          </div>
+
+          <!-- Bước 1: Khách hàng -->
+          <h6 class="fw-bold">1. Thông tin khách hàng</h6>
+          
+          <!-- Nếu là khách hàng đã có -->
+          <div v-if="customerType === 'existing'" class="row mb-3">
+            <div class="col-md-12">
+              <label class="form-label">Chọn khách hàng</label>
+              <select v-model="selectedCustomerId" @change="loadCustomerPets" class="form-select">
+                <option value="">-- Chọn khách hàng --</option>
+                <option v-for="customer in customers" :key="customer.id" :value="customer.id">
+                  {{ customer.ho_va_ten }} ({{ customer.so_dien_thoai }})
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Nếu là khách hàng mới -->
+          <div v-if="customerType === 'new'" class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Tên khách hàng</label>
+              <input v-model="newRecord.ten_khach" type="text" class="form-control" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Số điện thoại</label>
+              <input v-model="newRecord.sdt" type="text" class="form-control" />
+            </div>
+          </div>
+
+          <!-- Bước 2: Thú cưng -->
+          <h6 class="fw-bold">2. Thông tin thú cưng</h6>
+          
+          <!-- Nếu là khách hàng đã có -->
+          <div v-if="customerType === 'existing'" class="row mb-3">
+            <div class="col-md-12">
+              <label class="form-label">Chọn thú cưng</label>
+              <select v-model="selectedPetId" @change="selectPet" class="form-select" :disabled="!selectedCustomerId">
+                <option value="">-- Chọn thú cưng --</option>
+                <option v-for="pet in customerPets" :key="pet.id" :value="pet.id">
+                  {{ pet.ten_pet }} ({{ pet.chung_loai === 0 ? 'Chó' : 'Mèo' }})
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Nếu là khách hàng mới hoặc là thú cưng mới -->
+          <div v-if="customerType === 'new'" class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Tên thú cưng</label>
+              <input v-model="newRecord.ten_thu_cung" type="text" class="form-control" />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Giống loài</label>
+              <select v-model="newRecord.chung_loai" class="form-select">
+                <option value="0">Chó</option>
+                <option value="1">Mèo</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Giới tính</label>
+              <select v-model="newRecord.gioi_tinh_pet" class="form-select">
+                <option :value="1">Đực</option>
+                <option :value="0">Cái</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Bước 3: Hồ sơ bệnh án -->
+          <h6 class="fw-bold">3. Thông tin bệnh án</h6>
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="form-label">Ngày khám</label>
+              <input v-model="newRecord.ngay_kham" type="date" class="form-control" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Bác sĩ</label>
+              <select v-model="newRecord.id_bac_si" class="form-select">
+                <option disabled value="">-- Chọn bác sĩ--</option>
+                <option v-for="bs in danhSachBacSi" :key="bs.id" :value="bs.id">
+                  {{ bs.ten_nv }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Tình trạng</label>
+              <select v-model="newRecord.tinh_trang" class="form-select">
+                <option :value="1">Đang điều trị</option>
+                <option :value="0">Đã khỏi</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Chẩn đoán</label>
+            <textarea v-model="newRecord.chuan_doan" class="form-control" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" @click="submitThemHoSo">Lưu</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        </div>
       </div>
     </div>
   </div>
@@ -222,9 +349,148 @@ export default {
   data() {
     return {
       hoSoDangDoiTrangThai: null,
+      newRecord: {
+        ten_khach: '',
+        sdt: '',
+        ten_thu_cung: '',
+        chung_loai: '0',
+        gioi_tinh_pet: '1',
+        ngay_kham: '',
+        id_bac_si: '',
+        tinh_trang: 1,
+        chuan_doan: ''
+      },
+      ho_so_benh_an: {
+        sdt: '',
+        chuan_doan: '',
+        tinh_trang: '1'
+      },
+      list_ho_so_benh_an: [],
+      del_ho_so_benh_an: {},
+      update_ho_so_benh_an: {},
+      tim_kiem: {
+        noi_dung: ''
+      },
+      detail_ho_so_benh_an: {},
+      danh_sach_thuoc: [],
+      selectedBacSi: '',
+      danhSachBacSi: [],
+      customerType: 'existing',
+      selectedCustomerId: '',
+      customerPets: [],
+      selectedPetId: '',
+      customers: [],
+      selectedPetInfo: null
     }
   },
   methods: {
+    submitThemHoSo() {
+      // Validate form based on customer type
+      if (this.customerType === 'existing') {
+        if (!this.selectedCustomerId) {
+          toaster.error('Vui lòng chọn khách hàng');
+          return;
+        }
+        if (!this.selectedPetId) {
+          toaster.error('Vui lòng chọn thú cưng');
+          return;
+        }
+        if (!this.newRecord.id_bac_si) {
+          toaster.error('Vui lòng chọn bác sĩ');
+          return;
+        }
+        if (!this.newRecord.ngay_kham) {
+          toaster.error('Vui lòng chọn ngày khám');
+          return;
+        }
+
+        // Prepare data for existing customer
+        const data = {
+          id_kh: this.selectedCustomerId,
+          id_pet: this.selectedPetId,
+          id_bac_si: this.newRecord.id_bac_si,
+          ngay_kham: this.newRecord.ngay_kham,
+          tinh_trang: this.newRecord.tinh_trang,
+          chuan_doan: this.newRecord.chuan_doan,
+          is_existing_customer: true
+        };
+
+        axios.post('http://127.0.0.1:8000/api/ho-so-benh-an/them', data)
+          .then((res) => {
+            if (res.data.status) {
+              toaster.success('Thêm hồ sơ bệnh án thành công');
+              this.load();
+              const modal = bootstrap.Modal.getInstance(document.getElementById('modalThemHoSo'));
+              if (modal) modal.hide();
+              this.resetNewRecordForm();
+            } else {
+              toaster.error(res.data.message || 'Thêm thất bại');
+            }
+          })
+          .catch((err) => {
+            toaster.error('Lỗi khi thêm hồ sơ: ' + err.message);
+          });
+      } else {
+        // Validate form for new customer
+        if (!this.newRecord.ten_khach) {
+          toaster.error('Vui lòng nhập tên khách hàng');
+          return;
+        }
+        if (!this.newRecord.sdt) {
+          toaster.error('Vui lòng nhập số điện thoại');
+          return;
+        }
+        if (!this.newRecord.ten_thu_cung) {
+          toaster.error('Vui lòng nhập tên thú cưng');
+          return;
+        }
+        if (!this.newRecord.id_bac_si) {
+          toaster.error('Vui lòng chọn bác sĩ');
+          return;
+        }
+        if (!this.newRecord.ngay_kham) {
+          toaster.error('Vui lòng chọn ngày khám');
+          return;
+        }
+
+        // Send data for new customer
+        axios.post('http://127.0.0.1:8000/api/ho-so-benh-an/them', {
+          ...this.newRecord,
+          is_existing_customer: false
+        })
+          .then((res) => {
+            if (res.data.status) {
+              toaster.success('Thêm hồ sơ bệnh án thành công');
+              this.load();
+              const modal = bootstrap.Modal.getInstance(document.getElementById('modalThemHoSo'));
+              if (modal) modal.hide();
+              this.resetNewRecordForm();
+            } else {
+              toaster.error(res.data.message || 'Thêm thất bại');
+            }
+          })
+          .catch((err) => {
+            toaster.error('Lỗi khi thêm hồ sơ: ' + err.message);
+          });
+      }
+    },
+    resetNewRecordForm() {
+      this.newRecord = { 
+        ten_khach: '',
+        sdt: '',
+        ten_thu_cung: '',
+        chung_loai: '0',
+        gioi_tinh_pet: '1',
+        ngay_kham: '',
+        id_bac_si: '',
+        tinh_trang: 1,
+        chuan_doan: ''
+      };
+      this.selectedCustomerId = '';
+      this.selectedPetId = '';
+      this.customerPets = [];
+      this.selectedPetInfo = null;
+    },
     formatDate(date) {
       if (!date) return '';
       const d = new Date(date);
@@ -405,30 +671,62 @@ export default {
       this.selectedBacSi = '';
       this.load();
       toaster.success('Đã xóa bộ lọc');
-    }
+    },
+    loadCustomerPets() {
+      this.selectedPetId = '';
+      this.customerPets = [];
+      this.selectedPetInfo = null;
+      
+      if (!this.selectedCustomerId) return;
+      
+      axios
+        .get(`http://127.0.0.1:8000/api/pet/load-by-customer/${this.selectedCustomerId}`)
+        .then((res) => {
+          if (res.data.status) {
+            this.customerPets = res.data.data;
+          } else {
+            toaster.error('Lỗi khi tải danh sách thú cưng');
+          }
+        })
+        .catch((error) => {
+          toaster.error('Lỗi khi tải danh sách thú cưng: ' + error.message);
+        });
+    },
+    selectPet() {
+      if (!this.selectedPetId) return;
+      
+      // Find the selected pet from customerPets
+      const selectedPet = this.customerPets.find(pet => pet.id == this.selectedPetId);
+      if (selectedPet) {
+        this.selectedPetInfo = selectedPet;
+      }
+    },
+    loadCustomers() {
+      axios
+        .get('http://127.0.0.1:8000/api/khach-hang/load')
+        .then((res) => {
+          if (res.data.status) {
+            this.customers = res.data.data;
+          } else {
+            toaster.error('Lỗi khi tải danh sách khách hàng');
+          }
+        })
+        .catch((error) => {
+          toaster.error('Lỗi khi tải danh sách khách hàng: ' + error.message);
+        });
+    },
   },
   mounted() {
     this.load();
     this.loadDanhSachBacSi();
-  },
-  data() {
-    return {
-      ho_so_benh_an: {
-        sdt: '',
-        chuan_doan: '',
-        tinh_trang: '1'
-      },
-      list_ho_so_benh_an: [],
-      del_ho_so_benh_an: {},
-      update_ho_so_benh_an: {},
-      tim_kiem: {
-        noi_dung: ''
-      },
-      detail_ho_so_benh_an: {},
-      danh_sach_thuoc: [],
-      selectedBacSi: '',
-      danhSachBacSi: [],
-    }
+    this.loadCustomers();
+    
+    // Set today's date as default for ngay_kham
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    this.newRecord.ngay_kham = `${year}-${month}-${day}`;
   },
 };
 </script>
