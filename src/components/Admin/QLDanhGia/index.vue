@@ -48,7 +48,7 @@
     </div>
 </template>
 <script>
-import axios from 'axios'
+import api from '@'
 import { createToaster } from "@meforma/vue-toaster";
 
 const toaster = createToaster({ position: "top-right" });
