@@ -568,7 +568,7 @@ export default {
         
         loadDanhSachKhachHang() {
             axios
-                .get('http://127.0.0.1:8000/api/khach-hang/load')
+                .get('http://127.0.0.1:8000/api/khach-hang/loadkh-hoadon')
                 .then((res) => {
                     if (res.data.status) {
                         this.danhSachKhachHang = res.data.data;
