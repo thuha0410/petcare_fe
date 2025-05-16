@@ -151,7 +151,13 @@ export default {
         },
         loaddataKho() {
             return axios
-            .get("http://127.0.0.1:8000/api/kho/load")
+            .get("http://127.0.0.1:8000/api/kho/load",
+                {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+            )
                 .then((res) => {
                     this.list_kho = res.data.data;
                     console.log('Danh sách kho:', this.list_kho);
@@ -164,7 +170,13 @@ export default {
             return diff >= 0 && diff <= 30; // sắp hết hạn trong vòng 30 ngày
         },
         loadTonKho() {
-            axios.get("http://127.0.0.1:8000/api/thuoc-kho/load")
+            axios.get("http://127.0.0.1:8000/api/thuoc-kho/load",
+                {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+            )
                 .then((res) => {
                     this.list_ton_kho = res.data.data;
                 });

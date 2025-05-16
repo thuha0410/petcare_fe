@@ -76,7 +76,13 @@ export default {
     },
     methods: {
         load() {
-            axios.get('http://127.0.0.1:8000/api/danh-gia/load')
+            axios.get('http://127.0.0.1:8000/api/danh-gia/load2',
+                {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+            )
                 .then((res) => {
                     if (res.data.status) {
                         this.list_danh_gia = res.data.data;
@@ -100,7 +106,13 @@ export default {
                 });
         },
         xoa() {
-            axios.post('http://127.0.0.1:8000/api/danh-gia/xoa', this.del_danh_gia)
+            axios.post('http://127.0.0.1:8000/api/danh-gia/xoa', this.del_danh_gia,
+                {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+            )
                 .then((res) => {
                     if (res.data.status) {
                         toaster.success(res.data.message);
@@ -112,7 +124,13 @@ export default {
                 .catch(() => toaster.error('Lỗi khi gọi API xóa'));
         },
         doiTT(x) {
-            axios.post('http://127.0.0.1:8000/api/danh-gia/doi-TT', x)
+            axios.post('http://127.0.0.1:8000/api/danh-gia/doi-TT', x,
+                {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+            )
                 .then((res) => {
                     if (res.data.status) {
                         toaster.success(res.data.message);
@@ -124,7 +142,13 @@ export default {
                 .catch(() => toaster.error('Lỗi khi gọi API đổi trạng thái'));
         },
         timkiem() {
-            axios.post('http://127.0.0.1:8000/api/danh-gia/tim-kiem', this.tim_kiem)
+            axios.post('http://127.0.0.1:8000/api/danh-gia/tim-kiem', this.tim_kiem,
+                {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+            )
                 .then((res) => {
                     this.list_danh_gia = res.data.data;
                 })

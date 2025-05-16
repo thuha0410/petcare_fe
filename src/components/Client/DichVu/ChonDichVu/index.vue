@@ -56,7 +56,6 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th class="text-center align-middle">#</th>
                                 <th class="text-center align-middle">Tên dịch vụ</th>
                                 <th class="text-center align-middle">Giá tiền</th>
                                 <th class="text-center align-middle">Tiền cọc</th>
@@ -65,7 +64,6 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="text-center align-middle">1</td>
                                 <td class="text-center align-middle">{{ list_dv.ten_dv || '...' }}</td>
                                 <td class="text-center align-middle">{{ list_dv.gia || '...' }} VNĐ</td>
                                 <td class="text-center align-middle">{{ (list_dv.gia * 25) / 100 || '...' }} VNĐ</td>
@@ -336,6 +334,9 @@ export default {
 
                     // Capture the payment
                     return actions.order.capture().then(details => {
+                        // Add payment details to the toaster message
+                        toaster.success(`Thanh toán thành công với ID: ${details.id}`);
+                        
                         // Call API to create appointment after successful payment
                         this.createAppointment(details.id);
                     });
@@ -355,7 +356,7 @@ export default {
         isFull(id_lich) {
             return (this.slotInfo[id_lich] || 0) >= 2;
         },
-
+        
         loadLich() {
             apiClient
                 .get("/api/lich/load")
@@ -485,7 +486,14 @@ export default {
             // Add payment information
             const data = {
                 ...this.appointmentData,
-                payment_id: paymentId
+                payment_id: paymentId,
+                send_email: true, // Flag to indicate frontend is requesting email sending
+                payment_method: 'paypal', // Explicitly indicate payment method
+                payment_details: {
+                    id: paymentId,
+                    status: 'COMPLETED',
+                    create_time: new Date().toISOString()
+                }
             };
 
             apiClient
@@ -509,6 +517,9 @@ export default {
                     setTimeout(() => {
                         toaster.success("Đặt lịch khám thành công!");
                     }, 300);
+                    setTimeout(() => {
+                        toaster.success("Email xác nhận đã được gửi đến hòm thư của bạn!");
+                    }, 600);
                     
                     this.toggleCalendar();
                     this.isProcessingPayment = false;
@@ -524,7 +535,6 @@ export default {
                     }
                 });
         },
-
 
         isPastTime(khungGio) {
             if (!this.selectedDate) return false;
@@ -600,7 +610,7 @@ export default {
 
             // Luôn giữ giá gốc và tính tiền cọc
             this.list_dv.gia = this.giaGoc;
-            this.tienCoc = Math.round(this.list_dv.gia * 0.25);
+            this.tienCoc = Math.round(this.giaGoc * 0.25);
             if (this.list_dv.id_loaidv === 2) {
                 let heSo = 1;
                 if (canNang > 30) {

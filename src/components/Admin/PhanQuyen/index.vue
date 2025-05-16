@@ -92,7 +92,8 @@
                                         <th>{{ value.ten_chuc_nang }}</th>
                                         <td>{{ value.ten_chuc_vu }}</td>
                                         <td>
-                                            <button v-on:click="xoa(value)" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
+                                            <button v-on:click="xoa(value)" class="btn btn-danger"><i
+                                                    class="fa-solid fa-trash"></i></button>
                                         </td>
                                     </tr>
                                 </template>
@@ -130,28 +131,52 @@ export default {
     methods: {
         load_chuc_vu() {
             axios
-                .get('http://127.0.0.1:8000/api/phan-quyen/load-chuc-vu')
+                .get('http://127.0.0.1:8000/api/phan-quyen/load-chuc-vu',
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.list_chuc_vu = res.data.data
                 })
         },
         load_chuc_nang() {
             axios
-                .get('http://127.0.0.1:8000/api/phan-quyen/load-chuc-nang')
+                .get('http://127.0.0.1:8000/api/phan-quyen/load-chuc-nang',
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.list_chuc_nang = res.data.data
                 })
         },
         loadCQ() {
             axios
-                .post("http://127.0.0.1:8000/api/phan-quyen/load-cap-quyen", this.chuc_vu)
+                .post("http://127.0.0.1:8000/api/phan-quyen/load-cap-quyen", this.chuc_vu,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.list_daPhanQuyen = res.data.data
                 })
         },
         xoa(x) {
             axios
-                .post("http://127.0.0.1:8000/api/phan-quyen/xoa", x)
+                .post("http://127.0.0.1:8000/api/phan-quyen/xoa", x,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == 1) {
                         toaster.success(res.data.message)
@@ -163,14 +188,26 @@ export default {
                 });
         },
         CapQuyen(x) {
-            console.log("Giá trị nhận được khi click Cấp quyền:", x);
+            console.log("Giá trị nhận được khi click Cấp quyền:", x,
+                {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    }
+                }
+            );
             var payload = {
                 id_chuc_vu: this.chuc_vu.id,
                 id_chuc_nang: x.id
             }
             console.log("Payload gửi đi:", payload);
             axios
-                .post('http://127.0.0.1:8000/api/phan-quyen/cap-quyen', payload)
+                .post('http://127.0.0.1:8000/api/phan-quyen/cap-quyen', payload,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -181,7 +218,13 @@ export default {
                 })
         },
         tim_kiem_chuc_nang() {
-            axios.post('http://127.0.0.1:8000/api/phan-quyen/tim-kiem-chuc-nang', this.tim_kiem)
+            axios.post('http://127.0.0.1:8000/api/phan-quyen/tim-kiem-chuc-nang', this.tim_kiem,
+                {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    }
+                }
+            )
                 .then((res) => {
                     this.list_chuc_nang = res.data.data;
                 })

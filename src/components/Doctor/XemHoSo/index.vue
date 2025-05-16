@@ -33,6 +33,11 @@
             </button>
           </div>
         </div>
+        <div class="col-md-4 text-end">
+          <button @click="openThemMoiModal" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#themMoi">
+            <i class="fas fa-plus"></i> Thêm hồ sơ bệnh án
+          </button>
+        </div>
       </div>
 
       <div class="table-responsive">
@@ -336,6 +341,61 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Thêm mới hồ sơ bệnh án -->
+  <div class="modal fade" id="themMoi" tabindex="-1" aria-labelledby="themMoiModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h1 class="modal-title fs-5" id="themMoiModalLabel">THÊM MỚI HỒ SƠ BỆNH ÁN</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Khách hàng <span class="text-danger">*</span></label>
+              <select v-model="ho_so_benh_an_moi.id_kh" class="form-select" @change="loadPetsByKhachHang">
+                <option value="" disabled selected>-- Chọn khách hàng --</option>
+                <option v-for="kh in danhSachKhachHang" :key="kh.id" :value="kh.id">
+                  {{ kh.ho_va_ten }} ({{ kh.so_dien_thoai }})
+                </option>
+              </select>
+              <div v-if="errors.id_kh" class="text-danger mt-1">{{ errors.id_kh }}</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Thú cưng <span class="text-danger">*</span></label>
+              <select v-model="ho_so_benh_an_moi.id_pet" class="form-select">
+                <option value="" disabled selected>-- Chọn thú cưng --</option>
+                <option v-for="pet in danhSachThuCung" :key="pet.id" :value="pet.id">
+                  {{ pet.ten_pet }} ({{ pet.gioi_tinh ? 'Đực' : 'Cái' }})
+                </option>
+              </select>
+              <div v-if="errors.id_pet" class="text-danger mt-1">{{ errors.id_pet }}</div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label fw-bold">Chẩn đoán <span class="text-danger">*</span></label>
+            <textarea v-model="ho_so_benh_an_moi.chuan_doan" class="form-control" rows="4" 
+              placeholder="Nhập chẩn đoán bệnh lý"></textarea>
+            <div v-if="errors.chuan_doan" class="text-danger mt-1">{{ errors.chuan_doan }}</div>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label fw-bold">Tình trạng</label>
+            <select v-model="ho_so_benh_an_moi.tinh_trang" class="form-select">
+              <option value="1">Đang điều trị</option>
+              <option value="0">Đã khỏi</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-primary" @click="themHoSoBenhAn">Tạo hồ sơ</button>
         </div>
       </div>
     </div>

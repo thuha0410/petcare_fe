@@ -369,7 +369,13 @@ export default {
   methods: {
     loaddataKhoNCCThuoc() {
       axios
-        .get("http://127.0.0.1:8000/api/phieu-nhap/load-kho-ncc-thuoc")
+        .get("http://127.0.0.1:8000/api/phieu-nhap/load-kho-ncc-thuoc",
+          {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+        )
         .then((res) => {
           this.listKho = res.data.kho;
           this.listNCC = res.data.ncc;
@@ -507,7 +513,13 @@ export default {
       this.chiTiet = [];
     },
     loadPhieu() {
-      axios.get("http://127.0.0.1:8000/api/phieu-nhap").then((res) => {
+      axios.get("http://127.0.0.1:8000/api/phieu-nhap",
+        {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+      ).then((res) => {
         this.danhSachPhieu = res.data.data;
       });
     },

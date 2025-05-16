@@ -48,7 +48,12 @@ export default {
     methods: {
         load() {
             axios
-                .get('http://127.0.0.1:8000/api/khach-hang/loadkh-ql-kh' )
+                .get('http://127.0.0.1:8000/api/khach-hang/loadkh-ql-kh',
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    } )
                 .then((res) => {
                     if (Array.isArray(res.data.data)) {
                         this.list_khach_hang = res.data.data;

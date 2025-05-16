@@ -1,8 +1,11 @@
 <template>
     <div class="row">
         <div class="card">
-            <div class="card-header d-flex justify-content-between">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h3>Quản lý hóa đơn</h3>
+                <button class="btn btn-primary" @click="openThemMoiModal" data-bs-toggle="modal" data-bs-target="#themMoiHoaDon">
+                    <i class="fas fa-plus"></i> Thêm hóa đơn mới
+                </button>
             </div>
             <div class="card-body">
                 <div class="row mb-3">
@@ -199,6 +202,108 @@
             </div>
         </div>
 
+        <!-- Modal Thêm mới hóa đơn -->
+        <div class="modal fade" id="themMoiHoaDon" tabindex="-1" aria-labelledby="themMoiHoaDonLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="themMoiHoaDonLabel">THÊM MỚI HÓA ĐƠN</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Khách hàng -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Khách hàng <span class="text-danger">*</span></label>
+                            <select v-model="hoadon_moi.id_kh" class="form-select" @change="loadPetsByKhachHang">
+                                <option value="" disabled selected>-- Chọn khách hàng --</option>
+                                <option v-for="kh in danhSachKhachHang" :key="kh.id" :value="kh.id">
+                                    {{ kh.ho_va_ten }} ({{ kh.so_dien_thoai }})
+                                </option>
+                            </select>
+                            <div v-if="errors.id_kh" class="text-danger mt-1">{{ errors.id_kh }}</div>
+                        </div>
+                        
+                        <!-- Thú cưng -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Thú cưng <span class="text-danger">*</span></label>
+                            <select v-model="hoadon_moi.id_thu_cung" class="form-select">
+                                <option value="" disabled selected>-- Chọn thú cưng --</option>
+                                <option v-for="pet in danhSachThuCung" :key="pet.id" :value="pet.id">
+                                    {{ pet.ten_pet }} ({{ pet.gioi_tinh ? 'Đực' : 'Cái' }})
+                                </option>
+                            </select>
+                            <div v-if="errors.id_thu_cung" class="text-danger mt-1">{{ errors.id_thu_cung }}</div>
+                        </div>
+                        
+                        <!-- Nhân viên thanh toán -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nhân viên thanh toán <span class="text-danger">*</span></label>
+                            <select v-model="hoadon_moi.id_nv" class="form-select">
+                                <option value="" disabled selected>-- Chọn nhân viên --</option>
+                                <option v-for="nv in list_nhan_vien.filter(nv => nv.id_chucvu === 2)" :key="nv.id" :value="nv.id">
+                                    {{ nv.ten_nv }}
+                                </option>
+                            </select>
+                            <div v-if="errors.id_nv" class="text-danger mt-1">{{ errors.id_nv }}</div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <!-- Chi tiết thanh toán -->
+                        <h5 class="mb-3">Chi tiết thanh toán</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tiền đơn thuốc:</label>
+                                <input v-model="hoadon_moi.tien_don_thuoc" type="number" min="0" class="form-control" placeholder="0" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tiền dịch vụ:</label>
+                                <input v-model="hoadon_moi.tien_dich_vu" type="number" min="0" class="form-control" placeholder="0" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tiền khám:</label>
+                                <input v-model="hoadon_moi.tien_kham" type="number" min="0" class="form-control" placeholder="0" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tiền cọc dịch vụ (nếu có):</label>
+                                <input v-model="hoadon_moi.tien_coc_dich_vu" type="number" min="0" class="form-control" placeholder="0" />
+                            </div>
+                        </div>
+                        
+                        <!-- Tổng tiền -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-danger">Tổng tiền thanh toán:</label>
+                            <div class="form-control bg-light fw-bold text-danger fs-5">
+                                {{ formatTien(tinhTongTienMoi()) }}
+                            </div>
+                        </div>
+                        
+                        <!-- Phương thức thanh toán -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Phương thức thanh toán:</label>
+                            <select v-model="hoadon_moi.phuong_thuc" class="form-select">
+                                <option value="0">Tiền mặt</option>
+                                <option value="1">Chuyển khoản</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Tình trạng -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tình trạng:</label>
+                            <select v-model="hoadon_moi.tinh_trang" class="form-select">
+                                <option value="0">Chưa thanh toán</option>
+                                <option value="1">Đã thanh toán</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="button" class="btn btn-primary" @click="themHoaDon">Tạo hóa đơn</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -225,11 +330,30 @@ export default {
                 tien_dich_vu: 0,
                 tien_kham: 0,
                 tien_coc_dich_vu: 0
+            },
+            danhSachKhachHang: [],
+            danhSachThuCung: [],
+            hoadon_moi: {
+                id_kh: '',
+                id_thu_cung: '',
+                id_nv: '',
+                tien_don_thuoc: 0,
+                tien_dich_vu: 0,
+                tien_kham: 0,
+                tien_coc_dich_vu: 0,
+                phuong_thuc: 0,
+                tinh_trang: 0,
+                ngay_xuat_hoa_don: new Date().toISOString().substr(0, 10)
+            },
+            errors: {
+                id_kh: '',
+                id_thu_cung: '',
+                id_nv: ''
             }
         };
     },
     computed: {
-        
+
         tongTienHoaDonChiTiet() {
             const a = Number(this.chiTiet.tien_don_thuoc) || 0;
             const b = Number(this.chiTiet.tien_dich_vu) || 0;
@@ -242,6 +366,7 @@ export default {
     mounted() {
         this.taiDanhSach();
         this.loaddataNV();
+        this.loadDanhSachKhachHang();
     },
     methods: {
         xoaBoLoc() {
@@ -258,7 +383,13 @@ export default {
             });
         },
         xacNhanThanhToan() {
-            axios.post('http://127.0.0.1:8000/api/hoa-don/thanh-toan', this.hoa_don_edit)
+            axios.post('http://127.0.0.1:8000/api/hoa-don/thanh-toan', this.hoa_don_edit,
+                {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    }
+                }
+            )
                 .then(res => {
                     if (res.data.status) {
                         toaster.success('Thanh toán thành công');
@@ -294,7 +425,13 @@ export default {
                 tien_kham: 0
             };
 
-            axios.get(`http://127.0.0.1:8000/api/hoa-don/chi-tiet-tien/${hd.id}`)
+            axios.get(`http://127.0.0.1:8000/api/hoa-don/chi-tiet-tien/${hd.id}`,
+                {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    }
+                }
+            )
                 .then(res => {
                     if (res.data.status) {
                         this.chiTiet = res.data.data;
@@ -316,7 +453,12 @@ export default {
             return parseInt(val).toLocaleString() + ' VND';
         },
         xemChiTiet(hd) {
-            axios.get(`http://127.0.0.1:8000/api/hoa-don/chi-tiet-tien/${hd.id}`)
+            axios.get(`http://127.0.0.1:8000/api/hoa-don/chi-tiet-tien/${hd.id}`,
+                {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    }
+                })
                 .then(res => {
                     if (res.data.status) {
                         this.chiTiet = res.data.data;
@@ -330,8 +472,13 @@ export default {
         },
         loaddataNV() {
             axios
-                .get("http://127.0.0.1:8000/api/nhan-vien/load", {
-                })
+                .get("http://127.0.0.1:8000/api/nhan-vien/load",
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.list_nhan_vien = res.data.data
                     console.log(this.list_nhan_vien);
@@ -347,7 +494,13 @@ export default {
         },
         async capNhatHoaDon() {
             try {
-                const res = await axios.post('http://127.0.0.1:8000/api/hoa-don/update', this.hoa_don_edit);
+                const res = await axios.post('http://127.0.0.1:8000/api/hoa-don/update', this.hoa_don_edit,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                );
                 if (res.data.status) {
                     toaster.success('Cập nhật thành công');
                     await this.taiDanhSach(); // gọi lại API để đồng bộ dữ liệu mới
@@ -361,7 +514,13 @@ export default {
         },
 
         taiDanhSach() {
-            axios.get('http://127.0.0.1:8000/api/hoa-don/danh-sach')
+            axios.get('http://127.0.0.1:8000/api/hoa-don/danh-sach',
+                {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    }
+                }
+            )
                 .then(res => {
                     if (res.data.status) {
                         this.list_hoa_don = res.data.data;
@@ -379,6 +538,146 @@ export default {
                 hd.ten_khach_hang?.toLowerCase().includes(term)
             );
         },
+        
+        // Phương thức cho thêm mới hóa đơn
+        openThemMoiModal() {
+            this.resetThemMoiForm();
+            this.loadDanhSachKhachHang();
+        },
+        
+        resetThemMoiForm() {
+            this.hoadon_moi = {
+                id_kh: '',
+                id_thu_cung: '',
+                id_nv: '',
+                tien_don_thuoc: 0,
+                tien_dich_vu: 0,
+                tien_kham: 0,
+                tien_coc_dich_vu: 0,
+                phuong_thuc: 0,
+                tinh_trang: 0,
+                ngay_xuat_hoa_don: new Date().toISOString().substr(0, 10)
+            };
+            this.errors = {
+                id_kh: '',
+                id_thu_cung: '',
+                id_nv: ''
+            };
+            this.danhSachThuCung = [];
+        },
+        
+        loadDanhSachKhachHang() {
+            axios
+                .get('http://127.0.0.1:8000/api/khach-hang/load')
+                .then((res) => {
+                    if (res.data.status) {
+                        this.danhSachKhachHang = res.data.data;
+                    } else {
+                        toaster.error('Lỗi khi tải danh sách khách hàng');
+                    }
+                })
+                .catch((error) => {
+                    toaster.error('Lỗi khi tải danh sách khách hàng: ' + error.message);
+                });
+        },
+        
+        loadPetsByKhachHang() {
+            if (!this.hoadon_moi.id_kh) {
+                this.danhSachThuCung = [];
+                return;
+            }
+            
+            axios
+                .get(`http://127.0.0.1:8000/api/pets/${this.hoadon_moi.id_kh}`)
+                .then((res) => {
+                    if (res.data.status) {
+                        this.danhSachThuCung = res.data.data;
+                    } else {
+                        toaster.error('Lỗi khi tải danh sách thú cưng');
+                    }
+                })
+                .catch((error) => {
+                    toaster.error('Lỗi khi tải danh sách thú cưng: ' + error.message);
+                });
+        },
+        
+        tinhTongTienMoi() {
+            const a = parseFloat(this.hoadon_moi.tien_don_thuoc) || 0;
+            const b = parseFloat(this.hoadon_moi.tien_dich_vu) || 0;
+            const c = parseFloat(this.hoadon_moi.tien_kham) || 0;
+            const d = parseFloat(this.hoadon_moi.tien_coc_dich_vu) || 0;
+            return (a + b + c) - d;
+        },
+        
+        validateForm() {
+            let isValid = true;
+            this.errors = {
+                id_kh: '',
+                id_thu_cung: '',
+                id_nv: ''
+            };
+            if (!this.hoadon_moi.id_kh) {
+                this.errors.id_kh = 'Vui lòng chọn khách hàng';
+                isValid = false;
+            }
+            if (!this.hoadon_moi.id_thu_cung) {
+                this.errors.id_thu_cung = 'Vui lòng chọn thú cưng';
+                isValid = false;
+            }
+            if (!this.hoadon_moi.id_nv) {
+                this.errors.id_nv = 'Vui lòng chọn nhân viên thanh toán';
+                isValid = false;
+            }
+            return isValid;
+        },
+        
+        themHoaDon() {
+            if (!this.validateForm()) {
+                toaster.error('Vui lòng điền đầy đủ thông tin');
+                return;
+            }
+            const data = {
+                ...this.hoadon_moi,
+                tien_don_thuoc: parseFloat(this.hoadon_moi.tien_don_thuoc),
+                tien_dich_vu: parseFloat(this.hoadon_moi.tien_dich_vu),
+                tien_kham: parseFloat(this.hoadon_moi.tien_kham),
+                tien_coc_dich_vu: parseFloat(this.hoadon_moi.tien_coc_dich_vu),
+                tong_tien: this.tinhTongTienMoi()
+            };
+            axios
+                .post('http://127.0.0.1:8000/api/hoa-don/them', data)
+                .then((res) => {
+                    if (res.data.status) {
+                        toaster.success('Thêm hóa đơn thành công');
+                        this.taiDanhSach();
+                        // Đóng modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('themMoiHoaDon'));
+                        if (modal) modal.hide();
+                        this.resetThemMoiForm();
+                        
+                        // Mở hóa đơn mới để in (nếu đã thanh toán)
+                        if (data.tinh_trang == 1) {
+                            const routeData = this.$router.resolve({
+                                path: '/admin/in-hoa-don',
+                                query: { id: res.data.id_hoa_don }
+                            });
+                            window.open(routeData.href, '_blank', 'width=800,height=600');
+                        }
+                    } else {
+                        toaster.error(res.data.message || 'Thêm hóa đơn thất bại');
+                    }
+                })
+                .catch((error) => {
+                    if (error.response && error.response.status === 422) {
+                        const errors = error.response.data.errors;
+                        for (const field in errors) {
+                            toaster.error(errors[field][0]);
+                        }
+                    } else {
+                        toaster.error(error.response?.data?.message || 'Lỗi khi thêm hóa đơn');
+                    }
+                });
+        }
     }
 };
 </script>

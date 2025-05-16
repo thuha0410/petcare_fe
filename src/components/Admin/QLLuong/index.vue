@@ -171,11 +171,11 @@ export default {
         them() {
             axios
                 .post('http://127.0.0.1:8000/api/them-luong', this.loai_luong,
-                    // {
-                    //     headers: {
-                    //         Authorization: 'Bearer ' + localStorage.getItem('token_admin')
-                    //     }
-                    // }
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
                 )
                 .then(
                     (res) => {
@@ -198,7 +198,13 @@ export default {
         },
         xoa() {
             axios
-                .post('http://127.0.0.1:8000/api/xoa-luong', this.xoa_luongNV)
+                .post('http://127.0.0.1:8000/api/xoa-luong', this.xoa_luongNV,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -210,7 +216,13 @@ export default {
         },
         sua() {
             axios
-                .post('http://127.0.0.1:8000/api/sua-luong', this.sua_luongNV)
+                .post('http://127.0.0.1:8000/api/sua-luong', this.sua_luongNV,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -282,7 +294,13 @@ export default {
         },
         TimKiem() {
             axios
-                .post('http://127.0.0.1:8000/api/tim-kiem-luong', this.tim_kiem)
+                .post('http://127.0.0.1:8000/api/tim-kiem-luong', this.tim_kiem,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.ds_luong = res.data.data
                 })

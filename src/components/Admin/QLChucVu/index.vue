@@ -125,14 +125,26 @@ export default {
     methods: {
         load() {
             axios
-                .get('http://127.0.0.1:8000/api/phan-quyen/load-chuc-vu')
+                .get('http://127.0.0.1:8000/api/phan-quyen/load-chuc-vu',
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.list_chuc_vu = res.data.data
                 })
         },
         them() {
             axios
-                .post('http://127.0.0.1:8000/api/chuc-vu/them', this.chuc_vu)
+                .post('http://127.0.0.1:8000/api/chuc-vu/them', this.chuc_vu,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -151,7 +163,13 @@ export default {
         },
         xoa() {
             axios
-                .post('http://127.0.0.1:8000/api/chuc-vu/xoa', this.del_chuc_vu)
+                .post('http://127.0.0.1:8000/api/chuc-vu/xoa', this.del_chuc_vu,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -163,7 +181,13 @@ export default {
         },
         update() {
             axios
-                .post('http://127.0.0.1:8000/api/chuc-vu/update', this.update_chuc_vu)
+                .post('http://127.0.0.1:8000/api/chuc-vu/update', this.update_chuc_vu,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -177,7 +201,13 @@ export default {
         },
         doiTT(x) {
             axios
-                .post('http://127.0.0.1:8000/api/chuc-vu/doi-TT', x)
+                .post('http://127.0.0.1:8000/api/chuc-vu/doi-TT', x,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     if (res.data.status == true) {
                         toaster.success(res.data.message)
@@ -190,7 +220,13 @@ export default {
         },
         timkiem() {
             axios
-                .post('http://127.0.0.1:8000/api/chuc-vu/tim-kiem', this.tim_kiem)
+                .post('http://127.0.0.1:8000/api/chuc-vu/tim-kiem', this.tim_kiem,
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
                 .then((res) => {
                     this.list_chuc_vu = res.data.data
                 })
