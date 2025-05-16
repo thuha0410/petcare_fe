@@ -66,6 +66,7 @@ const routes = [
         path : '/admin/ql-gio',
         component: ()=>import('../components/Admin/QLGio/index.vue'),
         meta: {layout:'admin'},
+        beforeEnter: kiemTraAdminVaQuyen(18)
     },
     {
         path : '/admin/ql-pet',

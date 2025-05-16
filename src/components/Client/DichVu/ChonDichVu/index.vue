@@ -336,6 +336,9 @@ export default {
 
                     // Capture the payment
                     return actions.order.capture().then(details => {
+                        // Add payment details to the toaster message
+                        toaster.success(`Thanh toán thành công với ID: ${details.id}`);
+                        
                         // Call API to create appointment after successful payment
                         this.createAppointment(details.id);
                     });
@@ -509,6 +512,9 @@ export default {
                     setTimeout(() => {
                         toaster.success("Đặt lịch khám thành công!");
                     }, 300);
+                    setTimeout(() => {
+                        toaster.success("Email xác nhận đã được gửi đến hòm thư của bạn!");
+                    }, 600);
                     
                     this.toggleCalendar();
                     this.isProcessingPayment = false;
@@ -600,7 +606,7 @@ export default {
 
             // Luôn giữ giá gốc và tính tiền cọc
             this.list_dv.gia = this.giaGoc;
-            this.tienCoc = Math.round(this.list_dv.gia * 0.25);
+            this.tienCoc = Math.round(this.giaGoc * 0.25);
             if (this.list_dv.id_loaidv === 2) {
                 let heSo = 1;
                 if (canNang > 30) {
