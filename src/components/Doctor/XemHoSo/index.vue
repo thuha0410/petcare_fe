@@ -141,7 +141,13 @@
               <label class="form-label">Số điện thoại</label>
               <input v-model="newRecord.sdt" type="text" class="form-control" />
             </div>
+            <br>
+            <div class="col-md-12 mb-3 mt-2">
+              <label class="form-label">Email</label>
+              <input v-model="newRecord.email" type="email" class="form-control" />
+            </div>
           </div>
+
 
           <!-- Bước 2: Thú cưng -->
           <h6 class="fw-bold">2. Thông tin thú cưng</h6>
@@ -178,6 +184,15 @@
                 <option :value="1">Đực</option>
                 <option :value="0">Cái</option>
               </select>
+            </div>
+            <br class="mb-3">
+            <div class="col-md-6 mt-2">
+              <label class="form-label">Tuổi</label>
+              <input v-model="newRecord.tuoi" type="text" class="form-control" />
+            </div>
+            <div class="col-md-6  mt-2">
+              <label class="form-label">Cân nặng</label>
+              <input v-model="newRecord.can_nang" type="text" class="form-control" />
             </div>
           </div>
 
@@ -357,9 +372,12 @@ export default {
       newRecord: {
         ten_khach: '',
         sdt: '',
+        email: '',
         ten_thu_cung: '',
         chung_loai: '0',
         gioi_tinh_pet: '1',
+        tuoi: '',
+        can_nang: '',
         ngay_kham: '',
         id_bac_si: '',
         tinh_trang: 1,
