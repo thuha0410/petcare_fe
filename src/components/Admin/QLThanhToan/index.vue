@@ -588,7 +588,7 @@ export default {
             }
             
             axios
-                .get(`http://127.0.0.1:8000/api/pets/${this.hoadon_moi.id_kh}`)
+                .get(`http://127.0.0.1:8000/api/pet/load-by-customer/${this.hoadon_moi.id_kh}`)
                 .then((res) => {
                     if (res.data.status) {
                         this.danhSachThuCung = res.data.data;

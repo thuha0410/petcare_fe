@@ -516,7 +516,8 @@ export default {
         }
 
         // Send data for new customer
-        axios.post('http://127.0.0.1:8000/api/ho-so-benh-an/them', {
+        axios 
+        .post('http://127.0.0.1:8000/api/ho-so-benh-an/them', {
           ...this.newRecord,
           is_existing_customer: false
         })
