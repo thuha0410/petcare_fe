@@ -67,44 +67,48 @@
         </div>
       </div>
       
-      <!-- Chat input -->
-      <div class="chat-input">
-        <input 
-          v-model="userInput" 
-          @keyup.enter="sendMessage"
-          @focus="isInputFocused = true"
-          @blur="isInputFocused = false"
-          placeholder="Nhập tin nhắn của bạn..."
-          type="text"
-        >
-        <button @click="sendMessage" class="send-button" :disabled="isProcessing || !userInput.trim()">
-          <i class="fas" :class="isProcessing ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
-        </button>
-      </div>
-      
-      <!-- Feedback buttons -->
-      <div v-if="lastInteractionId && !feedbackGiven" class="feedback-container">
-        <span class="feedback-title">Phản hồi có hữu ích?</span>
-        <div class="feedback-buttons">
-          <button @click="sendFeedback(true)" class="feedback-btn positive">
-            <i class="fas fa-thumbs-up"></i>
+      <!-- Suggested questions area (separate from chat input) -->
+      <div class="suggested-questions-area">
+        <div class="suggested-questions-horizontal-container">
+          <!-- Left scroll button -->
+          <button class="scroll-indicator-button scroll-left" v-if="suggestedQuestions.length > 3" @click="scrollSuggestionsLeft">
+            <i class="fas fa-chevron-left"></i>
           </button>
-          <button @click="sendFeedback(false)" class="feedback-btn negative">
-            <i class="fas fa-thumbs-down"></i>
+          
+          <div class="suggested-questions-horizontal" ref="suggestionsContainer">
+            <div 
+              v-for="(question, index) in suggestedQuestions" 
+              :key="index"
+              @click="selectSuggestedQuestion(question)"
+              class="suggested-question-pill"
+            >
+              {{ question }}
+            </div>
+            <!-- Add an empty spacer element to ensure last item can be scrolled fully into view -->
+            <div class="pill-spacer"></div>
+          </div>
+          
+          <!-- Right scroll button -->
+          <button class="scroll-indicator-button scroll-right" v-if="suggestedQuestions.length > 3" @click="scrollSuggestions">
+            <i class="fas fa-chevron-right"></i>
           </button>
         </div>
       </div>
       
-      <!-- Suggesting questions -->
-      <div v-if="isOpen && suggestedQuestions.length > 0 && !isInputFocused" class="suggested-questions">
-        <div class="suggested-title">Bạn có thể hỏi:</div>
-        <div 
-          v-for="(question, index) in suggestedQuestions" 
-          :key="index"
-          @click="selectSuggestedQuestion(question)"
-          class="suggested-question"
-        >
-          {{ question }}
+      <!-- Chat input (separate from suggested questions) -->
+      <div class="chat-input">
+        <div class="input-wrapper">
+          <input 
+            v-model="userInput" 
+            @keyup.enter="sendMessage"
+            @focus="isInputFocused = true"
+            @blur="isInputFocused = false"
+            placeholder="Nhập tin nhắn của bạn..."
+            type="text"
+          >
+          <button @click="sendMessage" class="send-button" :disabled="isProcessing || !userInput.trim()">
+            <i class="fas" :class="isProcessing ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
+          </button>
         </div>
       </div>
     </div>
@@ -155,8 +159,64 @@ export default {
     // Load chat history from localStorage if available
     this.loadChatHistory();
     
+    // Fetch suggested questions from API
+    this.fetchSuggestedQuestions();
+    
     // Debounce scroll to bottom for performance
     this.debouncedScrollToBottom = debounce(this.scrollToBottom, 100);
+  },
+  mounted() {
+    // Add horizontal scroll detection for touch devices
+    this.$nextTick(() => {
+      const container = document.querySelector('.suggested-questions-area .suggested-questions-horizontal');
+      if (container) {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        container.addEventListener('mousedown', (e) => {
+          isDown = true;
+          container.style.cursor = 'grabbing';
+          startX = e.pageX - container.offsetLeft;
+          scrollLeft = container.scrollLeft;
+        });
+        
+        container.addEventListener('mouseleave', () => {
+          isDown = false;
+          container.style.cursor = 'grab';
+        });
+        
+        container.addEventListener('mouseup', () => {
+          isDown = false;
+          container.style.cursor = 'grab';
+        });
+        
+        container.addEventListener('mousemove', (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - container.offsetLeft;
+          const walk = (x - startX) * 2;
+          container.scrollLeft = scrollLeft - walk;
+        });
+        
+        // Add touch support
+        container.addEventListener('touchstart', (e) => {
+          startX = e.touches[0].pageX - container.offsetLeft;
+          scrollLeft = container.scrollLeft;
+        }, { passive: true });
+        
+        container.addEventListener('touchmove', (e) => {
+          if (!startX) return;
+          const x = e.touches[0].pageX - container.offsetLeft;
+          const walk = (x - startX) * 2;
+          container.scrollLeft = scrollLeft - walk;
+        }, { passive: true });
+        
+        container.addEventListener('touchend', () => {
+          startX = null;
+        });
+      }
+    });
   },
   methods: {
     toggleChat() {
@@ -491,11 +551,43 @@ export default {
         }
       }
     },
+    fetchSuggestedQuestions() {
+      // First set default questions while loading from API
+      this.suggestedQuestions = [
+        'Giá khám chó là bao nhiêu?',
+        'Phòng khám mở cửa mấy giờ?',
+        'Làm sao để đặt lịch khám?',
+        'Bác sĩ nào giỏi nhất?',
+        'Thú cưng có tiêm phòng?'
+      ];
+      
+      axios.get(`${this.serverBaseUrl}/api/chatbot/suggested-questions`)
+        .then(response => {
+          console.log('Fetched suggested questions:', response.data);
+          if (response.data.success && response.data.data && response.data.data.length > 0) {
+            this.suggestedQuestions = response.data.data;
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching suggested questions:', error);
+          // Already using default questions set above
+        });
+    },
     selectSuggestedQuestion(question) {
       this.userInput = question;
-      this.$nextTick(() => {
-        this.sendMessage();
-      });
+      this.sendMessage();
+    },
+    scrollSuggestions() {
+      const container = this.$refs.suggestionsContainer;
+      if (container) {
+        container.scrollLeft += 200; // Adjust the scroll amount as needed
+      }
+    },
+    scrollSuggestionsLeft() {
+      const container = this.$refs.suggestionsContainer;
+      if (container) {
+        container.scrollLeft -= 200; // Adjust the scroll amount as needed
+      }
     }
   }
 };
@@ -591,7 +683,7 @@ export default {
 
 .chat-messages {
   flex-grow: 1;
-  max-height: 400px;
+  max-height: 320px;
   overflow-y: auto;
   padding: 15px;
   background: #f9f9f9;
@@ -675,17 +767,28 @@ export default {
 
 .chat-input {
   padding: 15px;
-  border-top: 1px solid #eee;
   display: flex;
+  background-color: #fff;
+}
+
+.input-wrapper {
+  display: flex;
+  width: 100%;
   gap: 10px;
 }
 
-.chat-input input {
+.input-wrapper input {
   flex-grow: 1;
-  padding: 10px;
+  padding: 10px 15px;
   border: 1px solid #ddd;
   border-radius: 20px;
   outline: none;
+  font-size: 14px;
+}
+
+.input-wrapper input:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
 }
 
 .send-button {
@@ -942,46 +1045,6 @@ export default {
   background-color: #e0e0e0;
 }
 
-/* Thêm style cho nút feedback giữ nguyên từ phiên bản tối ưu */
-.feedback-container {
-  padding: 8px 15px;
-  border-top: 1px solid #eee;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #777;
-  font-size: 12px;
-}
-
-.feedback-title {
-  margin-right: 10px;
-}
-
-.feedback-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.feedback-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 5px;
-  transition: transform 0.2s;
-}
-
-.feedback-btn:hover {
-  transform: scale(1.2);
-}
-
-.feedback-btn.positive {
-  color: #4CAF50;
-}
-
-.feedback-btn.negative {
-  color: #F44336;
-}
-
 /* Suggested questions */
 .suggested-questions {
   padding: 8px 15px;
@@ -1032,5 +1095,113 @@ export default {
     bottom: 15px;
     right: 30px;
   }
+}
+
+/* Suggested questions area styles */
+.suggested-questions-area {
+  padding: 12px 15px 5px;
+  background-color: #f5f9ff;
+  border-top: 1px solid #e1e8f0;
+  border-bottom: 1px solid #e1e8f0;
+  margin-top: 5px;
+}
+
+.suggested-questions-horizontal-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 0 30px; /* Make space for both left and right buttons */
+  margin: 0 auto;
+}
+
+.suggested-questions-horizontal {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 5px 0;
+  -ms-overflow-style: none; /* Hide scrollbar in IE and Edge */
+  scrollbar-width: none; /* Hide scrollbar in Firefox */
+  scroll-behavior: smooth;
+  cursor: grab;
+  position: relative;
+  /* Add a subtle fade effect for the right edge */
+  mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+}
+
+.suggested-questions-horizontal::-webkit-scrollbar {
+  display: none; /* Hide scrollbar in Chrome, Safari and Opera */
+}
+
+.suggested-question-pill {
+  background-color: #e8f4ff;
+  color: #1976d2;
+  border-radius: 18px;
+  padding: 8px 14px;
+  margin-right: 10px;
+  display: inline-block;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid #cce4ff;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  position: relative;
+}
+
+.suggested-question-pill:hover {
+  background-color: #d0e7ff;
+  border-color: #a8d1ff;
+  transform: translateY(-1px);
+}
+
+.suggested-question-pill:active {
+  background-color: #b8daff;
+  transform: translateY(0);
+}
+
+.scroll-indicator-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  background-color: #ffffff;
+  color: #1976d2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 10;
+  border: 1px solid #e1e8f0;
+  transition: all 0.2s ease;
+  padding: 0;
+  outline: none;
+}
+
+.scroll-indicator-button.scroll-left {
+  left: 0;
+}
+
+.scroll-indicator-button.scroll-right {
+  right: 0;
+}
+
+.scroll-indicator-button:hover {
+  background-color: #1976d2;
+  color: white;
+}
+
+.pill-spacer {
+  flex-shrink: 0;
+  width: 10px;
+}
+
+.suggested-question-pill:first-child {
+  margin-left: 5px;
 }
 </style> 
