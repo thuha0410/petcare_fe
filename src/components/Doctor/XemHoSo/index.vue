@@ -33,6 +33,9 @@
             </button>
           </div>
         </div>
+        <div class="col-md-4 text-end">
+          <!-- Remove the second Add button -->
+        </div>
       </div>
 
       <div class="table-responsive">
@@ -351,7 +354,6 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -403,25 +405,34 @@ export default {
     }
   },
   methods: {
-    locKhachHang() {
-      const tuKhoa = this.searchKhachHang.toLowerCase();
-      this.khachHangGoiY = this.customers.filter(kh =>
-        kh.ho_va_ten.toLowerCase().includes(tuKhoa) ||
-        kh.so_dien_thoai.includes(tuKhoa)
-      );
+    openThemMoiModal() {
+      // Reset form and open the main modal
+      this.resetNewRecordForm();
+      const modal = new bootstrap.Modal(document.getElementById('modalThemHoSo'));
+      modal.show();
     },
-
-    chonKhachHang(khach) {
-      this.selectedCustomerId = khach.id;
-      this.searchKhachHang = `${khach.ho_va_ten} (${khach.so_dien_thoai})`;
-      this.hienDropdown = false;
-      this.loadCustomerPets();
+    resetNewRecordForm() {
+      this.customerType = 'existing';
+      this.selectedCustomerId = '';
+      this.selectedPetId = '';
+      this.customerPets = [];
+      this.newRecord = {
+        ten_khach: '',
+        sdt: '',
+        ten_thu_cung: '',
+        chung_loai: '0',
+        gioi_tinh_pet: '1',
+        ngay_kham: this.formatDateForInput(new Date()),
+        id_bac_si: '',
+        tinh_trang: 1,
+        chuan_doan: ''
+      };
     },
-
-    anDropdown() {
-      setTimeout(() => {
-        this.hienDropdown = false;
-      }, 150); // để tránh bị tắt trước khi click chọn
+    formatDateForInput(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
     },
     submitThemHoSo() {
       // Validate form based on customer type
@@ -512,23 +523,6 @@ export default {
             toaster.error('Lỗi khi thêm hồ sơ: ' + err.message);
           });
       }
-    },
-    resetNewRecordForm() {
-      this.newRecord = {
-        ten_khach: '',
-        sdt: '',
-        ten_thu_cung: '',
-        chung_loai: '0',
-        gioi_tinh_pet: '1',
-        ngay_kham: '',
-        id_bac_si: '',
-        tinh_trang: 1,
-        chuan_doan: ''
-      };
-      this.selectedCustomerId = '';
-      this.selectedPetId = '';
-      this.customerPets = [];
-      this.selectedPetInfo = null;
     },
     formatDate(date) {
       if (!date) return '';

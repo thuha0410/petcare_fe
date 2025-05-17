@@ -23,56 +23,89 @@
           <i class="fas fa-times"></i>
         </button>
       </div>
+      
       <!-- Chat messages -->
       <div class="chat-messages" ref="chatMessages">
-        <div 
-          v-for="(message, index) in messages" 
-          :key="index" 
-          :class="['message', message.type === 'user' ? 'user-message' : 'bot-message', 
-                  message.isBooking ? 'booking-success' : '',
-                  message.isBookingFlow ? 'booking-flow' : '',
-                  message.isLoading ? 'loading-message' : '']"
-          :data-timeout="message.isTimeoutError"
-        >
-          <div class="message-content" @click="handleLinkClick">
-            <span v-if="message.type === 'user'">{{ message.content }}</span>
-            <span v-else-if="message.isLoading" class="loading-dots">
-              {{ message.content }} <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
-            </span>
-            <span v-else v-html="formatMessage(message.content)"></span>
-          </div>
-          
-          <!-- Thêm nút điều hướng nếu có -->
+        <transition-group name="fade">
           <div 
-            v-if="message.navigationButtons && message.navigationButtons.length" 
-            class="navigation-buttons"
+            v-for="(message, index) in messages" 
+            :key="index" 
+            :class="['message', message.type === 'user' ? 'user-message' : 'bot-message', 
+                    message.isBooking ? 'booking-success' : '',
+                    message.isBookingFlow ? 'booking-flow' : '',
+                    message.isLoading ? 'loading-message' : '']"
+            :data-timeout="message.isTimeoutError"
           >
-            <button 
-              v-for="(button, buttonIndex) in message.navigationButtons" 
-              :key="buttonIndex"
-              @click="navigateTo(button.route)"
-              class="nav-button"
+            <div class="message-content" @click="handleNavigationClick">
+              <span v-if="message.type === 'user'">{{ message.content }}</span>
+              <span v-else-if="message.isLoading" class="loading-dots">
+                {{ message.content }} <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+              </span>
+              <span v-else v-html="formatMessage(message.content)"></span>
+            </div>
+            
+            <!-- Navigation buttons -->
+            <div 
+              v-if="message.navigationButtons && message.navigationButtons.length" 
+              class="navigation-buttons"
             >
-              {{ button.icon }} {{ button.text }}
-            </button>
+              <button 
+                v-for="(button, buttonIndex) in message.navigationButtons" 
+                :key="buttonIndex"
+                @click="navigateTo(button.route)"
+                class="nav-button"
+              >
+                {{ button.icon }} {{ button.text }}
+              </button>
+            </div>
           </div>
-        </div>
-        <!-- Nút đặt lịch ngay ở giữa - chỉ hiển thị khi cần -->
-        <div v-if="showBookingButton && !isBookingInProgress" class="booking-button-container">
+        </transition-group>
+        
+        <!-- Booking button -->
+        <div v-if="showBookingButton" class="booking-button-container">
           <button @click="setBookingMessage" class="booking-button-centered">Đặt lịch tư vấn ngay</button>
         </div>
       </div>
+      
       <!-- Chat input -->
       <div class="chat-input">
         <input 
           v-model="userInput" 
           @keyup.enter="sendMessage"
+          @focus="isInputFocused = true"
+          @blur="isInputFocused = false"
           placeholder="Nhập tin nhắn của bạn..."
           type="text"
         >
-        <button @click="sendMessage" class="send-button">
-          <i class="fas fa-paper-plane"></i>
+        <button @click="sendMessage" class="send-button" :disabled="isProcessing || !userInput.trim()">
+          <i class="fas" :class="isProcessing ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
         </button>
+      </div>
+      
+      <!-- Feedback buttons -->
+      <div v-if="lastInteractionId && !feedbackGiven" class="feedback-container">
+        <span class="feedback-title">Phản hồi có hữu ích?</span>
+        <div class="feedback-buttons">
+          <button @click="sendFeedback(true)" class="feedback-btn positive">
+            <i class="fas fa-thumbs-up"></i>
+          </button>
+          <button @click="sendFeedback(false)" class="feedback-btn negative">
+            <i class="fas fa-thumbs-down"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Suggesting questions -->
+      <div v-if="isOpen && suggestedQuestions.length > 0 && !isInputFocused" class="suggested-questions">
+        <div class="suggested-title">Bạn có thể hỏi:</div>
+        <div 
+          v-for="(question, index) in suggestedQuestions" 
+          :key="index"
+          @click="selectSuggestedQuestion(question)"
+          class="suggested-question"
+        >
+          {{ question }}
+        </div>
       </div>
     </div>
   </div>
@@ -80,6 +113,7 @@
 
 <script>
 import axios from 'axios';
+import { debounce } from 'lodash';
 
 export default {
   name: 'Chatbot',
@@ -96,118 +130,185 @@ export default {
       ],
       isBookingInProgress: false,
       showBookingButton: false,
-      isSearching: false,
-      doctors: [],
-      selectedDoctor: null,
-      availableSlots: [],
-      showDoctorList: false,
-      showTimeSlots: false,
+      isProcessing: false,
+      userId: null,
+      lastInteractionId: null,
+      feedbackGiven: false,
       hasShownBookingButton: false,
+      reconnectAttempts: 0,
+      maxReconnectAttempts: 3,
+      serverBaseUrl: 'http://localhost:8000',
+      isInputFocused: false,
+      suggestedQuestions: [
+        'Giá khám chó là bao nhiêu?',
+        'Phòng khám mở cửa mấy giờ?',
+        'Làm sao để đặt lịch khám?',
+        'Bác sĩ nào giỏi nhất?'
+      ]
     };
+  },
+  created() {
+    // Generate or retrieve user ID
+    this.userId = localStorage.getItem('chatbot_user_id') || this.generateUserId();
+    localStorage.setItem('chatbot_user_id', this.userId);
+
+    // Load chat history from localStorage if available
+    this.loadChatHistory();
+    
+    // Debounce scroll to bottom for performance
+    this.debouncedScrollToBottom = debounce(this.scrollToBottom, 100);
   },
   methods: {
     toggleChat() {
       this.isOpen = !this.isOpen;
       
-      // Khi mở chatbot, cuộn xuống tin nhắn mới nhất
+      // Scroll to bottom when opening
       if (this.isOpen) {
         this.$nextTick(() => {
           this.scrollToBottom();
         });
       }
     },
-    setBookingMessage() {
-      this.userInput = 'đặt lịch ngay';
-      this.sendMessage();
-    },
-    handleLinkClick(event) {
-      // Kiểm tra nếu người dùng click vào một liên kết
-      if (event.target && event.target.tagName === 'A') {
-        const href = event.target.getAttribute('href');
-        
-        // Xử lý khi click vào booking
-        if (href === '#booking') {
-          event.preventDefault();
-          this.setBookingMessage();
-          return;
-        }
-        
-        // Nếu là liên kết nội bộ, ngăn chuyển trang mặc định
-        if (href.startsWith('/')) {
-          event.preventDefault();
-          // Thông báo cho người dùng về liên kết
-          this.messages.push({
-            type: 'bot',
-            content: `Bạn có thể truy cập trang ${href} để xem thêm thông tin chi tiết.`
-          });
+    sendMessage() {
+      if (!this.userInput.trim() || this.isProcessing) return;
+      
+      const userMessage = this.userInput.trim();
+      this.userInput = '';
+      this.feedbackGiven = false;
+      
+      // Add user message to chat
+      this.messages.push({
+        type: 'user',
+        content: userMessage
+      });
+      
+      // Kiểm tra nếu tin nhắn của người dùng liên quan đến đặt lịch
+      const userAskingAboutBooking = /đặt.*(lịch|hẹn|khám)|lịch.*(hẹn|khám)|hẹn.*khám|đăng ký.*khám|tư vấn.*trực tiếp/i.test(userMessage);
+      
+      // Chỉ hiển thị nút đặt lịch nếu chưa hiển thị bao giờ và người dùng hỏi về đặt lịch
+      if (userAskingAboutBooking && !this.hasShownBookingButton) {
+        this.showBookingButton = true;
+        this.hasShownBookingButton = true;
+      } else {
+        this.showBookingButton = false;
+      }
+      
+      // Add loading message
+      const loadingMessageIndex = this.messages.length;
+      this.messages.push({
+        type: 'bot',
+        content: 'Đang tìm kiếm thông tin...',
+        isLoading: true
+      });
+      
+      this.debouncedScrollToBottom();
+      this.isProcessing = true;
+      
+      // Send message to API with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+      
+      axios.post(`${this.serverBaseUrl}/api/chatbot/chat`, {
+        message: userMessage,
+        userId: this.userId
+      }, {
+        signal: controller.signal
+      })
+        .then(response => {
+          clearTimeout(timeoutId);
           
-          // Có thể mở URL trong cửa sổ mới
-          // window.open(href, '_blank');
-        }
-      }
-    },
-    async fetchDoctors() {
-      try {
-        const response = await axios.get('http://localhost:8000/api/doctors');
-        if (response.data.success) {
-          this.doctors = response.data.data;
-          this.showDoctorList = true;
-          this.messages.push({
-            type: 'bot',
-            content: 'Vui lòng chọn bác sĩ bạn muốn đặt lịch:',
-            isDoctorList: true
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching doctors:', error);
-        this.messages.push({
-          type: 'bot',
-          content: 'Xin lỗi, không thể lấy thông tin bác sĩ. Vui lòng thử lại sau.'
+          // Remove loading message
+          this.messages.splice(loadingMessageIndex, 1);
+          
+          if (response.data.success) {
+            // Check for error response
+            const isErrorResponse = response.data.isError || false;
+            
+            // Check if response relates to booking
+            const botMentionsBooking = /đặt.*(lịch|hẹn|khám)|lịch.*(hẹn|khám)|hẹn.*khám|đăng ký.*khám|tư vấn.*trực tiếp/i.test(response.data.message);
+            
+            // Show booking button only if it hasn't been shown before and the bot mentions booking
+            if (botMentionsBooking && !this.hasShownBookingButton) {
+              this.showBookingButton = true;
+              this.hasShownBookingButton = true;
+            }
+            
+            // Add response to chat
+            this.messages.push({
+              type: 'bot',
+              content: response.data.message,
+              navigationButtons: response.data.navigation_buttons || [],
+              isTimeoutError: isErrorResponse
+            });
+            
+            // Store last interaction id for feedback
+            this.lastInteractionId = response.data.interaction_id;
+            
+            // Check for direct navigation
+            if (response.data.direct_navigation) {
+              this.$nextTick(() => {
+                this.navigateTo(response.data.direct_navigation);
+              });
+            }
+            
+            // Save chat history to localStorage
+            this.saveChatHistory();
+          } else {
+            this.handleError('Xin lỗi, có lỗi xảy ra khi xử lý tin nhắn của bạn.');
+          }
+        })
+        .catch(error => {
+          clearTimeout(timeoutId);
+          
+          // Remove loading message
+          this.messages.splice(loadingMessageIndex, 1);
+          
+          if (error.name === 'AbortError') {
+            this.handleError('Phản hồi mất quá nhiều thời gian. Vui lòng thử lại sau.');
+          } else if (error.code === 'ERR_NETWORK') {
+            this.handleNetworkError();
+          } else {
+            console.error('Error sending message:', error);
+            this.handleError('Xin lỗi, tôi không thể kết nối với máy chủ. Vui lòng thử lại sau.');
+          }
+        })
+        .finally(() => {
+          this.isProcessing = false;
+          this.debouncedScrollToBottom();
         });
+    },
+    handleError(message) {
+      this.messages.push({
+        type: 'bot',
+        content: message,
+        isTimeoutError: true
+      });
+    },
+    handleNetworkError() {
+      if (this.reconnectAttempts < this.maxReconnectAttempts) {
+        this.reconnectAttempts++;
+        this.handleError(`Kết nối bị gián đoạn. Đang thử kết nối lại (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
+        
+        // Try to reconnect after a delay
+        setTimeout(() => {
+          this.sendMessage();
+        }, 2000 * this.reconnectAttempts);
+      } else {
+        this.handleError('Không thể kết nối với máy chủ sau nhiều lần thử. Vui lòng kiểm tra kết nối mạng của bạn và thử lại sau.');
+        this.reconnectAttempts = 0;
       }
-    },
-    selectDoctor(doctor) {
-      this.selectedDoctor = doctor;
-      this.showDoctorList = false;
-      this.showTimeSlots = true;
-      this.messages.push({
-        type: 'bot',
-        content: `Bạn đã chọn bác sĩ ${doctor.ten}. Vui lòng chọn khung giờ phù hợp:`,
-        isTimeSlots: true
-      });
-    },
-    selectTimeSlot(slot) {
-      this.messages.push({
-        type: 'bot',
-        content: `Bạn đã chọn khung giờ ${slot.gio_bat_dau} - ${slot.gio_ket_thuc} ngày ${slot.ngay}. Vui lòng xác nhận thông tin đặt lịch:`,
-        isBookingConfirmation: true,
-        bookingData: {
-          doctor: this.selectedDoctor,
-          timeSlot: slot
-        }
-      });
-    },
-    confirmBooking() {
-      // Xử lý xác nhận đặt lịch
-      this.messages.push({
-        type: 'bot',
-        content: 'Cảm ơn bạn đã đặt lịch! Chúng tôi sẽ liên hệ lại để xác nhận lịch hẹn của bạn.',
-        isBookingSuccess: true
-      });
-      this.resetBookingState();
-    },
-    resetBookingState() {
-      this.selectedDoctor = null;
-      this.showDoctorList = false;
-      this.showTimeSlots = false;
-      this.isBookingInProgress = false;
     },
     formatMessage(message) {
-      // Xử lý khi tin nhắn có thẻ HTML (từ server)
+      if (!message) return '';
+      
       if (message.includes('<br>')) {
         // Đã có thẻ HTML từ server, trả về nguyên dạng
         return message;
       }
+      
+      // Convert URLs to links
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      message = message.replace(urlRegex, url => `<a href="${url}" target="_blank">${url}</a>`);
       
       // Tự động chia tin nhắn dài thành các phần nhỏ hơn
       const maxLength = 500; // Độ dài tối đa cho một phần
@@ -301,203 +402,99 @@ export default {
       // Đối với tin nhắn ngắn, chỉ thay thế xuống dòng
       return message.replace(/\n/g, '<br>');
     },
-    async sendMessage() {
-      if (!this.userInput.trim()) return;
-
-      // Add user message
-      this.messages.push({
-        type: 'user',
-        content: this.userInput
-      });
-
-      const userMessage = this.userInput;
-      this.userInput = '';
-      
-      // Kiểm tra nếu tin nhắn của người dùng liên quan đến đặt lịch
-      const userAskingAboutBooking = /đặt.*(lịch|hẹn|khám)|lịch.*(hẹn|khám)|hẹn.*khám|đăng ký.*khám|tư vấn.*trực tiếp/i.test(userMessage);
-      
-      // Chỉ hiển thị nút đặt lịch nếu chưa hiển thị bao giờ và người dùng hỏi về đặt lịch
-      if (userAskingAboutBooking && !this.hasShownBookingButton) {
-        this.showBookingButton = true;
-        this.hasShownBookingButton = true;
-      } else {
-        this.showBookingButton = false;
+    scrollToBottom() {
+      if (this.$refs.chatMessages) {
+        const container = this.$refs.chatMessages;
+        container.scrollTop = container.scrollHeight;
       }
-
-      // Hiển thị loading khi đang tìm kiếm
-      this.isSearching = true;
-      
-      // Tạo timeout ID để theo dõi quá trình gọi API
-      const loadingMessageId = Date.now();
-      this.messages.push({
-        type: 'bot',
-        content: 'Đang tìm kiếm thông tin...',
-        isLoading: true,
-        id: loadingMessageId
-      });
-
-      // Tạo timeout để nhắc người dùng nếu request mất quá nhiều thời gian
-      const timeoutID = setTimeout(() => {
-        if (this.isSearching) {
-          // Cập nhật tin nhắn loading, không xóa để tránh flash UI
-          const loadingIndex = this.messages.findIndex(m => m.id === loadingMessageId);
-          if (loadingIndex !== -1) {
-            this.messages[loadingIndex].content = 'Câu hỏi của bạn có vẻ phức tạp, tôi đang cố gắng tìm câu trả lời tốt nhất...';
-          }
-        }
-      }, 8000); // Hiển thị thông báo sau 8 giây
-
-      try {
-        const response = await axios.post('http://localhost:8000/api/chatbot/chat', {
-          message: userMessage,
-          userId: localStorage.getItem('token_kh') || 'guest'
-        });
-
-        // Xóa timeout
-        clearTimeout(timeoutID);
-
-        // Xóa tin nhắn loading
-        this.messages = this.messages.filter(m => m.id !== loadingMessageId);
-        this.isSearching = false;
-
-        if (response.data && response.data.success && response.data.message) {
-          // Nếu có direct_navigation thì chuyển trang luôn
-          if (response.data.direct_navigation) {
-            this.$router.push({
-              path: response.data.direct_navigation,
-              query: { from: 'chatbot' }
-            });
-            return;
-          }
-          
-          // Kiểm tra có phải phản hồi lỗi không
-          const isErrorResponse = response.data.isError || false;
-          
-          // Kiểm tra phản hồi có liên quan đến đặt lịch
-          const botMentionsBooking = /đặt.*(lịch|hẹn|khám)|lịch.*(hẹn|khám)|hẹn.*khám|đăng ký.*khám|tư vấn.*trực tiếp/i.test(response.data.message);
-          
-          // Chỉ hiển thị nút đặt lịch nếu chưa hiển thị bao giờ và bot đề cập đến đặt lịch
-          if (botMentionsBooking && !this.hasShownBookingButton && !response.data.booking_flow && !response.data.booking_success) {
-            this.showBookingButton = true;
-            this.hasShownBookingButton = true;
-          } else {
-            this.showBookingButton = false;
-          }
-          
-          // Nếu tin nhắn dài, chia nhỏ
-          if (response.data.message.length > 250 && !response.data.booking_flow && !response.data.booking_success && !isErrorResponse) {
-            const sentences = response.data.message.split(/(?<=[.!?])\s+|\n+/);
-            let currentMessage = '';
-            
-            for (let i = 0; i < sentences.length; i++) {
-              if (currentMessage.length + sentences[i].length > 250 || sentences[i].trim().startsWith('•') || sentences[i].trim().startsWith('-')) {
-                if (currentMessage) {
-                  this.messages.push({
-                    type: 'bot',
-                    content: currentMessage,
-                    isBookingFlow: false,
-                    isBooking: false
-                  });
-                  
-                  await new Promise(resolve => setTimeout(resolve, 300));
-                  this.scrollToBottom();
-                }
-                currentMessage = sentences[i].trim();
-              } else {
-                currentMessage += (currentMessage ? ' ' : '') + sentences[i].trim();
-              }
-            }
-            
-            if (currentMessage) {
-              this.messages.push({
-                type: 'bot',
-                content: currentMessage,
-                isBookingFlow: false,
-                isBooking: false
-              });
-            }
-          } else {
-            // Kiểm tra nếu phản hồi là lỗi timeout hoặc tìm kiếm lâu
-            const isTimeoutResponse = isErrorResponse || 
-                                     response.data.message.includes("câu hỏi của bạn có vẻ cần nhiều thời gian") || 
-                                     response.data.message.includes("Xin lỗi, tôi đang gặp vấn đề khi tìm kiếm thông tin");
-            
-            this.messages.push({
-              type: 'bot',
-              content: response.data.message,
-              isBookingFlow: response.data.booking_flow,
-              isBooking: response.data.booking_success,
-              navigationButtons: response.data.navigation_buttons || [],
-              isTimeoutError: isTimeoutResponse
-            });
-            
-            // Thêm gợi ý để người dùng viết câu hỏi cụ thể hơn nếu gặp lỗi timeout
-            if (isTimeoutResponse) {
-              setTimeout(() => {
-                this.messages.push({
-                  type: 'bot',
-                  content: 'Bạn có thể thử đặt câu hỏi ngắn hơn hoặc cụ thể hơn để tôi có thể tìm câu trả lời dễ dàng hơn nhé! 😊',
-                  isTimeoutError: false
-                });
-                this.scrollToBottom();
-              }, 1000);
-            }
-          }
-
-          this.isBookingInProgress = response.data.booking_flow;
-          
-          if (response.data.booking_success) {
-            this.isBookingInProgress = false;
-            this.hasShownBookingButton = false; // Reset lại để có thể hiển thị nút đặt lịch trong cuộc hội thoại mới
-          }
-        } else {
-          throw new Error('Phản hồi không hợp lệ từ máy chủ');
-        }
-      } catch (error) {
-        // Xóa timeout
-        clearTimeout(timeoutID);
-      
-        console.error('Lỗi khi gửi tin nhắn:', error);
-        
-        // Xóa tin nhắn loading
-        this.messages = this.messages.filter(m => m.id !== loadingMessageId);
-        this.isSearching = false;
-        
-        this.messages.push({
-          type: 'bot',
-          content: 'Xin lỗi, có lỗi xảy ra khi tìm kiếm thông tin. Vui lòng thử lại với câu hỏi ngắn hơn hoặc cụ thể hơn nhé.',
-          isTimeoutError: true
-        });
-      }
-
-      this.$nextTick(() => {
-        this.scrollToBottom();
-      });
     },
     navigateTo(route) {
-      // Điều hướng đến trang tương ứng
-      this.$router.push(route);
-    },
-    scrollToBottom() {
-      const chatMessages = this.$refs.chatMessages;
-      if (chatMessages) {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+      if (route.startsWith('/')) {
+        this.$router.push(route);
+      } else {
+        window.open(route, '_blank');
       }
-    }
-  },
-  mounted() {
-    // Đảm bảo cuộn xuống khi component được tạo lần đầu và chatbot đang hiển thị
-    if (this.isOpen) {
+    },
+    handleNavigationClick(event) {
+      // Handle link clicks
+      if (event.target && event.target.tagName === 'A') {
+        const href = event.target.getAttribute('href');
+        
+        // Handle internal links
+        if (href && href.startsWith('/')) {
+          event.preventDefault();
+          this.navigateTo(href);
+        }
+      }
+    },
+    setBookingMessage() {
+      this.userInput = 'đặt lịch ngay';
+      this.sendMessage();
+    },
+    generateUserId() {
+      return 'user_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+    },
+    sendFeedback(isHelpful) {
+      if (!this.lastInteractionId) return;
+      
+      this.isProcessing = true;
+      
+      axios.post(`${this.serverBaseUrl}/api/chatbot/feedback`, {
+        interaction_id: this.lastInteractionId,
+        is_helpful: isHelpful,
+        userId: this.userId
+      })
+        .then(() => {
+          this.feedbackGiven = true;
+          this.messages.push({
+            type: 'bot',
+            content: isHelpful ? 'Cảm ơn bạn đã đánh giá tích cực!' : 'Cảm ơn bạn đã đánh giá. Tôi sẽ cải thiện để phục vụ bạn tốt hơn!',
+            isSystem: true
+          });
+          this.saveChatHistory();
+        })
+        .catch(error => {
+          console.error('Error sending feedback:', error);
+        })
+        .finally(() => {
+          this.isProcessing = false;
+          this.debouncedScrollToBottom();
+        });
+    },
+    saveChatHistory() {
+      // Don't save more than 20 messages
+      const historyToSave = this.messages.slice(-20);
+      
+      // Don't save loading messages
+      const filteredHistory = historyToSave.filter(msg => !msg.isLoading);
+      
+      localStorage.setItem('petcare_chat_history', JSON.stringify({
+        messages: filteredHistory,
+        timestamp: Date.now()
+      }));
+    },
+    loadChatHistory() {
+      const savedHistory = localStorage.getItem('petcare_chat_history');
+      
+      if (savedHistory) {
+        try {
+          const parsedHistory = JSON.parse(savedHistory);
+          
+          // Only load history if it's less than 24 hours old
+          const isRecent = (Date.now() - parsedHistory.timestamp) < 24 * 60 * 60 * 1000;
+          
+          if (isRecent && Array.isArray(parsedHistory.messages) && parsedHistory.messages.length > 0) {
+            this.messages = parsedHistory.messages;
+          }
+        } catch (error) {
+          console.error('Error loading chat history:', error);
+        }
+      }
+    },
+    selectSuggestedQuestion(question) {
+      this.userInput = question;
       this.$nextTick(() => {
-        this.scrollToBottom();
-      });
-    }
-  },
-  updated() {
-    // Đảm bảo cuộn xuống khi có cập nhật tin nhắn và chatbot đang hiển thị
-    if (this.isOpen) {
-      this.$nextTick(() => {
-        this.scrollToBottom();
+        this.sendMessage();
       });
     }
   }
@@ -706,6 +703,11 @@ export default {
 
 .send-button:hover {
   background-color: #1565c0;
+}
+
+.send-button:disabled {
+  background-color: #90caf9;
+  cursor: not-allowed;
 }
 
 .close-btn {
@@ -920,101 +922,6 @@ export default {
   border-radius: 2px;
 }
 
-.doctor-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin: 10px 0;
-}
-
-.doctor-item {
-  background: #f5f5f5;
-  border-radius: 8px;
-  padding: 15px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.doctor-item:hover {
-  background: #e0e0e0;
-  transform: translateY(-2px);
-}
-
-.doctor-item h4 {
-  margin: 0 0 5px 0;
-  color: #2c3e50;
-}
-
-.doctor-item p {
-  margin: 5px 0;
-  color: #666;
-  font-size: 0.9em;
-}
-
-.time-slots {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 10px;
-  margin: 10px 0;
-}
-
-.time-slot {
-  background: #e3f2fd;
-  border: 1px solid #90caf9;
-  border-radius: 6px;
-  padding: 10px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.time-slot:hover {
-  background: #bbdefb;
-  transform: translateY(-2px);
-}
-
-.booking-confirmation {
-  background: #f1f8e9;
-  border-radius: 8px;
-  padding: 15px;
-  margin: 10px 0;
-}
-
-.booking-confirmation h4 {
-  margin: 0 0 10px 0;
-  color: #2c3e50;
-}
-
-.booking-confirmation p {
-  margin: 5px 0;
-  color: #666;
-}
-
-.confirm-button {
-  background: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 16px;
-  margin-top: 10px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.confirm-button:hover {
-  background: #388e3c;
-}
-
-/* Thêm animation cho các thành phần */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.doctor-item, .time-slot, .booking-confirmation {
-  animation: fadeIn 0.3s ease-out;
-}
-
 .navigation-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -1033,5 +940,97 @@ export default {
 
 .nav-button:hover {
   background-color: #e0e0e0;
+}
+
+/* Thêm style cho nút feedback giữ nguyên từ phiên bản tối ưu */
+.feedback-container {
+  padding: 8px 15px;
+  border-top: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+  font-size: 12px;
+}
+
+.feedback-title {
+  margin-right: 10px;
+}
+
+.feedback-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.feedback-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.2s;
+}
+
+.feedback-btn:hover {
+  transform: scale(1.2);
+}
+
+.feedback-btn.positive {
+  color: #4CAF50;
+}
+
+.feedback-btn.negative {
+  color: #F44336;
+}
+
+/* Suggested questions */
+.suggested-questions {
+  padding: 8px 15px;
+  background-color: #f5f5f5;
+  border-top: 1px solid #eee;
+}
+
+.suggested-title {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 5px;
+}
+
+.suggested-question {
+  font-size: 13px;
+  color: #1976d2;
+  padding: 5px 0;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+}
+
+.suggested-question:hover {
+  background-color: #e3f2fd;
+}
+
+.suggested-question:last-child {
+  border-bottom: none;
+}
+
+/* Fade animation for messages */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+/* Thích ứng cho màn hình nhỏ */
+@media (max-width: 450px) {
+  .chat-window {
+    width: 320px;
+    height: 450px;
+    right: -20px;
+  }
+  
+  .chatbot-container {
+    bottom: 15px;
+    right: 30px;
+  }
 }
 </style> 
