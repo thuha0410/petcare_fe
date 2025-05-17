@@ -137,17 +137,23 @@
               </div>
             </div>
 
-            <!-- Nếu là khách hàng mới -->
-            <div v-if="customerType === 'new'" class="row mb-3">
-              <div class="col-md-6">
-                <label class="form-label">Tên khách hàng</label>
-                <input v-model="newRecord.ten_khach" type="text" class="form-control" />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Số điện thoại</label>
-                <input v-model="newRecord.sdt" type="text" class="form-control" />
-              </div>
+          <!-- Nếu là khách hàng mới -->
+          <div v-if="customerType === 'new'" class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Tên khách hàng</label>
+              <input v-model="newRecord.ten_khach" type="text" class="form-control" />
             </div>
+            <div class="col-md-6">
+              <label class="form-label">Số điện thoại</label>
+              <input v-model="newRecord.sdt" type="text" class="form-control" />
+            </div>
+            <br>
+            <div class="col-md-12 mb-3 mt-2">
+              <label class="form-label">Email</label>
+              <input v-model="newRecord.email" type="email" class="form-control" />
+            </div>
+          </div>
+
 
             <!-- Bước 2: Thú cưng -->
             <h6 class="fw-bold">2. Thông tin thú cưng</h6>
@@ -164,37 +170,36 @@
               </div>
             </div>
 
-            <!-- Nếu là khách hàng mới hoặc là thú cưng mới -->
-            <div v-if="customerType === 'new'" class="row mb-3">
-              <div class="col-md-6">
-                <label class="form-label">Tên thú cưng</label>
-                <input v-model="newRecord.ten_thu_cung" type="text" class="form-control" />
-              </div>
-              <div class="col-md-3">
-                <label class="form-label">Giống loài</label>
-                <select v-model="newRecord.chung_loai" class="form-select">
-                  <option value="0">Chó</option>
-                  <option value="1">Mèo</option>
-                </select>
-              </div>
-              <div class="col-md-3">
-                <label class="form-label">Giới tính</label>
-                <select v-model="newRecord.gioi_tinh_pet" class="form-select">
-                  <option :value="1">Đực</option>
-                  <option :value="0">Cái</option>
-                </select>
-              </div>
-              <br>
-              <div class="col-md-6"></div>
-              <div class="col-md-3">
-                <label class="form-label mt-2">Tuổi</label>
-                <input v-model="newRecord.tuoi" type="number" min="0" class="form-control" />
-              </div>
-              <div class="col-md-3">
-                <label class="form-label mt-2">Cân nặng (kg)</label>
-                <input v-model="newRecord.can_nang" type="number" step="0.1" min="0" class="form-control" />
-              </div>
+          <!-- Nếu là khách hàng mới hoặc là thú cưng mới -->
+          <div v-if="customerType === 'new'" class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Tên thú cưng</label>
+              <input v-model="newRecord.ten_thu_cung" type="text" class="form-control" />
             </div>
+            <div class="col-md-3">
+              <label class="form-label">Giống loài</label>
+              <select v-model="newRecord.chung_loai" class="form-select">
+                <option value="0">Chó</option>
+                <option value="1">Mèo</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Giới tính</label>
+              <select v-model="newRecord.gioi_tinh_pet" class="form-select">
+                <option :value="1">Đực</option>
+                <option :value="0">Cái</option>
+              </select>
+            </div>
+            <br class="mb-3">
+            <div class="col-md-6 mt-2">
+              <label class="form-label">Tuổi</label>
+              <input v-model="newRecord.tuoi" type="text" class="form-control" />
+            </div>
+            <div class="col-md-6  mt-2">
+              <label class="form-label">Cân nặng</label>
+              <input v-model="newRecord.can_nang" type="text" class="form-control" />
+            </div>
+          </div>
 
             <!-- Bước 3: Hồ sơ bệnh án -->
             <h6 class="fw-bold">3. Thông tin bệnh án</h6>
@@ -367,6 +372,7 @@ export default {
       newRecord: {
         ten_khach: '',
         sdt: '',
+        email: '',
         ten_thu_cung: '',
         chung_loai: '0',
         gioi_tinh_pet: '1',
@@ -532,7 +538,8 @@ export default {
         }
 
         // Send data for new customer
-        axios.post('http://127.0.0.1:8000/api/ho-so-benh-an/them', {
+        axios 
+        .post('http://127.0.0.1:8000/api/ho-so-benh-an/them', {
           ...this.newRecord,
           is_existing_customer: false
         })

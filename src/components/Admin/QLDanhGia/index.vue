@@ -24,7 +24,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(value, index) in list_danh_gia" :key="value.id">
+                        <template v-for="(value, index) in list_danh_gia" :key="index">
+                            <tr>
                             <td class="text-center align-middle">{{ index + 1 }}</td>
                             <td class="text-center align-middle">{{ value.ho_va_ten }}</td>
                             <td class="text-center align-middle">{{ value.noi_dung }}</td>
@@ -40,6 +41,7 @@
                                 </button>
                             </td>
                         </tr>
+                        </template>
                     </tbody>
 
                 </table>
@@ -51,7 +53,7 @@
 
 import axios from 'axios';
 import { createToaster } from "@meforma/vue-toaster";
-
+import axios from 'axios';  
 const toaster = createToaster({ position: "top-right" });
 
 export default {
@@ -80,6 +82,7 @@ export default {
         load() {
             axios.get('http://127.0.0.1:8000/api/danh-gia/load')
                 .then((res) => {
+                    console.log("API load trả về:", res.data);
                     if (res.data.status) {
                         this.list_danh_gia = res.data.data;
                     } else {
@@ -132,7 +135,7 @@ export default {
                 })
                 .catch(() => console.error('Lỗi khi tìm kiếm'));
         }
-    }
+    },
 }
 
 </script>

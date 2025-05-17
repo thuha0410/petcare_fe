@@ -219,7 +219,7 @@ export default {
         },
         loadData() {
             axios
-                .get('http://127.0.0.1:8000/api/gio/load-gio',
+                .get('http://127.0.0.1:8000/api/gio/load',
                     {
                         headers: {
                             Authorization: 'Bearer ' + localStorage.getItem('token_admin')
