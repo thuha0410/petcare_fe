@@ -33,11 +33,6 @@
             </button>
           </div>
         </div>
-        <div class="col-md-4 text-end">
-          <button @click="openThemMoiModal" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#themMoi">
-            <i class="fas fa-plus"></i> Thêm hồ sơ bệnh án
-          </button>
-        </div>
       </div>
 
       <div class="table-responsive">
@@ -123,13 +118,19 @@
           <!-- Nếu là khách hàng đã có -->
           <div v-if="customerType === 'existing'" class="row mb-3">
             <div class="col-md-12">
-              <label class="form-label">Chọn khách hàng</label>
-              <select v-model="selectedCustomerId" @change="loadCustomerPets" class="form-select">
-                <option value="">-- Chọn khách hàng --</option>
-                <option v-for="customer in customers" :key="customer.id" :value="customer.id">
-                  {{ customer.ho_va_ten }} ({{ customer.so_dien_thoai }})
-                </option>
-              </select>
+              <!-- có thể tìm kiếm trong select -->
+              <div class="position-relative">
+                <input type="text" class="form-control" v-model="searchKhachHang" @input="locKhachHang"
+                  @focus="hienDropdown = true" @blur="anDropdown" placeholder="Tìm theo tên hoặc SĐT..." />
+                <ul v-if="hienDropdown && khachHangGoiY.length"
+                  class="list-group position-absolute w-100 zindex-dropdown shadow-sm"
+                  style="max-height: 200px; overflow-y: auto;">
+                  <li v-for="(kh, index) in khachHangGoiY" :key="index" class="list-group-item list-group-item-action"
+                    @mousedown.prevent="chonKhachHang(kh)">
+                    {{ kh.ho_va_ten }} ({{ kh.so_dien_thoai }})
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
 
@@ -151,7 +152,6 @@
           <!-- Nếu là khách hàng đã có -->
           <div v-if="customerType === 'existing'" class="row mb-3">
             <div class="col-md-12">
-              <label class="form-label">Chọn thú cưng</label>
               <select v-model="selectedPetId" @change="selectPet" class="form-select" :disabled="!selectedCustomerId">
                 <option value="">-- Chọn thú cưng --</option>
                 <option v-for="pet in customerPets" :key="pet.id" :value="pet.id">
@@ -181,6 +181,16 @@
                 <option :value="0">Cái</option>
               </select>
             </div>
+            <br>
+            <div class="col-md-6"></div>
+            <div class="col-md-3">
+              <label class="form-label mt-2">Tuổi</label>
+              <input v-model="newRecord.tuoi" type="number" min="0" class="form-control" />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label mt-2">Cân nặng (kg)</label>
+              <input v-model="newRecord.can_nang" type="number" step="0.1" min="0" class="form-control" />
+            </div>
           </div>
 
           <!-- Bước 3: Hồ sơ bệnh án -->
@@ -188,16 +198,12 @@
           <div class="row mb-3">
             <div class="col-md-4">
               <label class="form-label">Ngày khám</label>
-              <input v-model="newRecord.ngay_kham" type="date" class="form-control" />
+              <input v-model="newRecord.ngay_kham" type="date" class="form-control" readonly />
             </div>
             <div class="col-md-4">
-              <label class="form-label">Bác sĩ</label>
-              <select v-model="newRecord.id_bac_si" class="form-select">
-                <option disabled value="">-- Chọn bác sĩ--</option>
-                <option v-for="bs in danhSachBacSi" :key="bs.id" :value="bs.id">
-                  {{ bs.ten_nv }}
-                </option>
-              </select>
+              <label class="form-label">Bác sĩ phụ trách</label>
+              <input type="text" class="form-control" :value="tenBacSiDangNhap" readonly />
+              <input type="hidden" v-model="newRecord.id_bac_si" />
             </div>
             <div class="col-md-4">
               <label class="form-label">Tình trạng</label>
@@ -214,7 +220,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" @click="submitThemHoSo">Lưu</button>
+          <button type="button" class="btn btn-primary">Lưu</button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
         </div>
       </div>
@@ -346,66 +352,11 @@
     </div>
   </div>
 
-  <!-- Modal Thêm mới hồ sơ bệnh án -->
-  <div class="modal fade" id="themMoi" tabindex="-1" aria-labelledby="themMoiModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header bg-primary text-white">
-          <h1 class="modal-title fs-5" id="themMoiModalLabel">THÊM MỚI HỒ SƠ BỆNH ÁN</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label class="form-label fw-bold">Khách hàng <span class="text-danger">*</span></label>
-              <select v-model="ho_so_benh_an_moi.id_kh" class="form-select" @change="loadPetsByKhachHang">
-                <option value="" disabled selected>-- Chọn khách hàng --</option>
-                <option v-for="kh in danhSachKhachHang" :key="kh.id" :value="kh.id">
-                  {{ kh.ho_va_ten }} ({{ kh.so_dien_thoai }})
-                </option>
-              </select>
-              <div v-if="errors.id_kh" class="text-danger mt-1">{{ errors.id_kh }}</div>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-bold">Thú cưng <span class="text-danger">*</span></label>
-              <select v-model="ho_so_benh_an_moi.id_pet" class="form-select">
-                <option value="" disabled selected>-- Chọn thú cưng --</option>
-                <option v-for="pet in danhSachThuCung" :key="pet.id" :value="pet.id">
-                  {{ pet.ten_pet }} ({{ pet.gioi_tinh ? 'Đực' : 'Cái' }})
-                </option>
-              </select>
-              <div v-if="errors.id_pet" class="text-danger mt-1">{{ errors.id_pet }}</div>
-            </div>
-          </div>
-          
-          <div class="mb-3">
-            <label class="form-label fw-bold">Chẩn đoán <span class="text-danger">*</span></label>
-            <textarea v-model="ho_so_benh_an_moi.chuan_doan" class="form-control" rows="4" 
-              placeholder="Nhập chẩn đoán bệnh lý"></textarea>
-            <div v-if="errors.chuan_doan" class="text-danger mt-1">{{ errors.chuan_doan }}</div>
-          </div>
-          
-          <div class="mb-3">
-            <label class="form-label fw-bold">Tình trạng</label>
-            <select v-model="ho_so_benh_an_moi.tinh_trang" class="form-select">
-              <option value="1">Đang điều trị</option>
-              <option value="0">Đã khỏi</option>
-            </select>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-          <button type="button" class="btn btn-primary" @click="themHoSoBenhAn">Tạo hồ sơ</button>
-        </div>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 import { createToaster } from "@meforma/vue-toaster";
-
 const toaster = createToaster({ position: "top-right" });
 export default {
   data() {
@@ -417,6 +368,8 @@ export default {
         ten_thu_cung: '',
         chung_loai: '0',
         gioi_tinh_pet: '1',
+        tuoi: '',
+        can_nang:'',
         ngay_kham: '',
         id_bac_si: '',
         tinh_trang: 1,
@@ -442,10 +395,34 @@ export default {
       customerPets: [],
       selectedPetId: '',
       customers: [],
-      selectedPetInfo: null
+      selectedPetInfo: null,
+      searchKhachHang: '',
+      hienDropdown: false,
+      khachHangGoiY: [],
+      tenBacSiDangNhap: '',
     }
   },
   methods: {
+    locKhachHang() {
+      const tuKhoa = this.searchKhachHang.toLowerCase();
+      this.khachHangGoiY = this.customers.filter(kh =>
+        kh.ho_va_ten.toLowerCase().includes(tuKhoa) ||
+        kh.so_dien_thoai.includes(tuKhoa)
+      );
+    },
+
+    chonKhachHang(khach) {
+      this.selectedCustomerId = khach.id;
+      this.searchKhachHang = `${khach.ho_va_ten} (${khach.so_dien_thoai})`;
+      this.hienDropdown = false;
+      this.loadCustomerPets();
+    },
+
+    anDropdown() {
+      setTimeout(() => {
+        this.hienDropdown = false;
+      }, 150); // để tránh bị tắt trước khi click chọn
+    },
     submitThemHoSo() {
       // Validate form based on customer type
       if (this.customerType === 'existing') {
@@ -564,7 +541,11 @@ export default {
     },
     load() {
       axios
-        .get('http://127.0.0.1:8000/api/ho-so-benh-an/load')
+        .get('http://127.0.0.1:8000/api/ho-so-benh-an/load', {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+          }
+        })
         .then((res) => {
           if (res.data.status) {
             this.list_ho_so_benh_an = res.data.data;
@@ -701,6 +682,16 @@ export default {
         .then((res) => {
           if (res.data.status) {
             this.danhSachBacSi = res.data.data;
+
+            // Gán ID bác sĩ từ localStorage nếu chưa gán
+            const idBacSi = localStorage.getItem('id_admin');
+            if (idBacSi) {
+              this.newRecord.id_bac_si = idBacSi;
+
+              // Tìm tên bác sĩ đang đăng nhập
+              const bacSi = this.danhSachBacSi.find(b => b.id == idBacSi);
+              this.tenBacSiDangNhap = bacSi ? bacSi.ten_nv : 'Không rõ';
+            }
           } else {
             toaster.error('Lỗi khi tải danh sách bác sĩ');
           }

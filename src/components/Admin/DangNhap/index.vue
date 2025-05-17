@@ -75,7 +75,7 @@ export default {
                 if (data.status === 1) {
                     toaster.success(data.message);
                     localStorage.setItem('token_admin', data.token);
-                    
+                    localStorage.setItem('id_admin', data.id);
                     localStorage.setItem('name_admin', data.name);
                     localStorage.setItem('email_admin', data.email);
 

@@ -212,7 +212,6 @@ const routes = [
     {
         path : '/admin/in-hoa-don',
         component: ()=>import('../components/Admin/QLThanhToan/InHoaDon/index.vue'),
-        meta: {layout:'admin'},
         beforeEnter: kiemTraAdminVaQuyen(13)
     },
     {

@@ -24,15 +24,20 @@
           </div>
           <div v-else class="row">
             <div v-for="(item, index) in lich_hen_hom_nay" :key="index" class="col-lg-4 col-md-6 mb-3">
-              <div class="card h-100 border border-dark card-glow" :class="{
-                'border-primary bg-primary bg-opacity-10': item.trang_thai === 1,
-                'border-danger bg-danger bg-opacity-10': item.trang_thai === 0
+              <div class="card h-100 border border-dark " :class="{
+                'border-primary ': item.trang_thai === 1,
+                'border-danger ': item.trang_thai === 0
               }">
                 <div class="card-body">
                   <h5 class="card-title text-center mb-3">
                     <i class="fa-solid fa-clock me-2 text-primary"></i>
                     {{ item.khung_gio }}
                   </h5>
+                  <p v-if="kiemTraTreGio(item)"  class="alert alert-warning alert-shake d-flex align-items-center mt-2">
+                    <i class="fa-solid fa-2x fa-triangle-exclamation" style="color: #FFD43B;"></i>  Khách đến trễ {{
+                    tinhSoPhutTre(item) }} phút
+                  </p>
+                  
                   <div class="card-text">
                     <p><i class="fa-solid fa-paw me-2 text-info"></i><strong>Tên pet:</strong> {{ item.ten_thu_cung }}
                     </p>
@@ -204,6 +209,25 @@ export default {
 
 
   methods: {
+    kiemTraTreGio(item) {
+      const gioHen = item.khung_gio.split(' - ')[0];
+      const [gio, phut] = gioHen.split(':');
+      const thoiGianHen = new Date(`${item.ngay}T${gio.padStart(2, '0')}:${phut.padStart(2, '0')}:00`);
+      const bayGio = new Date();
+
+      return bayGio - thoiGianHen > 15 * 60000; // trễ > 15 phút
+    },
+
+    tinhSoPhutTre(item) {
+      const gioHen = item.khung_gio.split(' - ')[0];
+      const [gio, phut] = gioHen.split(':');
+      const thoiGianHen = new Date(`${item.ngay}T${gio.padStart(2, '0')}:${phut.padStart(2, '0')}:00`);
+      const bayGio = new Date();
+
+      const tre = Math.floor((bayGio - thoiGianHen) / 60000);
+      return tre > 0 ? tre : 0;
+    },
+
     khamNgay(item) {
       axios.post('http://127.0.0.1:8000/api/ho-so-benh-an/tao-tu-lich', {
         id_lich: item.id,
@@ -479,5 +503,15 @@ export default {
     padding: 8px;
     font-size: 0.9rem;
   }
+}
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  50% { transform: translateX(3px); }
+  75% { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+.alert-shake {
+  animation: shake 0.3s ease-in-out;
 }
 </style>
