@@ -33,6 +33,11 @@
             </button>
           </div>
         </div>
+        <div class="col-md-4 text-end">
+          <button @click="openThemMoiModal" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#themMoi">
+            <i class="fas fa-plus"></i> Thêm hồ sơ bệnh án
+          </button>
+        </div>
       </div>
 
       <div class="table-responsive">
@@ -101,18 +106,20 @@
           <!-- Lựa chọn loại khách hàng -->
           <div class="mb-3">
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="customerType" id="existingCustomer" value="existing" v-model="customerType">
+              <input class="form-check-input" type="radio" name="customerType" id="existingCustomer" value="existing"
+                v-model="customerType">
               <label class="form-check-label" for="existingCustomer">Khách hàng đã có</label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="customerType" id="newCustomer" value="new" v-model="customerType">
+              <input class="form-check-input" type="radio" name="customerType" id="newCustomer" value="new"
+                v-model="customerType">
               <label class="form-check-label" for="newCustomer">Khách hàng mới</label>
             </div>
           </div>
 
           <!-- Bước 1: Khách hàng -->
           <h6 class="fw-bold">1. Thông tin khách hàng</h6>
-          
+
           <!-- Nếu là khách hàng đã có -->
           <div v-if="customerType === 'existing'" class="row mb-3">
             <div class="col-md-12">
@@ -140,7 +147,7 @@
 
           <!-- Bước 2: Thú cưng -->
           <h6 class="fw-bold">2. Thông tin thú cưng</h6>
-          
+
           <!-- Nếu là khách hàng đã có -->
           <div v-if="customerType === 'existing'" class="row mb-3">
             <div class="col-md-12">
@@ -338,6 +345,61 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal Thêm mới hồ sơ bệnh án -->
+  <div class="modal fade" id="themMoi" tabindex="-1" aria-labelledby="themMoiModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h1 class="modal-title fs-5" id="themMoiModalLabel">THÊM MỚI HỒ SƠ BỆNH ÁN</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Khách hàng <span class="text-danger">*</span></label>
+              <select v-model="ho_so_benh_an_moi.id_kh" class="form-select" @change="loadPetsByKhachHang">
+                <option value="" disabled selected>-- Chọn khách hàng --</option>
+                <option v-for="kh in danhSachKhachHang" :key="kh.id" :value="kh.id">
+                  {{ kh.ho_va_ten }} ({{ kh.so_dien_thoai }})
+                </option>
+              </select>
+              <div v-if="errors.id_kh" class="text-danger mt-1">{{ errors.id_kh }}</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Thú cưng <span class="text-danger">*</span></label>
+              <select v-model="ho_so_benh_an_moi.id_pet" class="form-select">
+                <option value="" disabled selected>-- Chọn thú cưng --</option>
+                <option v-for="pet in danhSachThuCung" :key="pet.id" :value="pet.id">
+                  {{ pet.ten_pet }} ({{ pet.gioi_tinh ? 'Đực' : 'Cái' }})
+                </option>
+              </select>
+              <div v-if="errors.id_pet" class="text-danger mt-1">{{ errors.id_pet }}</div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label fw-bold">Chẩn đoán <span class="text-danger">*</span></label>
+            <textarea v-model="ho_so_benh_an_moi.chuan_doan" class="form-control" rows="4" 
+              placeholder="Nhập chẩn đoán bệnh lý"></textarea>
+            <div v-if="errors.chuan_doan" class="text-danger mt-1">{{ errors.chuan_doan }}</div>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label fw-bold">Tình trạng</label>
+            <select v-model="ho_so_benh_an_moi.tinh_trang" class="form-select">
+              <option value="1">Đang điều trị</option>
+              <option value="0">Đã khỏi</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-primary" @click="themHoSoBenhAn">Tạo hồ sơ</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -475,7 +537,7 @@ export default {
       }
     },
     resetNewRecordForm() {
-      this.newRecord = { 
+      this.newRecord = {
         ten_khach: '',
         sdt: '',
         ten_thu_cung: '',
@@ -676,9 +738,9 @@ export default {
       this.selectedPetId = '';
       this.customerPets = [];
       this.selectedPetInfo = null;
-      
+
       if (!this.selectedCustomerId) return;
-      
+
       axios
         .get(`http://127.0.0.1:8000/api/pet/load-by-customer/${this.selectedCustomerId}`)
         .then((res) => {
@@ -694,7 +756,7 @@ export default {
     },
     selectPet() {
       if (!this.selectedPetId) return;
-      
+
       // Find the selected pet from customerPets
       const selectedPet = this.customerPets.find(pet => pet.id == this.selectedPetId);
       if (selectedPet) {
@@ -703,8 +765,9 @@ export default {
     },
     loadCustomers() {
       axios
-        .get('http://127.0.0.1:8000/api/khach-hang/load')
+        .get('http://127.0.0.1:8000/api/khach-hang/load',)
         .then((res) => {
+          console.log('Khach hang response:', res.data);
           if (res.data.status) {
             this.customers = res.data.data;
           } else {
@@ -720,7 +783,7 @@ export default {
     this.load();
     this.loadDanhSachBacSi();
     this.loadCustomers();
-    
+
     // Set today's date as default for ngay_kham
     const today = new Date();
     const year = today.getFullYear();

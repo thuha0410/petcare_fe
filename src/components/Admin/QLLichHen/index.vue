@@ -8,31 +8,32 @@
             <div class="row">
                 <div class="col-lg-4">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Tìm kiếm" aria-label="Recipient's username"
+                        <input type="text" class="form-control" v-model="tim_kiem" placeholder="Tìm kiếm" aria-label="Recipient's username"
                             aria-describedby="button-addon2">
-                        <button class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i
+                        <button @click="timKiem" class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i
                                 class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
                     </div>
                 </div>
                 <div class="col-lg-3">
                     <!-- Lọc ngày -->
                     <div class="input-group">
-                        <input type="date" class="form-control" />
-                        <button class="btn btn-dark">Lọc</button>
-
+                        <input type="date" class="form-control" v-model="ngay_loc" />
+                        <button @click="locTheoNgay" class="btn btn-dark">Lọc</button>
                     </div>
                 </div>
                 <div class="col-lg-3">
                     <!-- lọc trạng thái -->
                     <div class="input-group">
-                        <select class="form-select">
+                        <select class="form-select" v-model="tinh_trang_loc">
                             <option value="">-- Tất cả trạng thái --</option>
-                            <option value="1">Đã thực hiện</option>
-                            <option value="0">Chưa thực hiện</option>
-
+                            <option value="1">Đã điều trị</option>
+                            <option value="0">Chờ điều trị</option>
                         </select>
-                        <button class="btn btn-dark">Lọc</button>
+                        <button @click="locTheoTrangThai" class="btn btn-dark">Lọc</button>
                     </div>
+                </div>
+                <div class="col-lg-2">
+                    <button @click="loadLichHen" class="btn btn-success"><i class="fa-solid fa-rotate"></i></button>
                 </div>
             </div>
             <div class="table table-resposive">
@@ -134,6 +135,9 @@ export default {
             nhan_vien: [],
             dich_vu: [],
             lich_muon_dieu_tri: null,
+            tim_kiem: '',
+            ngay_loc: '',
+            tinh_trang_loc: '',
         }
     },
     mounted() {
@@ -288,6 +292,78 @@ export default {
                 .then((res) => {
                     this.dich_vu = res.data.data
                 })
+        },
+        timKiem() {
+            axios
+                .post('http://127.0.0.1:8000/api/lich-hen/tim-kiem', { noi_dung: this.tim_kiem },
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
+                .then((res) => {
+                    if (res.data.status) {
+                        this.list_lich = res.data.data;
+                    } else {
+                        toaster.error(res.data.message || 'Lỗi khi tìm kiếm');
+                    }
+                })
+                .catch((err) => {
+                    toaster.error('Lỗi khi tìm kiếm: ' + err.message);
+                });
+        },
+        
+        locTheoNgay() {
+            if (!this.ngay_loc) {
+                toaster.error('Vui lòng chọn ngày để lọc');
+                return;
+            }
+            
+            axios
+                .post('http://127.0.0.1:8000/api/lich-hen/loc-theo-ngay', { ngay: this.ngay_loc },
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
+                .then((res) => {
+                    if (res.data.status) {
+                        this.list_lich = res.data.data;
+                    } else {
+                        toaster.error(res.data.message || 'Lỗi khi lọc theo ngày');
+                    }
+                })
+                .catch((err) => {
+                    toaster.error('Lỗi khi lọc theo ngày: ' + err.message);
+                });
+        },
+        
+        locTheoTrangThai() {
+            if (this.tinh_trang_loc === '') {
+                this.loadLichHen();
+                return;
+            }
+            
+            axios
+                .post('http://127.0.0.1:8000/api/lich-hen/loc-theo-trang-thai', { tinh_trang: this.tinh_trang_loc },
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                        }
+                    }
+                )
+                .then((res) => {
+                    if (res.data.status) {
+                        this.list_lich = res.data.data;
+                    } else {
+                        toaster.error(res.data.message || 'Lỗi khi lọc theo trạng thái');
+                    }
+                })
+                .catch((err) => {
+                    toaster.error('Lỗi khi lọc theo trạng thái: ' + err.message);
+                });
         },
     },
 }

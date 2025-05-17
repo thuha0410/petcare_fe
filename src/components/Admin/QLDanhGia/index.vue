@@ -5,8 +5,8 @@
         </div>
         <div class="card-body">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" v-model="tim_kiem.noi_dung" @input="timkiem" placeholder="Tìm kiếm"
-                    aria-label="Recipient's username" aria-describedby="button-addon2">
+                <input type="text" class="form-control" v-model="tim_kiem.noi_dung" @input="timkiem"
+                    placeholder="Tìm kiếm" aria-label="Recipient's username" aria-describedby="button-addon2">
 
                 <button v-on:click="timkiem()" class="btn btn-outline-secondary text-dark" type="button"
                     id="button-addon2"><i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
@@ -50,11 +50,14 @@
     </div>
 </template>
 <script>
+
+import axios from 'axios';
 import { createToaster } from "@meforma/vue-toaster";
 import axios from 'axios';  
 const toaster = createToaster({ position: "top-right" });
 
 export default {
+    
     data() {
         return {
             danh_gia: {
@@ -68,43 +71,31 @@ export default {
             tim_kiem: {
                 noi_dung: ''
             },
-            del_danh_gia: {}, 
+            del_danh_gia: {},
         }
     },
     mounted() {
-        this.load();
         this.loadKH();
+            this.load();
     },
     methods: {
         load() {
-            axios
-            .get('http://127.0.0.1:8000/api/danh-gia/load',
-                {
-                        headers: {
-                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
-                        }
-                    }
-            )
+            axios.get('http://127.0.0.1:8000/api/danh-gia/load')
                 .then((res) => {
                     console.log("API load trả về:", res.data);
                     if (res.data.status) {
                         this.list_danh_gia = res.data.data;
                     } else {
-                        console.error("Không có dữ liệu đánh giá");
+                        toaster.error("Không có dữ liệu đánh giá");
                     }
                 })
                 .catch((err) => {
-                    console.error("Lỗi khi load đánh giá:", err);
+                    toaster.error("Lỗi khi load đánh giá: " + err.message);
+                    console.error("Chi tiết:", err.response?.data || err.message);
                 });
         },
         loadKH() {
-            axios.get("http://127.0.0.1:8000/api/khach-hang/loadkha",
-                {
-                        headers: {
-                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
-                        }
-                    }
-            )
+            axios.get("http://127.0.0.1:8000/api/khach-hang/loadkh-ql-dgia")
                 .then((res) => {
                     this.list_khach_hang = res.data.data;
                     console.log("Dữ liệu khách hàng:", this.list_khach_hang);
@@ -114,13 +105,7 @@ export default {
                 });
         },
         xoa() {
-            axios.post('http://127.0.0.1:8000/api/danh-gia/xoa', this.del_danh_gia,
-                {
-                        headers: {
-                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
-                        }
-                    }
-            )
+            axios.post('http://127.0.0.1:8000/api/danh-gia/xoa', this.del_danh_gia)
                 .then((res) => {
                     if (res.data.status) {
                         toaster.success(res.data.message);
@@ -132,13 +117,7 @@ export default {
                 .catch(() => toaster.error('Lỗi khi gọi API xóa'));
         },
         doiTT(x) {
-            axios.post('http://127.0.0.1:8000/api/danh-gia/doi-TT', x,
-                {
-                        headers: {
-                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
-                        }
-                    }
-            )
+            axios.post('http://127.0.0.1:8000/api/danh-gia/doi-TT', x)
                 .then((res) => {
                     if (res.data.status) {
                         toaster.success(res.data.message);
@@ -150,13 +129,7 @@ export default {
                 .catch(() => toaster.error('Lỗi khi gọi API đổi trạng thái'));
         },
         timkiem() {
-            axios.post('http://127.0.0.1:8000/api/danh-gia/tim-kiem', this.tim_kiem,
-                {
-                        headers: {
-                            Authorization: 'Bearer ' + localStorage.getItem('token_admin')
-                        }
-                    }
-            )
+            axios.post('http://127.0.0.1:8000/api/danh-gia/tim-kiem', this.tim_kiem)
                 .then((res) => {
                     this.list_danh_gia = res.data.data;
                 })
