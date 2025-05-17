@@ -88,7 +88,7 @@
                     <h3 class="text-white text-center">Chọn giờ</h3>
                 </div>
                 <div class="card-body d-flex flex-wrap justify-content-center">
-                    <button v-for="(value, index) in availableTimes" :key="index" class="btn m-2"
+                    <button v-for="(value, index) in availableTimes.filter(g => g.tinh_trang == 0)" :key="index" class="btn m-2"
                         :disabled="isFull(value.id) || isPastTime(value.khung_gio)" @click="selectTime(value)" :class="{
                             'btn-danger': isFull(value.id),
                             'btn-warning': isPastTime(value.khung_gio) && !isFull(value.id),
