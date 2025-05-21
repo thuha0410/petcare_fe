@@ -236,8 +236,7 @@ const routes = [
     {
         path : '/doctor/in-don-thuoc',
         component: ()=>import('../components/Doctor/InDonThuoc/index.vue'),
-        beforeEnter: kiemTraAdminVaQuyen(17),
-        meta: {layout:'doctor'}
+        beforeEnter: kiemTraAdminVaQuyen(17)
     },
     {
         path : '/doctor/ke-don-thuoc',

@@ -71,7 +71,7 @@
                       Đã khỏi
                     </button>
                   </td>
-                  <td class="text-center">
+                  <td class="text-end">
                     <button v-if="value.tinh_trang == 1" @click="openUpdateModal(value)" data-bs-toggle="modal"
                       data-bs-target="#sua" class="btn btn-success me-2">
                       <i class="fas fa-edit"></i> Cập nhật
@@ -153,7 +153,6 @@
               <input v-model="newRecord.email" type="email" class="form-control" />
             </div>
           </div>
-
 
             <!-- Bước 2: Thú cưng -->
             <h6 class="fw-bold">2. Thông tin thú cưng</h6>

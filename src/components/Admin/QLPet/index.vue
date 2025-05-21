@@ -25,7 +25,6 @@
                             <th>Tuổi</th>
                             <th>Hình ảnh</th>
                             <th>Cân nặng(kg)</th>
-                            <th>Tình trạng</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -42,13 +41,7 @@
                                     <img class=" img-fluid" style="height: 100px; width: 100px;" :src="value.hinh_anh"
                                         alt="">
                                 </td>
-                                <td>{{ value.can_nang }}</td>
-                                <td>
-                                    <button v-on:click="doitt(value)" v-if="value.tinh_trang == 0"
-                                        class="btn btn-success">Đã khám</button>
-                                    <button v-on:click="doitt(value)" v-if="value.tinh_trang == 1"
-                                        class="btn btn-warning">Chưa khám</button>
-                                </td>
+                                <td>{{ value.can_nang }}</td>y
                                 <td>
                                     <button v-on:click="Object.assign(sua_pet, value)" data-bs-toggle="modal"
                                         data-bs-target="#sua" class="btn btn-primary">Sửa</button>
@@ -93,12 +86,7 @@
                     <label for="">Hình ảnh</label>
                     <input v-model="pet.hinh_anh" class="form-control mb-2" type="text">
                     <label for="">Cân nặng</label>
-                    <input v-model="pet.can_nang" class="form-control mb-2" type="text">
-                    <label for="">Tình trạng</label>
-                    <select v-model="pet.tinh_trang" class="form-control mb-2" name="" id="">
-                        <option value="0">Đã khám</option>
-                        <option value="1">Chưa khám</option>
-                    </select>
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" v-on:click="them()" class="btn btn-primary"
@@ -154,11 +142,6 @@
                     <input class="form-control mb-2" v-model="sua_pet.hinh_anh" type="text">
                     <label for="">Cân nặng</label>
                     <input v-model="sua_pet.can_nang" class="form-control mb-2" type="text">
-                    <label for="">Tình trạng</label>
-                    <select class="form-control mb-2" name="" id="">
-                        <option value="1">Đã khám</option>
-                        <option value="0">Chưa khám</option>
-                    </select>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" v-on:click="sua()" data-bs-dismiss="modal">Cập

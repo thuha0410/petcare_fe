@@ -134,8 +134,32 @@ export default {
     },
     mounted() {
         this.loadDG();
+        this.kiemTraKH();
     },
     methods: {
+        kiemTraKH() {
+            const token = localStorage.getItem("token_client");
+            if (!token) {
+                this.khach_hang = {};
+                return;
+            }
+            
+            axios.get("http://127.0.0.1:8000/api/khach-hang/lay-du-lieu", {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            })
+            .then((res) => {
+                if (res.data.status == 1) {
+                    this.khach_hang = res.data.data;
+                } else {
+                    this.khach_hang = {};
+                }
+            })
+            .catch(() => {
+                this.khach_hang = {};
+            });
+        },
         them() {
             if (!this.khach_hang.id) {
                 toaster.error("Bạn cần đăng nhập để gửi đánh giá.");

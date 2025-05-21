@@ -56,7 +56,7 @@
                     <td>
                       <select v-model="item.id_thuoc" class="form-control">
                         <option v-for="thuoc in thuocs" :key="thuoc.id" :value="thuoc.id">
-                          {{ thuoc.ten_thuoc }}
+                          {{ thuoc.ten_thuoc }} (Tồn: {{ thuoc.so_luong_ton }})
                         </option>
                       </select>
                     </td>
@@ -443,6 +443,7 @@ export default {
     },
     async luuDonThuoc() {
       try {
+        // Kiểm tra chọn pet, bác sĩ và hồ sơ bệnh án
         if (!this.don_thuoc.id_pet) {
           toaster.error('Vui lòng chọn pet');
           return;
@@ -460,6 +461,40 @@ export default {
           return;
         }
 
+        // Kiểm tra trùng thuốc & tồn kho
+        const seen = new Set();
+        for (let item of this.chi_tiet) {
+          const thuoc = this.thuocs.find(t => t.id === item.id_thuoc);
+
+          if (!item.id_thuoc) {
+            toaster.error('Vui lòng chọn thuốc');
+            return;
+          }
+
+          if (!thuoc) {
+            toaster.error('Thuốc không hợp lệ.');
+            return;
+          }
+
+          if (seen.has(item.id_thuoc)) {
+            toaster.error(`Thuốc "${thuoc.ten_thuoc}" đã được thêm rồi.`);
+            return;
+          } else {
+            seen.add(item.id_thuoc);
+          }
+
+          if (!item.so_luong || item.so_luong <= 0) {
+            toaster.error(`Vui lòng nhập số lượng hợp lệ cho thuốc "${thuoc.ten_thuoc}"`);
+            return;
+          }
+
+          if (item.so_luong > thuoc.so_luong_ton) {
+            toaster.error(`Thuốc "${thuoc.ten_thuoc}" chỉ còn ${thuoc.so_luong_ton} trong kho.`);
+            return;
+          }
+        }
+
+        // Chuẩn bị dữ liệu gửi lên server
         const payload = {
           id_hsba: this.don_thuoc.id_hsba,
           chi_tiet: this.chi_tiet
@@ -468,6 +503,8 @@ export default {
         const response = await api.post('http://127.0.0.1:8000/api/don-thuoc/them', payload);
         if (response.data.status) {
           toaster.success('Lưu đơn thuốc thành công');
+
+          // Reset sau khi lưu
           this.loadDanhSachDon();
           this.chi_tiet = [];
           this.don_thuoc.id_pet = '';
@@ -482,7 +519,8 @@ export default {
         console.error('Lỗi khi lưu đơn thuốc:', error);
         toaster.error('Lỗi khi lưu đơn thuốc');
       }
-    },
+    }
+    ,
     inDonThuoc(don) {
       console.log('Đơn thuốc cần in:', don);
       const routeData = this.$router.resolve({
