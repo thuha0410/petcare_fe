@@ -297,14 +297,21 @@ export default {
       maxReconnectAttempts: 3,
       isInputFocused: false,
       suggestedQuestions: [
-        'Các dịch vụ của phòng khám?',
-        'Giờ làm việc của phòng khám?',
-        'Làm thế nào để đặt lịch?',
-        'Các bác sĩ của phòng khám?',
-        'Cách chăm sóc chó mèo?',
-        'Các loại thú cưng được khám?',
-        'Giá dịch vụ spa?',
-        'Cách đến phòng khám?'
+        // Thông tin cơ bản về phòng khám
+        'Phòng khám mở cửa từ mấy giờ đến mấy giờ?',
+        'Chi phí khám tổng quát cho chó/mèo là bao nhiêu?',
+        'Địa chỉ chính xác của phòng khám PetCare ở đâu?',
+        'Phòng khám có làm việc vào Chủ nhật không?',
+        
+        // Dịch vụ
+        'Tôi muốn đặt lịch khám cho thú cưng',
+        'Dịch vụ spa cho thú cưng bao gồm những gì?',
+        'Chi phí tiêm phòng đầy đủ cho mèo con?',
+        
+        // Sức khỏe và khẩn cấp
+        'Chó tôi bị tiêu chảy và nôn, tôi nên làm gì?',
+        'Dấu hiệu khẩn cấp cần đưa thú cưng đi bác sĩ?',
+        'Số điện thoại cấp cứu thú cưng 24/7?'
       ],
       projectAnalysis: null,
       currentBookingState: null,
