@@ -8,10 +8,11 @@
             <div class="row">
                 <div class="col-lg-4">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" v-model="tim_kiem" placeholder="Tìm kiếm" aria-label="Recipient's username"
-                            aria-describedby="button-addon2">
-                        <button @click="timKiem" class="btn btn-outline-secondary text-dark" type="button" id="button-addon2"><i
-                                class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>Tìm</button>
+                        <input type="text" class="form-control" v-model="tim_kiem" placeholder="Tìm kiếm"
+                            aria-label="Recipient's username" aria-describedby="button-addon2">
+                        <button @click="timKiem" class="btn btn-outline-secondary text-dark" type="button"
+                            id="button-addon2"><i class="fa-solid fa-magnifying-glass"
+                                style="color: #000000;"></i>Tìm</button>
                     </div>
                 </div>
                 <div class="col-lg-3">
@@ -49,6 +50,7 @@
                             <th>Tên nhân viên</th>
                             <th>Tiền cọc </th>
                             <th>Tình trạng</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -70,6 +72,12 @@
                                         Chờ điều trị
                                     </button>
                                 </td>
+                                <td>
+                                    <button class="btn btn-danger" @click="hienModalXoa(value)">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </td>
+
                             </tr>
                         </template>
                     </tbody>
@@ -118,6 +126,23 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="modalXacNhanXoa" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">XÁC NHẬN XOÁ</h5>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xoá lịch hẹn này không?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+                    <button @click="xoaLichHen(id)" class="btn btn-danger" data-bs-dismiss="modal">Xoá</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </template>
 <script>
 import axios from 'axios';
@@ -138,6 +163,7 @@ export default {
             tim_kiem: '',
             ngay_loc: '',
             tinh_trang_loc: '',
+            lichMuonXoa: null,
         }
     },
     mounted() {
@@ -155,6 +181,34 @@ export default {
     },
 
     methods: {
+        hienModalXoa(lich) {
+            this.lichMuonXoa = lich;
+            const modal = new bootstrap.Modal(document.getElementById('modalXacNhanXoa'));
+            modal.show();
+        },
+        xoaLichHen(id) {
+            if (!this.lichMuonXoa) return;
+
+            axios
+                .post(`http://127.0.0.1:8000/api/lich-hen/xoa`, {
+                    id: this.lichMuonXoa.id
+                },{
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('token_admin')
+                    }
+                })
+                .then((res) => {
+                    if (res.data.status) {
+                        toaster.success(res.data.message);
+                        this.loadLichHen();
+                    } else {
+                        toaster.error(res.data.message || 'Xoá thất bại');
+                    }
+                })
+                .catch(() => {
+                    toaster.error('Đã xảy ra lỗi khi xoá');
+                });
+        },
         doi_trang_thai(lich) {
             this.lich_muon_dieu_tri = lich;
             const modal = new bootstrap.Modal(document.getElementById('modalXacNhanDieuTri'));
@@ -313,13 +367,13 @@ export default {
                     toaster.error('Lỗi khi tìm kiếm: ' + err.message);
                 });
         },
-        
+
         locTheoNgay() {
             if (!this.ngay_loc) {
                 toaster.error('Vui lòng chọn ngày để lọc');
                 return;
             }
-            
+
             axios
                 .post('http://127.0.0.1:8000/api/lich-hen/loc-theo-ngay', { ngay: this.ngay_loc },
                     {
@@ -339,13 +393,13 @@ export default {
                     toaster.error('Lỗi khi lọc theo ngày: ' + err.message);
                 });
         },
-        
+
         locTheoTrangThai() {
             if (this.tinh_trang_loc === '') {
                 this.loadLichHen();
                 return;
             }
-            
+
             axios
                 .post('http://127.0.0.1:8000/api/lich-hen/loc-theo-trang-thai', { tinh_trang: this.tinh_trang_loc },
                     {
