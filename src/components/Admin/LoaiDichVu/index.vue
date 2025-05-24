@@ -209,7 +209,7 @@ export default {
                         toaster.success(res.data.message);
                         this.loaddata();
                     } else {
-                        toaster.error("Cập nhật loại dịch vụ thất bại!")
+                        toaster.error("Cập nhật chưa thành công!")
                     }
                 })
                 .catch((error) => {

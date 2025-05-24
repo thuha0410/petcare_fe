@@ -95,15 +95,7 @@
 						</a>
 					</router-link>
 				</li>
-				<li class="nav-item">
-					<router-link to="/admin/ql-nhan-vien">
-						<a class="nav-link" href="/">
-							<div class="parent-icon"><i class="fa-solid fa-user-doctor"></i>
-							</div>
-							<div class="menu-title">QL Nhân Viên</div>
-						</a>
-					</router-link>
-				</li>
+				
 				<li class="nav-item">
 					<router-link to="/admin/ql-luong">
 						<a class="nav-link" href="/">
@@ -147,6 +139,15 @@
 							<div class="parent-icon"><i class="fa-solid fa-chart-simple"></i>
 							</div>
 							<div class="menu-title">Doanh thu</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
+					<router-link to="/admin/ql-nhan-vien">
+						<a class="nav-link" href="/">
+							<div class="parent-icon"><i class="fa-solid fa-user-doctor"></i>
+							</div>
+							<div class="menu-title">QL Nhân Viên</div>
 						</a>
 					</router-link>
 				</li>

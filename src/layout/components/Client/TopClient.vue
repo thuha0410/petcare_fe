@@ -42,7 +42,7 @@
       <div class="collapse navbar-collapse" :class="{ show: isOpen }" id="navbarNav">
         <!-- Thanh tìm kiếm ở giữa -->
         <form class="d-flex search-bar input-group me-2 mx-auto">
-          <input class="form-control" type="search" placeholder="Tìm kiếm..." v-model="searchQuery" />
+          <input class="form-control" type="search" placeholder="Tìm kiếm dịch vụ và..." v-model="searchQuery" />
           <button class="btn btn-search btn-outline-primary bg-white" type="">
             🔍
           </button>
@@ -89,7 +89,7 @@
 <script>
 import { createToaster } from "@meforma/vue-toaster";
 import apiClient from "../../../services/apiClient";
-const toaster = createToaster({ position: 'top-left' });
+const toaster = createToaster({ position: 'top-right' });
 
 export default {
   data() {

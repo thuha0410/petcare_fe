@@ -21,8 +21,9 @@
           <input v-model="mail.email" type="email" class="form-control" placeholder="Email của bạn" />
         </div>
 
-        <button class="button mt-3" @click="sendMail(value)">
-          Gửi email ngay
+        <button class="button mt-3" :disabled="isLoading" @click="sendMail">
+          <span v-if="isLoading"><i class="fas fa-spinner fa-spin"></i>Đang gửi email...</span>
+          <span v-else>Gửi email ngay</span>
         </button>
 
         <router-link to="/client/dang-nhap-dang-ky">
@@ -38,7 +39,7 @@
 <script>
 import axios from 'axios';
 import { createToaster } from '@meforma/vue-toaster';
-const toaster = createToaster({ position: 'top-left' });
+const toaster = createToaster({ position: 'top-right' });
 
 export default {
   data() {
@@ -46,6 +47,7 @@ export default {
       mail: {
         email: ''
       },
+      isLoading: false,
       activated: false,
       waitingForVerify: false,
     };
@@ -55,12 +57,28 @@ export default {
     if (isActivated === 'true') this.activated = true;
   },
   methods: {
-    sendMail(x) {
+    sendMail() {
+      this.isLoading = true;
+      const toast = toaster.info("Đang gửi mail...", { duration: 0 });
       axios
         .post("http://127.0.0.1:8000/api/khach-hang/send-mail", this.mail)
         .then((res) => {
-          toaster.success(res.data.message)
+          toaster.success(res.data.message);
         })
+        .catch((err) => {
+          if (err.response && err.response.status === 422) {
+            const errors = err.response.data.errors;
+            if (errors.email) {
+              // Lặp qua tất cả lỗi của trường email (nếu có nhiều dòng lỗi)
+              errors.email.forEach(msg => toaster.error(msg));
+            }
+          } else {
+            toaster.error("Gửi email thất bại. Vui lòng thử lại.");
+          }
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
     }
   },
 };

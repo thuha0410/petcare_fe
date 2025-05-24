@@ -31,6 +31,9 @@
           </span>
           <input v-model="khach_hang.pass" class="form-control" style="" placeholder="Mật khẩu của bạn"
             :type="showPassword ? 'text' : 'password'" aria-label="Password" aria-describedby="basic-addon1" />
+          <span class="input-group-text" @click="togglePassword">
+            <i :class="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'" style="cursor: pointer;"></i>
+          </span>
         </div>
         <router-link to="/client/send-mail">
           <div class="text-end mt-2">
@@ -42,8 +45,9 @@
             font-weight: bold;
             font-family: 'Fredoka', sans-serif;
             color: white;
-          " class="button mt-3" v-on:click="dangNhap()">
-          ĐĂNG NHẬP
+          " :disabled="isLoading" class="button mt-3" v-on:click="dangNhap()">
+          <span v-if="isLoading"><i class="fas fa-spinner fa-spin"></i> Đang xử lý...</span>
+          <span v-else>ĐĂNG NHẬP</span>
         </button>
       </div>
 
@@ -65,19 +69,26 @@
           <span class="input-group-text" id="addon-wrapping"><i class="fa-solid fa-key"></i></span>
           <input v-model="khach_hang.password" class="form-control" placeholder="Mật khẩu của bạn"
             :type="showPassword ? 'text' : 'password'" />
+          <span class="input-group-text" @click="togglePassword">
+            <i :class="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'" style="cursor: pointer;"></i>
+          </span>
         </div>
         <div class="input-group flex-nowrap mt-3">
           <span class="input-group-text" id="addon-wrapping"><i class="fa-regular fa-keyboard"></i></span>
           <input v-model="khach_hang.password_confirmation" class="form-control" placeholder="Nhập lại mật khẩu"
             :type="showPassword ? 'text' : 'password'" />
+          <span class="input-group-text" @click="togglePassword">
+            <i :class="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'" style="cursor: pointer;"></i>
+          </span>
         </div>
         <button style="
             font-size: 18px;
             font-weight: bold;
             font-family: 'Fredoka', sans-serif;
             color: white;
-          " class="button mt-4" v-on:click="dangKy()">
-          Xác nhận
+          " class="button mt-4" :disabled="isLoading" v-on:click="dangKy()">
+          <span v-if="isLoading"><i class="fas fa-spinner fa-spin"></i> Đang xử lý...</span>
+          <span v-else>Xác nhận</span>
         </button>
       </div>
     </div>
@@ -86,7 +97,7 @@
 <script>
 import { createToaster } from "@meforma/vue-toaster";
 import apiClient from "../../../services/apiClient";
-const toaster = createToaster({ position: "top-left" });
+const toaster = createToaster({ position: "top-right" });
 
 export default {
   data() {
@@ -113,16 +124,16 @@ export default {
         .then((res) => {
           if (res.data.status == 1) {
             toaster.success(res.data.message);
-            
+
             // Store token and other user information
             localStorage.setItem("token_client", res.data.token);
-            
+
             // Trigger the storage event manually for TopClient to detect
             window.dispatchEvent(new StorageEvent('storage', {
               key: 'token_client',
               newValue: res.data.token
             }));
-            
+
             // Navigate to homepage or previous page if available
             const returnUrl = this.$route.query.returnUrl || '/';
             this.$router.push(returnUrl);
@@ -140,9 +151,11 @@ export default {
     },
     dangKy() {
       this.isLoading = true;
+
       apiClient.post("/api/khach-hang/dang-ky", this.khach_hang)
         .then((res) => {
           // Hiển thị thông báo thành công
+          toaster.info("Đang gửi mail kích hoạt tài khoản...");
           toaster.success(res.data.message);
 
           // Reset dữ liệu form sau khi đăng ký thành công

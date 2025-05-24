@@ -20,7 +20,7 @@
                             <dd class="col-sm-9">{{ list_nvct.gioi_tinh == 1 ? 'Nam' : 'Nữ' }}</dd>
 
                             <dt class="col-sm-2">Tình trạng </dt>
-                            <dd class="col-sm-9">{{ list_nvct.tinh_trang == 1 ? 'Đang hoạt động' : 'Không rảnh lịch' }}</dd>
+                            <dd class="col-sm-9" :class="list_nvct.tinh_trang == 1 ? 'text-success' : 'text-danger'">{{ list_nvct.tinh_trang == 1 ? 'Đang hoạt động' : 'Không hoạt động' }}</dd>
                         </dl>
                     </div>
                 </div>

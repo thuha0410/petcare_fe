@@ -48,7 +48,7 @@
                 <h2 class="text-center fw-bold" style="color: darkblue;">CHỌN DỊCH VỤ CHĂM SÓC</h2>
                 <br>
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Tìm kiếm...." aria-label="Recipient's username"
+                    <input v-model="tim_kiem.noi_dung" type="text" class="form-control" placeholder="Tìm kiếm...." aria-label="Recipient's username"
                         aria-describedby="button-addon2">
                     <button v-on:click="timkiem()" class="btn btn-outline-primary" type="button" id="button-addon2">Tìm
                         kiếm</button>
@@ -127,7 +127,7 @@ export default {
         },
         timkiem() {
             axios
-                .post('http://127.0.0.1:8000/api/dich-vu/tim-kiem', this.tim_kiem)
+                .post('http://127.0.0.1:8000/api/dich-vu/tim-kiem-cham-soc', this.tim_kiem)
                 .then((res) => {
                     this.list_dich_vu = res.data.data
                 })

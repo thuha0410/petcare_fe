@@ -37,20 +37,20 @@
                 <div class="card card-hv radius-15 h-100">
                     <div class="card-body  text-center">
                         <div class="p-4 border radius-15">
-                            <img :src="value.hinh_anh" width="100" height="130" class="rounded-circle shadow"
-                                alt="">
+                            <img :src="value.hinh_anh" width="100" height="130" class="rounded-circle shadow" alt="">
                             <h5 style="color: darkblue;" class="mb-0 mt-5">ThS. {{ value.ten_nv }}</h5>
                             <p style="color: darkslateblue; min-height: 120px;">{{ value.mo_ta }}</p>
                             <hr>
+                            <button class="btn btn-primary btn-lg custom-btn">Xem chi tiết</button>
                             <br>
                         </div>
                     </div>
+                    
                 </div>
+
             </router-link>
         </div>
     </div>
-    <a class="text-center hover:text-dark" style="font-size: 25px;" href="/client/dat-lich-theo-bac-si"><button
-            class="btn btn-outline-primary rounded-pill mt-4">Xem thêm</button></a>
     <br>
     <hr>
     <br>
@@ -151,7 +151,8 @@
     <hr>
     <!-- why chăm sóc-->
     <h2 class="text-center text-danger fw-bold">TẠI SAO CẦN CHĂM SÓC THÚ CƯNG ĐÚNG CÁCH?</h2>
-    <p class="text-black text-center" style="font-size: 20px;">Thú cưng không chỉ là một vật nuôi mà còn là người bạn trung thành,
+    <p class="text-black text-center" style="font-size: 20px;">Thú cưng không chỉ là một vật nuôi mà còn là người bạn
+        trung thành,
         mang lại niềm vui và sự gắn kết trong gia
         đình. Tuy nhiên, để bé cưng luôn khỏe mạnh và hạnh phúc, bạn cần quan tâm đến chế độ chăm sóc hàng ngày. Dưới
         đây là những lý do bạn không nên bỏ qua việc chăm sóc thú cưng đúng cách</p>
@@ -274,7 +275,7 @@
     <router-link to="/client/xem-dich-vu">
         <div class="text-center">
             <a class="text-center hover:text-dark" style="font-size: 25px;" href="/client/dat-lich-theo-bac-si"><button
-                class="btn btn-outline-primary rounded-pill">Xem thêm</button></a>
+                    class="btn btn-outline-primary rounded-pill">Xem thêm</button></a>
         </div>
     </router-link>
 

@@ -125,7 +125,7 @@ export default {
     methods: {
         load() {
             axios
-                .get('http://127.0.0.1:8000/api/phan-quyen/load-chuc-vu',
+                .get('http://127.0.0.1:8000/api/chuc-vu/load',
                     {
                         headers: {
                             Authorization: 'Bearer ' + localStorage.getItem('token_admin')

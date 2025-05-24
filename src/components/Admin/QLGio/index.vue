@@ -100,8 +100,8 @@
                     <input v-model="sua_gio.khung_gio" class="form-control mb-2" type="text">
                     <label for="">Tình trạng</label>
                     <select v-model="sua_gio.tinh_trang" class="form-control mb-2" name="" id="">
-                        <option value="0">Hiện</option>
-                        <option value="1">Ẩn</option>
+                        <option value="1">Hiện</option>
+                        <option value="0">Ẩn</option>
                     </select>
                 </div>
                 <div class="modal-footer">

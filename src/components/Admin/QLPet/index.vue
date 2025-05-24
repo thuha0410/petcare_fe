@@ -41,7 +41,7 @@
                                     <img class=" img-fluid" style="height: 100px; width: 100px;" :src="value.hinh_anh"
                                         alt="">
                                 </td>
-                                <td>{{ value.can_nang }}</td>y
+                                <td>{{ value.can_nang }}</td>
                                 <td>
                                     <button v-on:click="Object.assign(sua_pet, value)" data-bs-toggle="modal"
                                         data-bs-target="#sua" class="btn btn-primary">Sửa</button>
